@@ -38,14 +38,18 @@ public class Chunks : MonoBehaviour
 			{
 				for (int z = 0; z < VoxelData.ChunkSize; z++)
 				{
-					if (y < 1)
-						voxelMap[x, y, z] = 0;
-					else if (y == VoxelData.ChunkSize - 1)
-						voxelMap[x, y, z] = 1;
-					else if (y >  VoxelData.ChunkSize - 4)
+					if (y == 0)
+						voxelMap[x, y, z] = 5;
+					else if (y < 3)
+						voxelMap[x, y, z] = 4;
+					else if (y == VoxelData.ChunkSize / 2)
+						voxelMap[x, y, z] = 6;
+					else if (y < VoxelData.ChunkSize - 3)
+						voxelMap[x, y, z] = 3;
+					else if (y < VoxelData.ChunkSize - 1)
 						voxelMap[x, y, z] = 2;
 					else
-						voxelMap[x, y, z] = 3;
+						voxelMap[x, y, z] = 1;
 				}
 			}
 		}
