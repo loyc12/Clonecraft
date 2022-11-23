@@ -6,6 +6,11 @@ public class World : MonoBehaviour
 {
 	public Material		material;
 	public BlockType[]	blocktypes;
+
+	private void	Start()
+	{
+		Chunk	newChunk = new Chunk(this);
+	}
 }
 
 [System.Serializable]

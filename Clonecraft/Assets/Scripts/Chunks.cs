@@ -2,33 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chunks : MonoBehaviour
+public class Chunk
 {
+	GameObject		chunkObject;
+	MeshRenderer	meshRenderer;
+	MeshFilter		meshFilter;
 
-	public MeshRenderer		meshRenderer;
-	public MeshFilter		meshFilter;
-	public Color			defaultColor;
+	List<Vector3> 	vertices = new List<Vector3>();
+	List<int> 		triangles = new List<int>();
+	List<Vector2>	uvs = new List<Vector2>();
 
-	byte[,,]		voxelMap;
-	List<Vector3> 	vertices;
-	List<int> 		triangles;
-	List<Vector2>	uvs;
-	Mesh 			mesh;
+	byte[,,]		voxelMap = new byte[VoxelData.ChunkSize, VoxelData.ChunkSize, VoxelData.ChunkSize];
+
 	World			world;
 
-    void Start()
-    {
-		voxelMap = new byte[VoxelData.ChunkSize, VoxelData.ChunkSize, VoxelData.ChunkSize];
-		vertices = new List<Vector3>();
-		triangles = new List<int>();
-		uvs = new List<Vector2>();
-		mesh = new Mesh();
-		world = GameObject.Find("World").GetComponent<World>();
+	public	Chunk (World _world)
+	{
+		world = _world;
+		chunkObject = new GameObject();
+		chunkObject.name = "Test Chunk";
+		meshFilter = chunkObject.AddComponent<MeshFilter>();
+		meshRenderer = chunkObject.AddComponent<MeshRenderer>();
+
+		meshRenderer.material = world.material;
+		chunkObject.transform.SetParent(world.transform);
 
 		PopulateVoxelMap();
 		LoadChunkMesh();
 		CreateMesh();
-    }
+	}
 
 	void	PopulateVoxelMap()
 	{
@@ -38,14 +40,18 @@ public class Chunks : MonoBehaviour
 			{
 				for (int z = 0; z < VoxelData.ChunkSize; z++)
 				{
-					if (y < 1)
-						voxelMap[x, y, z] = 0;
-					else if (y == VoxelData.ChunkSize - 1)
-						voxelMap[x, y, z] = 1;
-					else if (y >  VoxelData.ChunkSize - 4)
+					if (y == 0)
+						voxelMap[x, y, z] = 5;
+					else if (y < 3)
+						voxelMap[x, y, z] = 4;
+					else if (y == VoxelData.ChunkSize / 2)
+						voxelMap[x, y, z] = 6;
+					else if (y < VoxelData.ChunkSize - 3)
+						voxelMap[x, y, z] = 3;
+					else if (y < VoxelData.ChunkSize - 1)
 						voxelMap[x, y, z] = 2;
 					else
-						voxelMap[x, y, z] = 3;
+						voxelMap[x, y, z] = 1;
 				}
 			}
 		}
@@ -102,6 +108,8 @@ public class Chunks : MonoBehaviour
 
 	void	CreateMesh()
 	{
+		Mesh	mesh = new Mesh();
+
 		mesh.name = "Test Mesh";
 		mesh.vertices = vertices.ToArray();
 		mesh.triangles = triangles.ToArray();
