@@ -44,21 +44,21 @@ public class	Chunk
 			{
 				for (int z = 0; z < VoxelData.ChunkSize; z++)
 				{
-					if (y == 0)
-						voxelMap[x, y, z] = 5;
-					else if (y < 3)
-						voxelMap[x, y, z] = 4;
-					else if (y == VoxelData.ChunkSize / 2)
-						voxelMap[x, y, z] = 6;
-					else if (y < VoxelData.ChunkSize - 3)
-						voxelMap[x, y, z] = 3;
-					else if (y < VoxelData.ChunkSize - 1)
-						voxelMap[x, y, z] = 2;
-					else
-						voxelMap[x, y, z] = 1;
+					voxelMap[x, y, z] = world.GetVoxel(new Vector3(x, y, z) + chunkpos);
 				}
 			}
 		}
+	}
+
+	bool	IsVoxelInChunk(int x, int y, int z)
+	{
+		if (x < 0 || VoxelData.ChunkSize <= x)
+			return (false);
+		if (y < 0 || VoxelData.ChunkSize <= y)
+			return (false);
+		if (z < 0 || VoxelData.ChunkSize <= z)
+			return (false);
+		return (true);
 	}
 
 	bool	CheckVoxel (Vector3 pos)
@@ -67,14 +67,20 @@ public class	Chunk
 		int	y = (int)pos.y;
 		int	z = (int)pos.z;
 
-		if (x < 0 || VoxelData.ChunkSize <= x)
-			return (false);
-		if (y < 0 || VoxelData.ChunkSize <= y)
-			return (false);
-		if (z < 0 || VoxelData.ChunkSize <= z)
-			return (false);
+		if (!IsVoxelInChunk(x, y, z))
+			return (world.blocktypes [world.GetVoxel(pos + chunkpos)].isSolid);
+		return (world.blocktypes [voxelMap [x, y, z]].isSolid);
+	}
 
-		return (world.blocktypes[ voxelMap [x, y, z]].isSolid);
+	public bool	isActive
+	{
+		get { return chunkObject.activeSelf; }
+		set { chunkObject.SetActive(value); }
+	}
+
+	public Vector3 chunkpos
+	{
+		get { return chunkObject.transform.position; }
 	}
 
 	void	LoadChunkMesh()

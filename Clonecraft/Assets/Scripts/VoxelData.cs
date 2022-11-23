@@ -2,11 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BlockList : byte	//shoddy casting oof
+{
+	AIR		= 0,
+	GRASS	= 1,
+	DIRT	= 2,
+	STONE	= 3,
+	ROCK	= 4,
+	BEDROCK	= 5,
+	MARBLE	= 6
+}
+
 public static class	VoxelData
 {
 
-	public static readonly int	WorldSize = 4;
-	public static readonly int	ChunkSize = 32;
+	public static readonly int	RenderDistance = 4;
+
+	public static readonly int	WorldSize = 32;
+	public static int	WorldVoxelSize
+	{
+		get { return WorldSize * ChunkSize; }
+	}
+
+	public static readonly int	WorldHeight = 1;
+	public static int	WorldVoxelHeight
+	{
+		get { return WorldHeight * ChunkSize; }
+	}
+
+	public static readonly int	ChunkSize = 16;
 	public static readonly int	TextureAtlasSize = 16;
 	public static float			NormalizedTextureSize
 	{
