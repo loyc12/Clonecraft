@@ -2,30 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chunk
+public class	Chunk
 {
-	GameObject		chunkObject;
-	MeshRenderer	meshRenderer;
-	MeshFilter		meshFilter;
+	public ChunkCoord	coord;
 
-	List<Vector3> 	vertices = new List<Vector3>();
-	List<int> 		triangles = new List<int>();
-	List<Vector2>	uvs = new List<Vector2>();
+	GameObject			chunkObject;
+	MeshRenderer		meshRenderer;
+	MeshFilter			meshFilter;
 
-	byte[,,]		voxelMap = new byte[VoxelData.ChunkSize, VoxelData.ChunkSize, VoxelData.ChunkSize];
+	List<Vector3> 		vertices = new List<Vector3>();
+	List<int> 			triangles = new List<int>();
+	List<Vector2>		uvs = new List<Vector2>();
 
-	World			world;
+	World				world;
 
-	public	Chunk (World _world)
+	byte[,,]	voxelMap = new byte[VoxelData.ChunkSize, VoxelData.ChunkSize, VoxelData.ChunkSize];
+
+	public	Chunk (ChunkCoord _coord, World _world)
 	{
+		coord = _coord;
 		world = _world;
 		chunkObject = new GameObject();
-		chunkObject.name = "Test Chunk";
 		meshFilter = chunkObject.AddComponent<MeshFilter>();
 		meshRenderer = chunkObject.AddComponent<MeshRenderer>();
 
 		meshRenderer.material = world.material;
 		chunkObject.transform.SetParent(world.transform);
+		chunkObject.transform.position = new Vector3(coord.cx * VoxelData.ChunkSize, coord.cy * VoxelData.ChunkSize, coord.cz * VoxelData.ChunkSize);
+		chunkObject.name = "Chunk " + coord.cx + ":" + coord.cy + ":" + coord.cz;
 
 		PopulateVoxelMap();
 		LoadChunkMesh();
@@ -57,7 +61,7 @@ public class Chunk
 		}
 	}
 
-	bool CheckVoxel (Vector3 pos)
+	bool	CheckVoxel (Vector3 pos)
 	{
 		int	x = (int)pos.x;
 		int	y = (int)pos.y;
@@ -134,10 +138,7 @@ public class Chunk
 		uvs.Add(new Vector2(x + VoxelData.NormalizedTextureSize, y));
 	}
 
-
-		//QUAD METHODS
-
-	void AddQuad (Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+	void	AddQuad (Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
 	{
 		int vertexIndex = vertices.Count;
 
@@ -155,9 +156,7 @@ public class Chunk
 		triangles.Add(vertexIndex);
 	}
 
-		//TRI METHODS
-
-	void AddTriangle (Vector3 v0, Vector3 v1, Vector3 v2)
+	void	AddTriangle (Vector3 v0, Vector3 v1, Vector3 v2)
     {
 		int vertexIndex = vertices.Count;
 
@@ -170,4 +169,18 @@ public class Chunk
 		triangles.Add(vertexIndex + 2);
 	}
 
+}
+
+public class	ChunkCoord
+{
+	public int	cx;
+	public int	cy;
+	public int	cz;
+
+	public	ChunkCoord (int _cx, int _cy, int _cz)
+	{
+		cx = _cx;
+		cy = _cy;
+		cz = _cz;
+	}
 }

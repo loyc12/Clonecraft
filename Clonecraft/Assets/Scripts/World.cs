@@ -2,19 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class World : MonoBehaviour
+public class	World : MonoBehaviour
 {
 	public Material		material;
 	public BlockType[]	blocktypes;
 
+	Chunk[,,]			region = new Chunk[VoxelData.ChunkSize, 1, VoxelData.ChunkSize];
+
 	private void	Start()
 	{
-		Chunk	newChunk = new Chunk(this);
+		GenerateWorld();
+	}
+
+	void	GenerateWorld()
+	{
+		for (int cx = 0; cx < VoxelData.WorldSize; cx++)
+		{
+			for (int cz = 0; cz < VoxelData.WorldSize; cz++)
+			{
+				CreateNewChunk(cx, 0, cz);
+			}
+		}
+	}
+
+	void	CreateNewChunk(int cx, int cy, int cz)
+	{
+		region[cx, 0, cz] = new Chunk(new ChunkCoord(cx, 0, cz), this);
 	}
 }
 
 [System.Serializable]
-public class BlockType
+public class	BlockType
 {
 	public string 	blockName;
 	public bool		isSolid;

@@ -5,9 +5,9 @@ using UnityEngine;
 public static class	VoxelData
 {
 
-	public static readonly int	ChunkSize = 16;
+	public static readonly int	WorldSize = 4;
+	public static readonly int	ChunkSize = 32;
 	public static readonly int	TextureAtlasSize = 16;
-	//public static readonly int	textureResolution = 16;
 	public static float			NormalizedTextureSize
 	{
 		get {return 1f / (float) TextureAtlasSize;}
