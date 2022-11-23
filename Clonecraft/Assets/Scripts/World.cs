@@ -5,24 +5,35 @@ using UnityEngine;
 public class	World : MonoBehaviour
 {
 	public Transform		player;
-	public Vector3 		spawnPoint;
+	public Vector3 			spawnPoint;
+	public ChunkCoord		playerChunk;
+	public ChunkCoord		playerLastChunk;
 
-	public Material		material;
-	public BlockType[]	blocktypes;
+	public Material			material;
+	public BlockType[]		blocktypes;
 
-	Chunk[,,]			region = new Chunk[VoxelData.WorldSize, VoxelData.WorldHeight, VoxelData.WorldSize];
+	Chunk[,,]				region = new Chunk[VoxelData.WorldSize, VoxelData.WorldHeight, VoxelData.WorldSize];
+
+	List<ChunkCoord>		activeChunks = new List<ChunkCoord>();
 
 	private void	Start()
 	{
 		spawnPoint = new Vector3(VoxelData.WorldVoxelSize / 2f, VoxelData.WorldVoxelHeight, VoxelData.WorldVoxelSize / 2f);
 		player.position = spawnPoint;
+		playerLastChunk = GetChunkPos(player.position);
 
 		GenerateWorld();
 	}
 
 	private void	Update()
 	{
-		CheckRenderDistance();
+		playerChunk = GetChunkPos (player.position);
+		if (playerChunk.cx != playerLastChunk.cx || playerChunk.cy != playerLastChunk.cy || playerChunk.cz != playerLastChunk.cz)
+		{
+			playerLastChunk = playerChunk;
+			RetractRenderDistance();
+			ExtendRenderDistance();
+		}
 	}
 
 	void	GenerateWorld()
@@ -50,24 +61,39 @@ public class	World : MonoBehaviour
 		return (new ChunkCoord (x, y, z));
 	}
 
-	void	CheckRenderDistance()
+	void	ExtendRenderDistance()
 	{
-		ChunkCoord coord = GetChunkPos (player.position);
-
-		for (int cx = coord.cx - VoxelData.RenderDistance; cx < coord.cx + VoxelData.RenderDistance; cx++)
+		for (int cx = playerChunk.cx - VoxelData.RenderDistance; cx <= playerChunk.cx + VoxelData.RenderDistance; cx++)
 		{
-			for (int cz = coord.cz - VoxelData.RenderDistance; cz < coord.cz + VoxelData.RenderDistance; cz++)
+			for (int cz = playerChunk.cz - VoxelData.RenderDistance; cz <= playerChunk.cz + VoxelData.RenderDistance; cz++)
 			{
 				for (int cy = 0; cy < VoxelData.WorldHeight; cy++)
 				{
 					if (IsChunkInWorld(new ChunkCoord(cx, cy, cz)))
 					{
 						if (region[cx, cy, cz] == null)
-						{
 							CreateNewChunk(cx, cy, cz);
+						else if (!region[cx, cy, cz].isActive)
+						{
+							region[cx, cy, cz].isActive = true;
+							activeChunks.Add(new ChunkCoord(cx, cy, cz));
 						}
+
 					}
 				}
+			}
+		}
+	}
+
+	void	RetractRenderDistance()
+	{
+		for (int i = 0; i < activeChunks.Count; i++)
+		{
+			ChunkCoord	coord = activeChunks[i];
+			if (!IsChunkInRenderDistance(coord))
+			{
+				region[coord.cx, coord.cy, coord.cz].isActive = false;
+				activeChunks.Remove(coord);
 			}
 		}
 	}
@@ -75,6 +101,7 @@ public class	World : MonoBehaviour
 	void	CreateNewChunk(int cx, int cy, int cz)
 	{
 		region[cx, cy, cz] = new Chunk(new ChunkCoord(cx, cy, cz), this);
+		activeChunks.Add(new ChunkCoord(cx, cy, cz));
 	}
 
 	public byte GetVoxel(Vector3 pos)
@@ -96,6 +123,18 @@ public class	World : MonoBehaviour
 			return ((byte)BlockList.GRASS);
 		else
 			return ((byte)BlockList.MARBLE);
+	}
+
+	bool	IsChunkInRenderDistance(ChunkCoord coord)
+	{
+
+		if (coord.cx < playerChunk.cx - VoxelData.RenderDistance|| playerChunk.cx + VoxelData.RenderDistance < coord.cx)
+			return (false);
+		//if (coord.cy < 0 || VoxelData.WorldHeight <= coord.cy)	//useless
+			//return (false);
+		if (coord.cz < playerChunk.cz - VoxelData.RenderDistance|| playerChunk.cz + VoxelData.RenderDistance < coord.cz)
+			return (false);
+		return (true);
 	}
 
 	bool	IsChunkInWorld(ChunkCoord coord)

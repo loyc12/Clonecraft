@@ -2,6 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+
+	Implement a spherical render distance (via distance between two chunks)
+
+
+
+
+
+*/
+
 public enum BlockList : byte	//shoddy casting oof
 {
 	AIR		= 0,
