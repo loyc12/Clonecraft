@@ -2,51 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*
-
-	Implement a spherical render distance (via distance between two chunks)
-
-
-
-
-
-*/
-
-public enum BlockList : byte	//shoddy casting oof
-{
-	AIR		= 0,
-	GRASS	= 1,
-	DIRT	= 2,
-	STONE	= 3,
-	ROCK	= 4,
-	BEDROCK	= 5,
-	MARBLE	= 6
-}
-
 public static class	VoxelData
 {
-
-	public static readonly int	RenderDistance = 4;
-
-	public static readonly int	WorldSize = 32;
-	public static int	WorldVoxelSize
-	{
-		get { return WorldSize * ChunkSize; }
-	}
-
-	public static readonly int	WorldHeight = 1;
-	public static int	WorldVoxelHeight
-	{
-		get { return WorldHeight * ChunkSize; }
-	}
-
-	public static readonly int	ChunkSize = 16;
-	public static readonly int	TextureAtlasSize = 16;
-	public static float			NormalizedTextureSize
-	{
-		get {return 1f / (float) TextureAtlasSize;}
-	}
-
 	public static readonly Vector3[]	voxelVerts = new Vector3[8]
 	{
 		new Vector3(-0.5f, -0.5f, -0.5f),	//0
@@ -86,5 +43,4 @@ public static class	VoxelData
 		new Vector2(1.0f, 1.0f),	//2 : top right
 		new Vector2(1.0f, 0.0f)		//3	: bottom right
 	};
-
 }
