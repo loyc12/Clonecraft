@@ -11,7 +11,7 @@ public static class	WorldData
 
 	public static readonly int	RenderDistance = 10;	//in chunk
 
-	public static readonly int	WorldSize = 24;			//in chunk
+	public static readonly int	WorldSize = 12;			//in chunk
 	public static int			WorldVoxelSize			//in voxel
 	{
 		get { return WorldSize * ChunkSize; }

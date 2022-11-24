@@ -24,6 +24,8 @@ public class	World : MonoBehaviour
 		Random.InitState(seed);
 	
 		spawnPoint = new Vector3(WorldData.WorldVoxelSize / 2f, WorldData.WorldVoxelHeight, WorldData.WorldVoxelSize / 2f);
+		spawnPoint.y = GetTerrainHeight(spawnPoint) + 2.5f;
+	
 		player.position = spawnPoint;
 		playerChunk = GetChunkPos(player.position);
 		playerLastChunk = GetChunkPos(player.position);
@@ -134,9 +136,7 @@ public class	World : MonoBehaviour
 			return ((byte)BlockID.ROCK);
 
 		/* === BASIC TERRAIN PASS === */
-		int	height = (int)(WorldData.RockLevel + biome.baseElevation + (
-			biome.maxElevation * Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale)
-			));
+		int	height = (int)GetTerrainHeight(pos);
 
 		if (y > height)
 			return ((byte)BlockID.AIR);
@@ -153,6 +153,15 @@ public class	World : MonoBehaviour
 		else
 			return ((byte)BlockID.STONE);
 
+	}
+
+	float	GetTerrainHeight(Vector3 pos)
+	{
+		float	height = biome.maxElevation * Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale);
+		
+		height += WorldData.RockLevel + biome.baseElevation;
+
+		return (height);
 	}
 
 	//returns true if the given pos is inside the player's render distance
