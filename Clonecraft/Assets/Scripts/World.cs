@@ -24,6 +24,7 @@ public class	World : MonoBehaviour
 	
 		spawnPoint = new Vector3(WorldData.WorldVoxelSize / 2f, WorldData.WorldVoxelHeight, WorldData.WorldVoxelSize / 2f);
 		player.position = spawnPoint;
+		playerChunk = GetChunkPos(player.position);
 		playerLastChunk = GetChunkPos(player.position);
 
 		GenerateWorld();
@@ -51,7 +52,9 @@ public class	World : MonoBehaviour
 			{
 				for (int cz = center - WorldData.RenderDistance; cz < center + WorldData.RenderDistance; cz++)
 				{
-					if (IsChunkInWorld(new ChunkCoord(cx, cy, cz)))
+					ChunkCoord	coord = new ChunkCoord(cx, cy, cz);
+
+					if (IsChunkInRenderDistance(coord))
 						CreateNewChunk(cx, cy, cz);
 				}
 			}
@@ -77,14 +80,16 @@ public class	World : MonoBehaviour
 			{
 				for (int cy = 0; cy < WorldData.WorldHeight; cy++)
 				{
-					if (IsChunkInWorld(new ChunkCoord(cx, cy, cz)))
+					ChunkCoord	renderChunk = new ChunkCoord(cx, cy, cz);
+
+					if (IsChunkInRenderDistance(renderChunk))
 					{
 						if (region[cx, cy, cz] == null)
 							CreateNewChunk(cx, cy, cz);
 						else if (!region[cx, cy, cz].isActive)
 						{
 							region[cx, cy, cz].isActive = true;
-							activeChunks.Add(new ChunkCoord(cx, cy, cz));
+							activeChunks.Add(renderChunk);
 						}
 
 					}
@@ -163,7 +168,7 @@ public class	World : MonoBehaviour
 
 		if (y > height)
 			return ((byte)BlockID.AIR);
-		else if (y > height - 3 && height < WorldData.SeaLevel - 1)
+		else if (y > height - 3 && height < WorldData.SeaLevel - 2)
 			return ((byte)BlockID.GRAVEL);
 		else if (y > height - 3 && height < WorldData.SeaLevel + 1)
 			return ((byte)BlockID.SAND);
@@ -171,7 +176,7 @@ public class	World : MonoBehaviour
 			return ((byte)BlockID.GRASS);
 		else if (y > height - 3)
 			return ((byte)BlockID.DIRT);
-		else if (height < WorldData.SeaLevel)
+		else if (height < WorldData.SeaLevel && y > height - 8)
 			return ((byte)BlockID.MARBLE);
 		else
 			return ((byte)BlockID.STONE);
@@ -182,11 +187,7 @@ public class	World : MonoBehaviour
 	bool	IsChunkInRenderDistance(ChunkCoord coord)
 	{
 
-		if (coord.cx < playerChunk.cx - WorldData.RenderDistance|| playerChunk.cx + WorldData.RenderDistance < coord.cx)
-			return (false);
-		//if (coord.cy < 0 || WorldData.WorldHeight <= coord.cy)	//useless
-			//return (false);
-		if (coord.cz < playerChunk.cz - WorldData.RenderDistance|| playerChunk.cz + WorldData.RenderDistance < coord.cz)
+		if (!IsChunkInWorld(coord) || WorldData.RenderDistance < playerChunk.ChunkDistance(coord))
 			return (false);
 		return (true);
 	}

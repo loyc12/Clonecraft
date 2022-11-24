@@ -15,9 +15,9 @@ using UnityEngine;
 public static class	WorldData
 {
 
-	public static readonly int	RenderDistance = 8;	//in chunk
+	public static readonly int	RenderDistance = 12;	//in chunk
 
-	public static readonly int	WorldSize = 15;		//in chunk
+	public static readonly int	WorldSize = 32;		//in chunk
 	public static int			WorldVoxelSize		//in voxel
 	{
 		get { return WorldSize * ChunkSize; }

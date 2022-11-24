@@ -202,4 +202,15 @@ public class	ChunkCoord
 		cy = _cy;
 		cz = _cz;
 	}
+
+	public float	ChunkDistance(ChunkCoord coord)
+	{
+		int	x = coord.cx - this.cx;
+		int y = coord.cy - this.cy;
+		int z = coord.cz - this.cz;
+
+		int	dsquare = (x * x) + (y * y) + (z * z);
+
+		return (Mathf.Sqrt(dsquare));
+	}
 }
