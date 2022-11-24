@@ -109,17 +109,20 @@ public class	Chunk
 	{
 		byte blockID = voxelMap [(int)pos.x, (int)pos.y, (int)pos.z];
 
-		for (int face = 0; face < 6; face++)
+		if (blockID > 0)
 		{
-			if (!CheckVoxelTransparency(pos + VoxelData.neighbors[face]))
+			for (int face = 0; face < 6; face++)
 			{
-				AddQuad (
-					pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 0]],
-					pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 1]],
-					pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 2]],
-					pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 3]]
-				);
-				AddTexture(world.blocktypes[blockID].GetTextureId(face));
+				if (!CheckVoxelTransparency(pos + VoxelData.neighbors[face]))
+				{
+					AddQuad (
+						pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 0]],
+						pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 1]],
+						pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 2]],
+						pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 3]]
+					);
+					AddTexture(world.blocktypes[blockID].GetTextureId(face));
+				}
 			}
 		}
 	}

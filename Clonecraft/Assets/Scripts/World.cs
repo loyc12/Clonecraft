@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class	World : MonoBehaviour
 {
+	public int				seed;
+
 	public Transform		player;
 	public Vector3 			spawnPoint;
 	public ChunkCoord		playerChunk;
@@ -18,6 +20,8 @@ public class	World : MonoBehaviour
 
 	private void	Start()
 	{
+		Random.InitState(seed);
+	
 		spawnPoint = new Vector3(WorldData.WorldVoxelSize / 2f, WorldData.WorldVoxelHeight, WorldData.WorldVoxelSize / 2f);
 		player.position = spawnPoint;
 		playerLastChunk = GetChunkPos(player.position);
@@ -47,7 +51,8 @@ public class	World : MonoBehaviour
 			{
 				for (int cz = center - WorldData.RenderDistance; cz < center + WorldData.RenderDistance; cz++)
 				{
-					CreateNewChunk(cx, cy, cz);
+					if (IsChunkInWorld(new ChunkCoord(cx, cy, cz)))
+						CreateNewChunk(cx, cy, cz);
 				}
 			}
 		}
@@ -110,8 +115,9 @@ public class	World : MonoBehaviour
 		activeChunks.Add(new ChunkCoord(cx, cy, cz));
 	}
 
+	/*
 	//returns the BlockID for a given voxel pos, and 0 (AIR) if it is empty
-	public byte GetBlockID(Vector3 pos)
+	public byte GetBlockID(Vector3 pos)		//GetVoxel
 	{
 		if (!IsVoxelInWorld(pos))
 			return ((byte)BlockID.AIR);
@@ -120,16 +126,56 @@ public class	World : MonoBehaviour
 
 		if (y == 0)
 			return ((byte)BlockID.BEDROCK);
-		else if (y < 8)
+		else if (y < WorldData.RockLevel)
 			return ((byte)BlockID.ROCK);
-		else if (y < WorldData.ChunkSize - 3)
-			return ((byte)BlockID.STONE);
-		else if (y < WorldData.ChunkSize - 1)
-			return ((byte)BlockID.DIRT);
-		else if (y == WorldData.ChunkSize - 1)
-			return ((byte)BlockID.GRASS);
 		else
+		{
+			int	noise = (int)Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, 0.1f);
+
+			if (y > noise)
+				return ((byte)BlockID.AIR);
+			else if (y == noise)
+				return ((byte)BlockID.GRASS);
+			else if (y > noise - 3)
+				return ((byte)BlockID.DIRT);
+			else
+				return ((byte)BlockID.STONE);
+		}
+	}*/
+
+	public byte GetBlockID(Vector3 pos)		//GetVoxel
+	{
+		int	y = (int)pos.y;
+
+		/* === ABSOLUTE CHECKS === */
+		if (!IsVoxelInWorld(pos))
+			return ((byte)BlockID.AIR);
+		else if (y == 0)
+			return ((byte)BlockID.BEDROCK);
+		else if (y < WorldData.RockLevel)
+			return ((byte)BlockID.ROCK);
+
+		/* === BASIC TERRAIN CHECKS === */
+		int	height = (int)(WorldData.RockLevel + (
+			(WorldData.WorldVoxelHeight - WorldData.RockLevel) *
+			Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, 0.25f)
+			));
+
+		if (y > height)
+			return ((byte)BlockID.AIR);
+		else if (y > height - 3 && height < WorldData.SeaLevel - 1)
+			return ((byte)BlockID.GRAVEL);
+		else if (y > height - 3 && height < WorldData.SeaLevel + 1)
+			return ((byte)BlockID.SAND);
+		else if (y == height)
+			return ((byte)BlockID.GRASS);
+		else if (y > height - 3)
+			return ((byte)BlockID.DIRT);
+		else if (height < WorldData.SeaLevel)
 			return ((byte)BlockID.MARBLE);
+		else
+			return ((byte)BlockID.STONE);
+
 	}
 
 	//returns true if the given pos is inside the player's render distance

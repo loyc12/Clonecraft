@@ -10,7 +10,9 @@ public enum BlockID : byte	//shoddy casting oof
 	STONE	= 3,
 	ROCK	= 4,
 	BEDROCK	= 5,
-	MARBLE	= 6
+	MARBLE	= 6,
+	SAND	= 7,
+	GRAVEL	= 8
 }
 
 [System.Serializable]
