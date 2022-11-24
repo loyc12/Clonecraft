@@ -4,27 +4,21 @@ using UnityEngine;
 
 /*	IDEAS
 
-	Implement a spherical render distance (via distance between two chunks)
-
-
-
-
-
 */
 
 public static class	WorldData
 {
 
-	public static readonly int	RenderDistance = 12;	//in chunk
+	public static readonly int	RenderDistance = 10;	//in chunk
 
-	public static readonly int	WorldSize = 32;		//in chunk
-	public static int			WorldVoxelSize		//in voxel
+	public static readonly int	WorldSize = 24;			//in chunk
+	public static int			WorldVoxelSize			//in voxel
 	{
 		get { return WorldSize * ChunkSize; }
 	}
 
-	public static readonly int	WorldHeight = 4;	//in chunk
-	public static int			WorldVoxelHeight	//in voxel
+	public static readonly int	WorldHeight = 8;		//in chunk
+	public static int			WorldVoxelHeight		//in voxel
 	{
 		get { return WorldHeight * ChunkSize; }
 	}
@@ -37,9 +31,9 @@ public static class	WorldData
 		get {return 1f / (float)TextureAtlasSize;}
 	}
 
-	public static readonly int	RockLevel = 16;		//in voxel : max height where rock is generated
-	public static int	SeaLevel 					//in voxel
+	public static readonly int	RockLevel = 16;			//in voxel : max height where rock is generated
+	public static int	SeaLevel 						//in voxel
 	{
-		get { return (int)(WorldVoxelHeight * 0.6f);}
+		get { return (int)(WorldVoxelHeight * 0.5f);}
 	}
 }

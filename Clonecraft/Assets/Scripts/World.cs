@@ -5,6 +5,7 @@ using UnityEngine;
 public class	World : MonoBehaviour
 {
 	public int				seed;
+	public BiomeAttributes	biome;
 
 	public Transform		player;
 	public Vector3 			spawnPoint;
@@ -120,39 +121,11 @@ public class	World : MonoBehaviour
 		activeChunks.Add(new ChunkCoord(cx, cy, cz));
 	}
 
-	/*
-	//returns the BlockID for a given voxel pos, and 0 (AIR) if it is empty
-	public byte GetBlockID(Vector3 pos)		//GetVoxel
-	{
-		if (!IsVoxelInWorld(pos))
-			return ((byte)BlockID.AIR);
-
-		int	y = (int)pos.y;
-
-		if (y == 0)
-			return ((byte)BlockID.BEDROCK);
-		else if (y < WorldData.RockLevel)
-			return ((byte)BlockID.ROCK);
-		else
-		{
-			int	noise = (int)Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, 0.1f);
-
-			if (y > noise)
-				return ((byte)BlockID.AIR);
-			else if (y == noise)
-				return ((byte)BlockID.GRASS);
-			else if (y > noise - 3)
-				return ((byte)BlockID.DIRT);
-			else
-				return ((byte)BlockID.STONE);
-		}
-	}*/
-
 	public byte GetBlockID(Vector3 pos)		//GetVoxel
 	{
 		int	y = (int)pos.y;
 
-		/* === ABSOLUTE CHECKS === */
+		/* === ABSOLUTE PASS === */
 		if (!IsVoxelInWorld(pos))
 			return ((byte)BlockID.AIR);
 		else if (y == 0)
@@ -160,10 +133,9 @@ public class	World : MonoBehaviour
 		else if (y < WorldData.RockLevel)
 			return ((byte)BlockID.ROCK);
 
-		/* === BASIC TERRAIN CHECKS === */
-		int	height = (int)(WorldData.RockLevel + (
-			(WorldData.WorldVoxelHeight - WorldData.RockLevel) *
-			Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, 0.25f)
+		/* === BASIC TERRAIN PASS === */
+		int	height = (int)(WorldData.RockLevel + biome.baseElevation + (
+			biome.maxElevation * Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale)
 			));
 
 		if (y > height)
@@ -176,7 +148,7 @@ public class	World : MonoBehaviour
 			return ((byte)BlockID.GRASS);
 		else if (y > height - 3)
 			return ((byte)BlockID.DIRT);
-		else if (height < WorldData.SeaLevel && y > height - 8)
+		else if (height < WorldData.SeaLevel && y > height - 6)
 			return ((byte)BlockID.MARBLE);
 		else
 			return ((byte)BlockID.STONE);

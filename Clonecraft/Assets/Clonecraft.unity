@@ -237,6 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 120956
+  biome: {fileID: 11400000, guid: 48a3fd37212083b428cb417841dd3b49, type: 2}
   player: {fileID: 769959051}
   spawnPoint: {x: 0, y: 0, z: 0}
   material: {fileID: 2100000, guid: f3080fbdc5b2f0a489a03834293df144, type: 2}
