@@ -36,12 +36,12 @@ public class	World : MonoBehaviour
 	private void	Update()
 	{
 		playerChunk = GetChunkPos (player.position);
-		if (playerChunk.cx != playerLastChunk.cx || playerChunk.cy != playerLastChunk.cy || playerChunk.cz != playerLastChunk.cz)
+		/*if (playerChunk.cx != playerLastChunk.cx || playerChunk.cy != playerLastChunk.cy || playerChunk.cz != playerLastChunk.cz)
 		{
 			playerLastChunk = playerChunk;
 			RetractRenderDistance();
 			ExtendRenderDistance();
-		}
+		} TEMP */
 	}
 
 	//generate the chunks inside the render distance at spawn
@@ -203,7 +203,7 @@ public class	World : MonoBehaviour
 			foreach (Vein vein in biome.veins)
 			{
 				if (y >= vein.height - vein.spread && y <= vein.height + vein.spread)	//TEMP
-					if (Noise.Get3DVeinNoise(pos, vein))
+					if (blockID == BlockID.STONE && Noise.Get3DVeinNoise(pos, vein))
 						blockID = (BlockID)vein.blockID;
 			}
 		}

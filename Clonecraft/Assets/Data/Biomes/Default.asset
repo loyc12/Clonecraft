@@ -20,14 +20,14 @@ MonoBehaviour:
   - nodeName: Cave
     blockID: 7
     height: 24
-    spread: 24
-    scale: 20
+    spread: 32
+    scale: 64
     threshold: 0.4
     offset: 0
   - nodeName: Dirt
     blockID: 2
     height: 32
-    spread: 16
-    scale: 5
+    spread: 64
+    scale: 8
     threshold: 0.5
     offset: 1

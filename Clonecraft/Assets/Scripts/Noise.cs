@@ -15,7 +15,7 @@ public static class	Noise
 			));
 	}
 
-	//generalized 3D perlin noise
+	//generalized 3D perlin noise (INVERTED SCALE FACTOR)
 	public static bool	Get3DNoise(Vector3 pos, float offset, float scale, float threshold)
 	{
 		float x = (pos.x + 0.192837465f + (offset * offsetFactor)) / (WorldData.ChunkSize * scale);
@@ -34,7 +34,7 @@ public static class	Noise
 		return (false);
 	}
 
-	//for ore and cave noise
+	//for ore and cave noise (INVERTED SCALE FACTOR)
 	public static bool	Get3DVeinNoise(Vector3 pos, Vein vein)
 	{
 		float x = (pos.x + 0.192837465f + vein.offset) * vein.scale / WorldData.ChunkSize;
@@ -44,13 +44,14 @@ public static class	Noise
 		float	XY = Mathf.PerlinNoise(x, y);
 		float	XZ = Mathf.PerlinNoise(x, z);
 		float	YZ = Mathf.PerlinNoise(y, z);
-		float	ZY = Mathf.PerlinNoise(z, y);
-		float	ZX = Mathf.PerlinNoise(z, x);
-		float	YX = Mathf.PerlinNoise(y, x);
+		//float	ZY = Mathf.PerlinNoise(z, y);
+		//float	ZX = Mathf.PerlinNoise(z, x);
+		//float	YX = Mathf.PerlinNoise(y, x);
 
 		float	strenght = 1 - (Mathf.Abs(pos.y - vein.height) / vein.spread);
 
-		if (strenght > 0 && ((XY + XZ + YZ + ZY + ZX + YX) / 6) * strenght > vein.threshold)
+		// ((XY + XZ + YZ + ZY + ZX + YX) / 6)
+		if (strenght > 0 && ((XY + XZ + YZ) / 3) * strenght > vein.threshold)
 			return (true);
 		return (false);
 	}
