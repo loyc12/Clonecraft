@@ -46,7 +46,7 @@ public class	Chunk
 			{
 				for (int z = 0; z < WorldData.ChunkSize; z++)
 				{
-					voxelMap[x, y, z] = world.GetBlockID(new Vector3(x, y, z) + chunkpos);
+					voxelMap[x, y, z] = (byte)world.GetBlockID(new Vector3(x, y, z) + chunkpos);
 				}
 			}
 		}
@@ -72,7 +72,7 @@ public class	Chunk
 		int	z = (int)pos.z;
 
 		if (!IsVoxelInChunk(x, y, z))
-			return (world.blocktypes [world.GetBlockID(pos + chunkpos)].isOpaque);
+			return (world.blocktypes [(int)world.GetBlockID(pos + chunkpos)].isOpaque);
 		return (world.blocktypes [voxelMap [x, y, z]].isOpaque);
 	}
 

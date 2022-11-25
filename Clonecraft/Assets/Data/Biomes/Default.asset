@@ -15,4 +15,19 @@ MonoBehaviour:
   biomeName: Default
   baseElevation: 8
   maxElevation: 72
-  terrainScale: 0.2
+  terrainScale: 5
+  veins:
+  - nodeName: Cave
+    blockID: 0
+    height: 24
+    spread: 24
+    scale: 10
+    threshold: 0.3
+    offset: 0
+  - nodeName: Dirt
+    blockID: 2
+    height: 64
+    spread: 32
+    scale: 5
+    threshold: 0.3
+    offset: 0

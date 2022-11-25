@@ -123,38 +123,6 @@ public class	World : MonoBehaviour
 		activeChunks.Add(new ChunkCoord(cx, cy, cz));
 	}
 
-	public byte GetBlockID(Vector3 pos)		//GetVoxel
-	{
-		int	y = (int)pos.y;
-
-		/* === ABSOLUTE PASS === */
-		if (!IsVoxelInWorld(pos))
-			return ((byte)BlockID.AIR);
-		else if (y == 0)
-			return ((byte)BlockID.BEDROCK);
-		else if (y < WorldData.RockLevel)
-			return ((byte)BlockID.ROCK);
-
-		/* === BASIC TERRAIN PASS === */
-		int	height = (int)GetTerrainHeight(pos);
-
-		if (y > height)
-			return ((byte)BlockID.AIR);
-		else if (y > height - 3 && height < WorldData.SeaLevel - 2)
-			return ((byte)BlockID.GRAVEL);
-		else if (y > height - 3 && height < WorldData.SeaLevel + 1)
-			return ((byte)BlockID.SAND);
-		else if (y == height)
-			return ((byte)BlockID.GRASS);
-		else if (y > height - 3)
-			return ((byte)BlockID.DIRT);
-		else if (height < WorldData.SeaLevel && y > height - 6)
-			return ((byte)BlockID.MARBLE);
-		else
-			return ((byte)BlockID.STONE);
-
-	}
-
 	float	GetTerrainHeight(Vector3 pos)
 	{
 		float	height = biome.maxElevation * Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale);
@@ -196,5 +164,55 @@ public class	World : MonoBehaviour
 		if (pos.z < 0 || WorldData.WorldVoxelSize <= pos.z)
 			return (false);
 		return (true);
+	}
+
+	public BlockID GetBlockID(Vector3 pos)		//GetVoxel
+	{
+		int	y = (int)pos.y;
+		BlockID blockID = BlockID.AIR;
+
+		/* === ABSOLUTE PASS === */
+		if (!IsVoxelInWorld(pos))
+			return (BlockID.AIR);
+
+		else if (y == 0)
+			return (BlockID.BEDROCK);
+
+
+		/* === BASIC TERRAIN PASS === */
+		int	height = (int)GetTerrainHeight(pos);
+
+		if (y > height)
+			return (blockID);
+		else if (y > height - 3 && height < WorldData.SeaLevel - 2)
+			blockID = BlockID.GRAVEL;
+		else if (y > height - 3 && height < WorldData.SeaLevel + 1)
+			blockID = BlockID.SAND;
+		else if (y == height)
+			blockID = BlockID.GRASS;
+		else if (y > height - 3)
+			blockID = BlockID.DIRT;
+		else if (height < WorldData.SeaLevel && y > height - 6)
+			blockID = BlockID.MARBLE;
+		else
+			blockID = BlockID.STONE;
+
+		/* === ORE TERRAIN PASS === */
+		if (blockID == BlockID.STONE)
+		{
+			foreach (Vein vein in biome.veins)
+			{
+				if (y >= vein.height && y <= vein.spread)	//TEMP
+					if (Noise.Get3DVeinNoise(pos, vein))
+						blockID = (BlockID)vein.blockID;
+			}
+		}
+
+		/* === FINAL PASS === */
+		if (y < WorldData.RockLevel && blockID == BlockID.STONE)
+			blockID = BlockID.ROCK;
+
+		return (blockID);
+
 	}
 }
