@@ -123,15 +123,6 @@ public class	World : MonoBehaviour
 		activeChunks.Add(new ChunkCoord(cx, cy, cz));
 	}
 
-	float	GetTerrainHeight(Vector3 pos)
-	{
-		float	height = biome.maxElevation * Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale);
-		
-		height += WorldData.RockLevel + biome.baseElevation;
-
-		return (height);
-	}
-
 	//returns true if the given pos is inside the player's render distance
 	bool	IsChunkInRenderDistance(ChunkCoord coord)
 	{
@@ -164,6 +155,15 @@ public class	World : MonoBehaviour
 		if (pos.z < 0 || WorldData.WorldVoxelSize <= pos.z)
 			return (false);
 		return (true);
+	}
+
+	float	GetTerrainHeight(Vector3 pos)
+	{
+		float	height = biome.maxElevation * Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale);
+		
+		height += WorldData.RockLevel + biome.baseElevation;
+
+		return (height);
 	}
 
 	public BlockID GetBlockID(Vector3 pos)		//GetVoxel
@@ -202,7 +202,7 @@ public class	World : MonoBehaviour
 		{
 			foreach (Vein vein in biome.veins)
 			{
-				if (y >= vein.height && y <= vein.spread)	//TEMP
+				if (y >= vein.height - vein.spread && y <= vein.height + vein.spread)	//TEMP
 					if (Noise.Get3DVeinNoise(pos, vein))
 						blockID = (BlockID)vein.blockID;
 			}

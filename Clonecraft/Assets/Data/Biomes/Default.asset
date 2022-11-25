@@ -18,16 +18,16 @@ MonoBehaviour:
   terrainScale: 5
   veins:
   - nodeName: Cave
-    blockID: 0
+    blockID: 7
     height: 24
     spread: 24
-    scale: 10
-    threshold: 0.3
+    scale: 20
+    threshold: 0.4
     offset: 0
   - nodeName: Dirt
     blockID: 2
-    height: 64
-    spread: 32
+    height: 32
+    spread: 16
     scale: 5
-    threshold: 0.3
-    offset: 0
+    threshold: 0.5
+    offset: 1
