@@ -24,7 +24,7 @@ public class	World : MonoBehaviour
 		Random.InitState(seed);
 	
 		spawnPoint = new Vector3(WorldData.WorldVoxelSize / 2f, WorldData.WorldVoxelHeight, WorldData.WorldVoxelSize / 2f);
-		spawnPoint.y = GetTerrainHeight(spawnPoint) + 2.5f;
+		spawnPoint.y = GetTerrainHeight(spawnPoint) + 0.1f;
 	
 		player.position = spawnPoint;
 		playerChunk = GetChunkPos(player.position);
@@ -213,6 +213,27 @@ public class	World : MonoBehaviour
 			blockID = BlockID.ROCK;
 
 		return (blockID);
-
 	}
+
+	public bool	CheckForVoxel(float _x, float _y, float _z)
+	{
+
+		int x = (int)_x;	//use Mathf.FloorToInt if buggy
+		int y = (int)_y;
+		int z = (int)_z;
+
+		if (!IsVoxelInWorld(new Vector3(x, y, z)))
+			return (false);
+
+		int xChunk = x / WorldData.ChunkSize;
+		int yChunk = y / WorldData.ChunkSize;
+		int zChunk = z / WorldData.ChunkSize;
+
+		x -= xChunk * WorldData.ChunkSize;
+		y -= yChunk * WorldData.ChunkSize;
+		z -= zChunk * WorldData.ChunkSize;
+
+		return (blocktypes [region [xChunk, yChunk, zChunk].voxelMap [x, y, z]].isSolid);
+	}
+
 }

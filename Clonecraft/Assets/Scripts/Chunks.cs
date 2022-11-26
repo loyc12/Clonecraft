@@ -17,7 +17,7 @@ public class	Chunk
 
 	World				world;
 
-	byte[,,]	voxelMap = new byte[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
+	public byte[,,]		voxelMap = new byte[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
 
 	//chunk fabricator
 	public	Chunk (ChunkCoord _coord, World _world)
@@ -190,6 +190,7 @@ public class	Chunk
 	}
 
 }
+
 //coordinate system for chunks only
 public class	ChunkCoord
 {
