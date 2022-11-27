@@ -37,12 +37,12 @@ public class	World : MonoBehaviour
 	private void	Update()
 	{
 		playerChunk = GetChunkPos (player.position);
-		/*if (playerChunk.cx != playerLastChunk.cx || playerChunk.cy != playerLastChunk.cy || playerChunk.cz != playerLastChunk.cz)
+		if (playerChunk.cx != playerLastChunk.cx || playerChunk.cy != playerLastChunk.cy || playerChunk.cz != playerLastChunk.cz)
 		{
 			playerLastChunk = playerChunk;
 			RetractRenderDistance();
 			ExtendRenderDistance();
-		} TEMP */
+		}
 	}
 
 	//generate the chunks inside the render distance at spawn
@@ -193,18 +193,18 @@ public class	World : MonoBehaviour
 			blockID = BlockID.GRASS;
 		else if (y > height - 3)
 			blockID = BlockID.DIRT;
-		else if (height < WorldData.SeaLevel && y > height - 6)
+		else if (height < WorldData.SeaLevel + 2 && y > height - 6)
 			blockID = BlockID.MARBLE;
 		else
 			blockID = BlockID.STONE;
 
 		/* === ORE TERRAIN PASS === */
-		if (blockID == BlockID.STONE)
+		if (blockID == BlockID.STONE || blockID == BlockID.DIRT || blockID == BlockID.GRASS)
 		{
 			foreach (Vein vein in biome.veins)
 			{
 				if (y >= vein.height - vein.spread && y <= vein.height + vein.spread)	//TEMP
-					if (blockID == BlockID.STONE && Noise.Get3DVeinNoise(pos, vein))
+					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(pos, vein))
 						blockID = (BlockID)vein.blockID;
 			}
 		}

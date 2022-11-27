@@ -26,7 +26,7 @@ public static class	VoxelData
 		new Vector3( 1.0f, 0.0f, 0.0f)	//5 : right neighbor
 	};
 
-	public static readonly int[,]	voxelQuads = new int[6,4]	//TODO all faces
+	public static readonly int[,]		voxelQuads = new int[6,4]
 	{
 		{0, 3, 2, 1},	//0 : front face
 		{5, 6, 7, 4},	//1 : back face
@@ -36,11 +36,17 @@ public static class	VoxelData
 		{1, 2, 6, 5}	//5 : right face
 	};
 
-	public static readonly Vector2[]	voxelUvs = new Vector2[4]	//TODO all faces
+	public static readonly Vector2[]	voxelUvs = new Vector2[4]
 	{
 		new Vector2(0.0f, 0.0f),	//0 : bottom left
 		new Vector2(0.0f, 1.0f),	//1 : top left
 		new Vector2(1.0f, 1.0f),	//2 : top right
 		new Vector2(1.0f, 0.0f)		//3	: bottom right
 	};
+
+	public static readonly float[]		faceTint = new int[4]		//TO IMPLEMENT!!!
+	{
+		{1f, 0.9f, 0.8f, 0.7f},	//from lightest (top) to darkest (bottom)
+	};
+
 }

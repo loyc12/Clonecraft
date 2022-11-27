@@ -48,9 +48,10 @@ public static class	Noise
 		//float	ZX = Mathf.PerlinNoise(z, x);
 		//float	YX = Mathf.PerlinNoise(y, x);
 
-		float	strenght = 1 - (Mathf.Abs(pos.y - vein.height) / vein.spread);
+		float	factor = (Mathf.Abs(pos.y - vein.height) / vein.spread);
+		float	strenght = 1 - (factor * factor);
 
-		// ((XY + XZ + YZ + ZY + ZX + YX) / 6)
+		//if (strenght > 0 && ((XY + XZ + YZ + ZY + ZX + YX) / 6) * strenght > vein.threshold)
 		if (strenght > 0 && ((XY + XZ + YZ) / 3) * strenght > vein.threshold)
 			return (true);
 		return (false);

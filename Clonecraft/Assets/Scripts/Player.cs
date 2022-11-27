@@ -11,9 +11,11 @@ public class Player : MonoBehaviour
 	private bool	isJumping;	//jumpRequest
 	private bool	isFlying;
 
-	public readonly float	croutchSpeed = 2f;
-	public readonly float	walkSpeed = 4f;
-	public readonly float	sprintSpeed = 8f;
+	public float	croutchSpeed = 3f;
+	public float	walkSpeed = 6f;
+	public float	sprintSpeed = 12f;
+	public float	flySpeed = 6f;
+	public float	cameraSpeed = 15f;
 
 	public readonly float	flySpeed = 4f;
 	public readonly float	ascentSpeed = 8f;
