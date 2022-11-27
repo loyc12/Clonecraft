@@ -68,9 +68,9 @@ public class	Chunk
 	//returns true of the given voxel is not opaque
 	bool	CheckVoxelTransparency (Vector3 pos)
 	{
-		int	x = (int)pos.x;
-		int	y = (int)pos.y;
-		int	z = (int)pos.z;
+		int	x = Mathf.FloorToInt(pos.x);
+		int	y = Mathf.FloorToInt(pos.y);
+		int	z = Mathf.FloorToInt(pos.z);
 
 		if (!IsVoxelInChunk(x, y, z))
 			return (world.blocktypes [(int)world.GetBlockID(pos + chunkpos)].isOpaque);
@@ -108,7 +108,7 @@ public class	Chunk
 	//adds the triangels and textures of a single block to the chunk mesh
 	void	AddVoxelDataToChunk(Vector3 pos)
 	{
-		byte blockID = voxelMap [(int)pos.x, (int)pos.y, (int)pos.z];
+		byte blockID = voxelMap [Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z)];
 
 		if (blockID > 0)
 		{

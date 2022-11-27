@@ -6,14 +6,14 @@ public static class	VoxelData
 {
 	public static readonly Vector3[]	voxelVerts = new Vector3[8]
 	{
-		new Vector3(-0.5f, -0.5f, -0.5f),	//0
-		new Vector3( 0.5f, -0.5f, -0.5f),	//1
-		new Vector3( 0.5f,  0.5f, -0.5f),	//2
-		new Vector3(-0.5f,  0.5f, -0.5f),	//3
-		new Vector3(-0.5f, -0.5f,  0.5f),	//4
-		new Vector3( 0.5f, -0.5f,  0.5f),	//5
-		new Vector3( 0.5f,  0.5f,  0.5f),	//6
-		new Vector3(-0.5f,  0.5f,  0.5f)	//7
+		new Vector3(-0f, -0f, -0f),	//0
+		new Vector3( 1f, -0f, -0f),	//1
+		new Vector3( 1f,  1f, -0f),	//2
+		new Vector3(-0f,  1f, -0f),	//3
+		new Vector3(-0f, -0f,  1f),	//4
+		new Vector3( 1f, -0f,  1f),	//5
+		new Vector3( 1f,  1f,  1f),	//6
+		new Vector3(-0f,  1f,  1f)	//7
 	};
 
 	public static readonly Vector3[]	neighbors = new Vector3[6]

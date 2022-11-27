@@ -24,6 +24,7 @@ public class	World : MonoBehaviour
 		Random.InitState(seed);
 	
 		spawnPoint = new Vector3(WorldData.WorldVoxelSize / 2f, WorldData.WorldVoxelHeight, WorldData.WorldVoxelSize / 2f);
+		//spawnPoint += new Vector3(0.5f, 0.1f, 0.5f);
 		spawnPoint.y = GetTerrainHeight(spawnPoint) + 0.1f;
 	
 		player.position = spawnPoint;
@@ -47,7 +48,7 @@ public class	World : MonoBehaviour
 	//generate the chunks inside the render distance at spawn
 	void	GenerateWorld()
 	{
-		int	center = (int)(WorldData.WorldSize / 2);
+		int	center = Mathf.FloorToInt(WorldData.WorldSize / 2);
 
 		for (int cx = center - WorldData.RenderDistance; cx < center + WorldData.RenderDistance; cx++)
 		{
@@ -168,7 +169,7 @@ public class	World : MonoBehaviour
 
 	public BlockID GetBlockID(Vector3 pos)		//GetVoxel
 	{
-		int	y = (int)pos.y;
+		int	y = Mathf.FloorToInt(pos.y);
 		BlockID blockID = BlockID.AIR;
 
 		/* === ABSOLUTE PASS === */
@@ -180,7 +181,7 @@ public class	World : MonoBehaviour
 
 
 		/* === BASIC TERRAIN PASS === */
-		int	height = (int)GetTerrainHeight(pos);
+		int	height = Mathf.FloorToInt(GetTerrainHeight(pos));
 
 		if (y > height)
 			return (blockID);
@@ -218,9 +219,9 @@ public class	World : MonoBehaviour
 	public bool	CheckForVoxel(float _x, float _y, float _z)
 	{
 
-		int x = (int)_x;	//use Mathf.FloorToInt if buggy
-		int y = (int)_y;
-		int z = (int)_z;
+		int x = Mathf.FloorToInt(_x);	//use Mathf.FloorToInt if buggy
+		int y = Mathf.FloorToInt(_y);
+		int z = Mathf.FloorToInt(_z);
 
 		if (!IsVoxelInWorld(new Vector3(x, y, z)))
 			return (false);
