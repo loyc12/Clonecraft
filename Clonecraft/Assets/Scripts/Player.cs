@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
 	public float	walkSpeed = 6f;
 	public float	sprintSpeed = 12f;
 	public float	flySpeed = 6f;
-	public float	cameraSpeed = 1f;
+	public float	cameraSpeed = 15f;
 
 	public float	jumpForce = 6f;
 	public float	gravityForce = -16f;
@@ -97,7 +97,9 @@ public class Player : MonoBehaviour
 
 	private void	CalculateVelocity()
 	{
-		if (verticalSpeed > -64f)
+		if (isGrounded || isFlying)
+			verticalSpeed *= 0;
+		if (verticalSpeed > maxFallSpeed)
 			verticalSpeed += gravityForce * Time.fixedDeltaTime;
 		
 		velocity = (transform.forward * frontward) + (transform.right * rightward);
@@ -119,7 +121,7 @@ public class Player : MonoBehaviour
 		else if (isJumping)
 			velocity.y = flySpeed;
 		else if (isCroutching)
-			velocity.y = flySpeed;
+			velocity.y = -flySpeed;
 
 		velocity *= Time.fixedDeltaTime;
 	

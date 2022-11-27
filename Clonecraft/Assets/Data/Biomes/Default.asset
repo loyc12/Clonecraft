@@ -13,21 +13,28 @@ MonoBehaviour:
   m_Name: Default
   m_EditorClassIdentifier: 
   biomeName: Default
-  baseElevation: 8
-  maxElevation: 72
-  terrainScale: 5
+  baseElevation: 16
+  maxElevation: 64
+  terrainScale: 4
   veins:
   - nodeName: Cave
-    blockID: 7
-    height: 24
-    spread: 32
-    scale: 64
-    threshold: 0.4
+    blockID: 0
+    height: 32
+    spread: 48
+    scale: 1
+    threshold: 0.45
     offset: 0
+  - nodeName: Small Cave
+    blockID: 0
+    height: 52
+    spread: 64
+    scale: 1
+    threshold: 0.6
+    offset: 1
   - nodeName: Dirt
     blockID: 2
     height: 32
     spread: 64
-    scale: 8
-    threshold: 0.5
-    offset: 1
+    scale: 3
+    threshold: 0.55
+    offset: 2
