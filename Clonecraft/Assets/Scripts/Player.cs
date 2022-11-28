@@ -14,13 +14,9 @@ public class Player : MonoBehaviour
 	public float	croutchSpeed = 3f;
 	public float	walkSpeed = 6f;
 	public float	sprintSpeed = 12f;
-	public float	flySpeed = 6f;
-	public float	cameraSpeed = 15f;
 
 	public readonly float	flySpeed = 4f;
 	public readonly float	ascentSpeed = 8f;
-
-	public readonly float	cameraSpeed = 8f;
 
 	public readonly float	jumpForce = 8f;
 	public readonly float	gravityForce = -24f;
@@ -28,6 +24,9 @@ public class Player : MonoBehaviour
 
 	public readonly float	playerWidht = 0.3f;		//radius~~
 	public readonly float	playerHeight = 1.85f;
+
+	public readonly float	cameraSpeed = 4f;
+	public float			verticalRotation;
 
 	private Vector3	velocity;
 	public float	verticalSpeed;			//vertical Momentum
@@ -44,6 +43,8 @@ public class Player : MonoBehaviour
 	{
 		playerCamera = GameObject.Find("Player Camera").transform;
 		world = GameObject.Find("World").GetComponent<World>();
+
+		verticalRotation = 0;
 	}
 
 	private void	FixedUpdate()
@@ -53,9 +54,8 @@ public class Player : MonoBehaviour
 		if (isJumping)
 			Jump();
 
-		transform.Rotate(Vector3.up * mouseHorizontal * cameraSpeed);		// left/right cam movement
-		playerCamera.Rotate(Vector3.right * -mouseVertical * cameraSpeed);	//  up/down   cam movement
 		transform.Translate(velocity, Space.World);
+		TurnCamera();
 	}
 
 	private void	Update()
@@ -89,17 +89,6 @@ public class Player : MonoBehaviour
 			isFlying = true;
 		if (Input.GetButtonDown("Alt"))
 			isFlying = false;
-	}
-
-	private void	Jump()
-	{
-		if (isGrounded)
-		{
-			verticalSpeed = jumpForce;
-			if (isCroutching)
-				verticalSpeed *= 0.5f;			//REMOVE ???
-			isGrounded = false;
-		}
 	}
 
 	private void	CalculateVelocity()
@@ -150,6 +139,32 @@ public class Player : MonoBehaviour
 			velocity.y = checkFallSpeed(velocity.y);
 		else if (velocity.y > 0)
 			velocity.y = checkJumpSpeed(velocity.y);
+	}
+
+	private void TurnCamera()
+	{
+		transform.Rotate(Vector3.up * mouseHorizontal * cameraSpeed);		// left/right cam movement
+
+		verticalRotation += -mouseVertical * cameraSpeed;
+
+		//clamping camera
+		if (verticalRotation > 90f)
+			verticalRotation = 90f;
+		else if (verticalRotation < -90f)
+			verticalRotation = -90f;
+	
+		playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);	//  up/down   cam movement
+	}
+
+	private void	Jump()
+	{
+		if (isGrounded)
+		{
+			verticalSpeed = jumpForce;
+			if (isCroutching)
+				verticalSpeed *= 0.5f;			//REMOVE ???
+			isGrounded = false;
+		}
 	}
 
 	private float	checkFallSpeed (float fallSpeed)	//checkDownSpeed
