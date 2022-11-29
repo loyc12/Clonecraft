@@ -44,7 +44,7 @@ public static class	VoxelData
 		new Vector2(1.0f, 0.0f)		//3	: bottom right
 	};
 
-	public static readonly float[]		faceTint = new int[4]		//TO IMPLEMENT!!!
+	public static readonly float[,]		faceTint = new float[1,4]		//TO IMPLEMENT!!!
 	{
 		{1f, 0.9f, 0.8f, 0.7f},	//from lightest (top) to darkest (bottom)
 	};
