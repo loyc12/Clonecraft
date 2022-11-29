@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   m_Layer: 0
-  m_Name: PlayerCam
+  m_Name: Player Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -172,7 +172,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 80
   orthographic: 0
@@ -199,13 +199,63 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.62, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1171605233}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1171605231
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1171605233}
+  - component: {fileID: 1171605232}
+  m_Layer: 0
+  m_Name: Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1171605232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1171605231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e797fa1ecfc0bf541813e648c3003ca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  croutchSpeed: 3
+  walkSpeed: 6
+  sprintSpeed: 12
+  verticalRotation: 0
+  verticalSpeed: 0
+--- !u!4 &1171605233
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1171605231}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 963194228}
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1263873047
 GameObject:
@@ -236,14 +286,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6ba2587c4d1c540a6f3716183ba15b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 963194228}
+  seed: 120956
+  biome: {fileID: 11400000, guid: 48a3fd37212083b428cb417841dd3b49, type: 2}
+  player: {fileID: 1171605233}
   spawnPoint: {x: 0, y: 0, z: 0}
   material: {fileID: 2100000, guid: f3080fbdc5b2f0a489a03834293df144, type: 2}
   blocktypes:
   - blockName: Air
     isOpaque: 0
     isSolid: 0
-    isMonofaced: 1
+    isMonofaced: 0
     frontFaceTexture: 0
     backFaceTexture: 0
     topFaceTexture: 0
@@ -252,7 +304,7 @@ MonoBehaviour:
     rightFaceTexture: 0
   - blockName: Grass
     isOpaque: 1
-    isSolid: 0
+    isSolid: 1
     isMonofaced: 0
     frontFaceTexture: 50
     backFaceTexture: 50
@@ -262,7 +314,7 @@ MonoBehaviour:
     rightFaceTexture: 50
   - blockName: Dirt
     isOpaque: 1
-    isSolid: 0
+    isSolid: 1
     isMonofaced: 1
     frontFaceTexture: 48
     backFaceTexture: 0
@@ -272,7 +324,7 @@ MonoBehaviour:
     rightFaceTexture: 0
   - blockName: Stone
     isOpaque: 1
-    isSolid: 0
+    isSolid: 1
     isMonofaced: 1
     frontFaceTexture: 2
     backFaceTexture: 0
@@ -282,7 +334,7 @@ MonoBehaviour:
     rightFaceTexture: 0
   - blockName: Rock
     isOpaque: 1
-    isSolid: 0
+    isSolid: 1
     isMonofaced: 1
     frontFaceTexture: 1
     backFaceTexture: 0
@@ -292,7 +344,7 @@ MonoBehaviour:
     rightFaceTexture: 0
   - blockName: Bedrock
     isOpaque: 1
-    isSolid: 0
+    isSolid: 1
     isMonofaced: 1
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -302,9 +354,29 @@ MonoBehaviour:
     rightFaceTexture: 0
   - blockName: Marble
     isOpaque: 1
-    isSolid: 0
+    isSolid: 1
     isMonofaced: 1
     frontFaceTexture: 3
+    backFaceTexture: 0
+    topFaceTexture: 0
+    bottomFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+  - blockName: Sand
+    isOpaque: 1
+    isSolid: 1
+    isMonofaced: 1
+    frontFaceTexture: 34
+    backFaceTexture: 0
+    topFaceTexture: 0
+    bottomFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+  - blockName: Gravel
+    isOpaque: 1
+    isSolid: 1
+    isMonofaced: 1
+    frontFaceTexture: 33
     backFaceTexture: 0
     topFaceTexture: 0
     bottomFaceTexture: 0
@@ -318,10 +390,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1263873047}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

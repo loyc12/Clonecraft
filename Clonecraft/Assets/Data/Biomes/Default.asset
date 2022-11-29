@@ -21,8 +21,8 @@ MonoBehaviour:
     blockID: 0
     height: 32
     spread: 48
-    scale: 1
-    threshold: 0.45
+    scale: 2
+    threshold: 0.6
     offset: 0
   - nodeName: Small Cave
     blockID: 0
@@ -35,6 +35,6 @@ MonoBehaviour:
     blockID: 2
     height: 32
     spread: 64
-    scale: 3
+    scale: 0.33
     threshold: 0.55
     offset: 2
