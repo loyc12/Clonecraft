@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
 	public float	sprintSpeed = 12f;
 
 	public readonly float	flySpeed = 4f;
-	public readonly float	ascentSpeed = 8f;
+	public readonly float	ascentSpeed = 12f;
 
 	public readonly float	jumpForce = 8f;
 	public readonly float	gravityForce = -24f;
@@ -127,6 +127,8 @@ public class Player : MonoBehaviour
 				velocity.y = ascentSpeed;
 			else if (isCroutching)
 				velocity.y = -ascentSpeed;
+			if (isSprinting)
+				velocity.y *= sprintSpeed / 3f;
 		}
 		else
 			velocity.y += verticalSpeed;
@@ -143,7 +145,9 @@ public class Player : MonoBehaviour
 
 	private void TurnCamera()
 	{
-		transform.Rotate(Vector3.up * mouseHorizontal * cameraSpeed);		// left/right cam movement
+		transform.Rotate(Vector3.up * mouseHorizontal * cameraSpeed);					// left/right cam movement
+
+		//playerCamera.transform.Rotate(Vector3.right * -mouseVertical * cameraSpeed);	//  up/down   cam movement
 
 		verticalRotation += -mouseVertical * cameraSpeed;
 

@@ -9,18 +9,22 @@ public static class	Noise
 	//generalized 2D perlin noise
 	public static float	Get2DNoise(Vector2 pos, float offset, float scale)
 	{
+		float	mainScale = WorldData.ChunkSize * scale * WorldData.noiseScale;
+
 		return (Mathf.PerlinNoise(
-			(pos.x + 0.192837465f + offset) / (WorldData.ChunkSize * scale),
-			(pos.y + 0.192837465f + offset) / (WorldData.ChunkSize * scale)
+			(pos.x + 0.192837465f + offset) / mainScale,
+			(pos.y + 0.192837465f + offset) / mainScale
 			));
 	}
 
 	//generalized 3D perlin noise (INVERTED SCALE FACTOR)
 	public static bool	Get3DNoise(Vector3 pos, float offset, float scale, float threshold)
 	{
-		float x = (pos.x + 0.192837465f + (offset * offsetFactor)) / (WorldData.ChunkSize * scale);
-		float y = (pos.y + 0.192837465f + (offset * offsetFactor)) / (WorldData.ChunkSize * scale);
-		float z = (pos.z + 0.192837465f + (offset * offsetFactor)) / (WorldData.ChunkSize * scale);
+		float	mainScale = WorldData.ChunkSize * scale * WorldData.noiseScale;
+
+		float	x = (pos.x + 0.192837465f + (offset * offsetFactor)) / mainScale;
+		float	y = (pos.y + 0.192837465f + (offset * offsetFactor)) / mainScale;
+		float	z = (pos.z + 0.192837465f + (offset * offsetFactor)) / mainScale;
 
 		float	XY = Mathf.PerlinNoise(x, y);
 		float	XZ = Mathf.PerlinNoise(x, z);
@@ -37,9 +41,11 @@ public static class	Noise
 	//for ore and cave noise (INVERTED SCALE FACTOR)
 	public static bool	Get3DVeinNoise(Vector3 pos, Vein vein)
 	{
-		float x = (pos.x + 0.192837465f + vein.offset) * vein.scale / WorldData.ChunkSize;
-		float y = (pos.y + 0.192837465f + vein.offset) * vein.scale / WorldData.ChunkSize;
-		float z = (pos.z + 0.192837465f + vein.offset) * vein.scale / WorldData.ChunkSize;
+		float	mainScale = WorldData.ChunkSize * vein.scale * WorldData.noiseScale;
+
+		float	x = (pos.x + 0.192837465f + vein.offset) / mainScale;
+		float	y = (pos.y + 0.192837465f + vein.offset) / mainScale;
+		float	z = (pos.z + 0.192837465f + vein.offset) / mainScale;
 
 		float	XY = Mathf.PerlinNoise(x, y);
 		float	XZ = Mathf.PerlinNoise(x, z);

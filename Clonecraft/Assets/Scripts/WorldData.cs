@@ -9,22 +9,21 @@ using UnityEngine;
 public static class	WorldData
 {
 
-	public static readonly int	RenderDistance = 12;	//in chunk
+	public static readonly int	RenderDistance = 24;	//in chunk
 
-	public static readonly int	WorldSize = 12;			//in chunk
+	public static readonly int	WorldSize = 24;			//in chunk
 	public static int			WorldVoxelSize			//in voxel
 	{
 		get { return WorldSize * ChunkSize; }
 	}
 
-	public static readonly int	WorldHeight = 8;		//in chunk
+	public static readonly int	WorldHeight = 16;		//in chunk
 	public static int			WorldVoxelHeight		//in voxel
 	{
 		get { return WorldHeight * ChunkSize; }
 	}
 
-	//public static readonly int	VoxelSize = 1;			//in unit / unimplemented
-	public static readonly int	ChunkSize = 16;			//in voxel
+	public static readonly int	ChunkSize = 8;			//in voxel
 	public static readonly int	TextureAtlasSize = 16;	//in face
 	public static float			NormalizedTextureSize	//over 1
 	{
@@ -35,5 +34,10 @@ public static class	WorldData
 	public static int	SeaLevel 						//in voxel
 	{
 		get { return Mathf.FloorToInt(WorldVoxelHeight * 0.5f);}
+	}
+
+	public static float	noiseScale
+	{
+		get {return 16f / (float)ChunkSize;}
 	}
 }

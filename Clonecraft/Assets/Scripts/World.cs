@@ -34,7 +34,7 @@ public class	World : MonoBehaviour
 		GenerateWorld();
 	}
 
-	private void	Update()
+	private void	FixedUpdate()
 	{
 		playerChunk = GetChunkPos (player.position);
 		if (playerChunk.cx != playerLastChunk.cx || playerChunk.cy != playerLastChunk.cy || playerChunk.cz != playerLastChunk.cz)
