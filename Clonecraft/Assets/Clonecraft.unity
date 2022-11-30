@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6ba2587c4d1c540a6f3716183ba15b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 1
+  seed: 120956
   biome: {fileID: 11400000, guid: 48a3fd37212083b428cb417841dd3b49, type: 2}
   player: {fileID: 2078865657}
   spawnPoint: {x: 0, y: 0, z: 0}
@@ -392,14 +392,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e797fa1ecfc0bf541813e648c3003ca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  croutchSpeed: 3
-  walkSpeed: 6
-  sprintSpeed: 12
-  flySpeed: 6
-  cameraSpeed: 1
-  jumpForce: 6
-  gravityForce: -16
-  maxFallSpeed: -64
-  playerWidht: 0.3
-  playerHeight: 1.85
-  verticalSpeed: 0

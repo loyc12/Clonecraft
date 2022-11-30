@@ -6,15 +6,25 @@ public static class	Noise
 {
 	public static readonly int	offsetFactor = 1024;
 
-	//generalized 2D perlin noise
+	//generalized 2D perlin noise (INVERTED SCALE FACTOR)
 	public static float	Get2DNoise(Vector2 pos, float offset, float scale)
 	{
 		float	mainScale = WorldData.ChunkSize * scale * WorldData.noiseScale;
 
 		return (Mathf.PerlinNoise(
-			(pos.x + 0.192837465f + offset) / mainScale,
-			(pos.y + 0.192837465f + offset) / mainScale
+			(pos.x + 0.192837465f + (offset * offsetFactor)) / mainScale,
+			(pos.y + 0.192837465f + (offset * offsetFactor)) / mainScale
 			));
+	}
+
+	//terrain recursive 2D perlin noise (INVERTED SCALE FACTOR)
+	public static float	Get2DRecursiveNoise(Vector2 pos, float offset, float scale, float factor, int n)
+	{
+		float	noise = Get2DNoise(pos, (offset + n) * offsetFactor, scale * (n + 1));
+
+		if (n > 0)
+			noise += (0.5f - Get2DRecursiveNoise(pos, offset, scale / factor, factor, n - 1)) * (1f / factor);
+		return (noise);
 	}
 
 	//generalized 3D perlin noise (INVERTED SCALE FACTOR)
@@ -43,9 +53,9 @@ public static class	Noise
 	{
 		float	mainScale = WorldData.ChunkSize * vein.scale * WorldData.noiseScale;
 
-		float	x = (pos.x + 0.192837465f + vein.offset) / mainScale;
-		float	y = (pos.y + 0.192837465f + vein.offset) / mainScale;
-		float	z = (pos.z + 0.192837465f + vein.offset) / mainScale;
+		float	x = (pos.x + 0.192837465f + ((vein.offset - 0.5f) * offsetFactor)) / mainScale;
+		float	y = (pos.y + 0.192837465f + (vein.offset * offsetFactor)) / mainScale;
+		float	z = (pos.z + 0.192837465f + ((vein.offset + 0.5f) * offsetFactor)) / mainScale;
 
 		float	XY = Mathf.PerlinNoise(x, y);
 		float	XZ = Mathf.PerlinNoise(x, z);

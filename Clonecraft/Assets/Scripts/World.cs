@@ -24,8 +24,8 @@ public class	World : MonoBehaviour
 		Random.InitState(seed);
 	
 		spawnPoint = new Vector3(WorldData.WorldVoxelSize / 2f, WorldData.WorldVoxelHeight, WorldData.WorldVoxelSize / 2f);
-		//spawnPoint += new Vector3(0.5f, 0.1f, 0.5f);
 		spawnPoint.y = GetTerrainHeight(spawnPoint) + 0.1f;
+		spawnPoint -= new Vector3(0.5f, 0f, 0.5f);
 	
 		player.position = spawnPoint;
 		playerChunk = GetChunkPos(player.position);
@@ -160,7 +160,8 @@ public class	World : MonoBehaviour
 
 	float	GetTerrainHeight(Vector3 pos)
 	{
-		float	height = biome.maxElevation * Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale);
+		//float	height = biome.maxElevation * Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale);
+		float	height = biome.maxElevation * Noise.Get2DRecursiveNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale, 2f, 3);
 		
 		height += WorldData.RockLevel + biome.baseElevation;
 
@@ -185,6 +186,8 @@ public class	World : MonoBehaviour
 
 		if (y > height)
 			return (blockID);
+		else if (y > WorldData.SnowLevel)
+			blockID = BlockID.STONE;
 		else if (y > height - 3 && height < WorldData.SeaLevel - 2)
 			blockID = BlockID.GRAVEL;
 		else if (y > height - 3 && height < WorldData.SeaLevel + 1)

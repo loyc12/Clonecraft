@@ -11,9 +11,9 @@ public class Player : MonoBehaviour
 	private bool	isJumping;	//jumpRequest
 	private bool	isFlying;
 
-	public float	croutchSpeed = 3f;
-	public float	walkSpeed = 6f;
-	public float	sprintSpeed = 12f;
+	public readonly float	croutchSpeed = 3f;
+	public readonly float	walkSpeed = 6f;
+	public readonly float	sprintSpeed = 12f;
 
 	public readonly float	flySpeed = 4f;
 	public readonly float	ascentSpeed = 12f;
@@ -26,18 +26,19 @@ public class Player : MonoBehaviour
 	public readonly float	playerHeight = 1.85f;
 
 	public readonly float	cameraSpeed = 4f;
-	public float			verticalRotation;
+	private Transform		playerCamera;
+	private float			verticalRotation;
 
-	private Vector3	velocity;
-	public float	verticalSpeed;			//vertical Momentum
+	private float			mouseHorizontal;
+	private float			mouseVertical;
 
-	private Transform	playerCamera;
-	private World		world;
+	private Vector3			velocity;
+	private float			verticalSpeed;			//vertical Momentum
 
-	private float	rightward;		//Horizontal	(w s)
-	private float	frontward;		//Vertical		(a d)
-	private float	mouseHorizontal;
-	private float	mouseVertical;
+	private float			rightward;				//Horizontal	(w s)
+	private float			frontward;				//Vertical		(a d)
+
+	private World			world;
 
 	private void	Start()
 	{
@@ -89,6 +90,8 @@ public class Player : MonoBehaviour
 			isFlying = true;
 		if (Input.GetButtonDown("Alt"))
 			isFlying = false;
+		if (Input.GetButtonDown("TP"))
+			transform.Translate((Vector3.up * 8f), Space.World);
 	}
 
 	private void	CalculateVelocity()

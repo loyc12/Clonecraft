@@ -11,13 +11,13 @@ public static class	WorldData
 
 	public static readonly int	RenderDistance = 24;	//in chunk
 
-	public static readonly int	WorldSize = 24;			//in chunk
+	public static readonly int	WorldSize = 36;			//in chunk
 	public static int			WorldVoxelSize			//in voxel
 	{
 		get { return WorldSize * ChunkSize; }
 	}
 
-	public static readonly int	WorldHeight = 16;		//in chunk
+	public static readonly int	WorldHeight = 24;		//in chunk
 	public static int			WorldVoxelHeight		//in voxel
 	{
 		get { return WorldHeight * ChunkSize; }
@@ -34,6 +34,10 @@ public static class	WorldData
 	public static int	SeaLevel 						//in voxel
 	{
 		get { return Mathf.FloorToInt(WorldVoxelHeight * 0.5f);}
+	}
+	public static int	SnowLevel 						//in voxel
+	{
+		get { return Mathf.FloorToInt(WorldVoxelHeight * 0.80f);}
 	}
 
 	public static float	noiseScale

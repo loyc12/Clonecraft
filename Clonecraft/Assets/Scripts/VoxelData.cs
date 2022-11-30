@@ -48,5 +48,4 @@ public static class	VoxelData
 	{
 		{1f, 0.9f, 0.8f, 0.7f}	//from lightest (top) to darkest (bottom)
 	};
-	*/
 }
