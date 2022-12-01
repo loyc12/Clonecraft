@@ -8,7 +8,7 @@ public class	World : MonoBehaviour
 	public BiomeAttributes	biome;
 
 	public Transform		player;
-	public Vector3 			spawnPoint;
+	public Coords 			spawnPoint;
 	public Coords			playerChunk;
 	public Coords			playerLastChunk;
 
@@ -23,11 +23,10 @@ public class	World : MonoBehaviour
 	{
 		Random.InitState(seed);
 	
-		spawnPoint = new Vector3(WorldData.WorldVoxelSize / 2f, WorldData.WorldVoxelHeight, WorldData.WorldVoxelSize / 2f);
-		spawnPoint.y = GetTerrainHeight(spawnPoint) + 0.1f;
-		spawnPoint -= new Vector3(0.5f, 0f, 0.5f);
+		spawnPoint = new Coords(Mathf.FloorToInt(WorldData.WorldVoxelSize / 2f), 0, Mathf.FloorToInt(WorldData.WorldVoxelSize / 2f));
+		spawnPoint.y = GetTerrainHeight(spawnPoint);
 	
-		player.position = spawnPoint;
+		player.position = new Vector3(spawnPoint.x - 0.5f, spawnPoint.y + 0.1f, spawnPoint.z - 0.5f);
 		playerChunk = GetChunkPos(player.position);
 		playerLastChunk = GetChunkPos(player.position);
 
@@ -66,11 +65,11 @@ public class	World : MonoBehaviour
 	}
 
 	//finds the chunk of a given voxel pos
-	Coords GetChunkPos (Vector3 pos)
+	Coords GetChunkPos (Vector3 vPos)
 	{
-		int x = Mathf.FloorToInt(pos.x / WorldData.ChunkSize);
-		int y = Mathf.FloorToInt(pos.y / WorldData.ChunkSize);
-		int z = Mathf.FloorToInt(pos.z / WorldData.ChunkSize);
+		int x = Mathf.FloorToInt(vPos.x / WorldData.ChunkSize);
+		int y = Mathf.FloorToInt(vPos.y / WorldData.ChunkSize);
+		int z = Mathf.FloorToInt(vPos.z / WorldData.ChunkSize);
 
 		return (new Coords (x, y, z));
 	}
@@ -147,35 +146,35 @@ public class	World : MonoBehaviour
 	}
 
 	//returns true if the given voxel pos is inside the worldgen limits
-	bool	IsVoxelInWorld(Vector3 pos)
+	bool	IsVoxelInWorld(Coords worldPos)
 	{
-		if (pos.x < 0 || WorldData.WorldVoxelSize <= pos.x)
+		if (worldPos.x < 0 || WorldData.WorldVoxelSize <= worldPos.x)
 			return (false);
-		if (pos.y < 0 || WorldData.WorldVoxelHeight <= pos.y)
+		if (worldPos.y < 0 || WorldData.WorldVoxelHeight <= worldPos.y)
 			return (false);
-		if (pos.z < 0 || WorldData.WorldVoxelSize <= pos.z)
+		if (worldPos.z < 0 || WorldData.WorldVoxelSize <= worldPos.z)
 			return (false);
 		return (true);
 	}
 
-	float	GetTerrainHeight(Vector3 pos)
+	int	GetTerrainHeight(Coords worldPos)
 	{
-		float	height = Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale);
-		//float	height = Noise.Get2DRecursiveNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale, 2f, 2);
+		float	height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
+		//float	height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 2);
 		
 		height *= biome.maxElevation;
 		height += biome.baseElevation;
 
-		return (height);
+		return (Mathf.FloorToInt(height));
 	}
 
-	public BlockID GetBlockID(Vector3 pos)		//GetVoxel
+	public BlockID GetBlockID(Coords worldPos)		//GetVoxel
 	{
-		int	y = Mathf.FloorToInt(pos.y);
+		int	y = worldPos.y;
 		BlockID blockID = BlockID.AIR;
 
 		/* === ABSOLUTE PASS === */
-		if (!IsVoxelInWorld(pos))
+		if (!IsVoxelInWorld(worldPos))
 			return (BlockID.AIR);
 
 		else if (y == 0)
@@ -183,7 +182,7 @@ public class	World : MonoBehaviour
 
 
 		/* === BASIC TERRAIN PASS === */
-		int	height = Mathf.FloorToInt(GetTerrainHeight(pos));
+		int	height = GetTerrainHeight(worldPos);
 
 		if (y > height)
 			return (blockID);
@@ -191,7 +190,7 @@ public class	World : MonoBehaviour
 			blockID = BlockID.STONE;
 		else if (y > height - 3 && height < WorldData.SeaLevel - 2)
 			blockID = BlockID.GRAVEL;
-		else if (y > height - 3 && height < WorldData.SeaLevel + 1)
+		else if (y > height - 3 && height < WorldData.SeaLevel + 2)
 			blockID = BlockID.SAND;
 		else if (y == height)
 			blockID = BlockID.GRASS;
@@ -208,7 +207,7 @@ public class	World : MonoBehaviour
 			foreach (Vein vein in biome.veins)
 			{
 				if (y >= vein.height - vein.spread && y <= vein.height + vein.spread)	//TEMP
-					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(pos, vein))
+					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(worldPos.ToVector3(), vein))
 						blockID = (BlockID)vein.blockID;
 			}
 		}
@@ -227,7 +226,7 @@ public class	World : MonoBehaviour
 		int y = Mathf.FloorToInt(_y);
 		int z = Mathf.FloorToInt(_z);
 
-		if (!IsVoxelInWorld(new Vector3(x, y, z)))
+		if (!IsVoxelInWorld(new Coords(x, y, z)))
 			return (false);
 
 		int xChunk = x / WorldData.ChunkSize;

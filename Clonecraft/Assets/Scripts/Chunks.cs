@@ -47,7 +47,8 @@ public class	Chunk
 			{
 				for (int z = 0; z < WorldData.ChunkSize; z++)
 				{
-					voxelMap[x, y, z] = (byte)world.GetBlockID(new Vector3(x, y, z) + chunkBasePos);
+					Coords blockPos = new Coords(x, y, z);
+					voxelMap[x, y, z] = (byte)world.GetBlockID(blockPos.AddPos(chunkRealPos));
 				}
 			}
 		}
@@ -66,15 +67,29 @@ public class	Chunk
 	}
 
 	//returns true of the given voxel is not opaque
-	bool	CheckVoxelTransparency (Vector3 pos)
+	bool	CheckVoxelTransparency (Coords blockPos)
 	{
-		int	x = Mathf.FloorToInt(pos.x);
-		int	y = Mathf.FloorToInt(pos.y);
-		int	z = Mathf.FloorToInt(pos.z);
+		int	x = blockPos.x;
+		int	y = blockPos.y;
+		int	z = blockPos.z;
 
 		if (!IsVoxelInChunk(x, y, z))
-			return (world.blocktypes [(int)world.GetBlockID(pos + chunkBasePos)].isOpaque);
+			return (world.blocktypes [(int)world.GetBlockID(blockPos.AddPos(chunkRealPos))].isOpaque);
 		return (world.blocktypes [voxelMap [x, y, z]].isOpaque);
+	}
+
+	//the current chunk's pos
+	public Coords chunkRealPos
+	{
+		get
+		{
+			int	x = Mathf.FloorToInt(chunkObject.transform.position.x);
+			int	y = Mathf.FloorToInt(chunkObject.transform.position.y);
+			int	z = Mathf.FloorToInt(chunkObject.transform.position.z);
+
+			return (new Coords(x, y, z));
+			
+		}
 	}
 
 	//wheter the chunk is loaded or not
@@ -82,12 +97,6 @@ public class	Chunk
 	{
 		get { return chunkObject.activeSelf; }
 		set { chunkObject.SetActive(value); }
-	}
-
-	//the current chunk's pos
-	public Vector3 chunkBasePos
-	{
-		get { return chunkObject.transform.position; }
 	}
 
 	//creates the chunk's mesh
@@ -99,30 +108,31 @@ public class	Chunk
 			{
 				for (int z = 0; z < WorldData.ChunkSize; z++)
 				{
-					AddVoxelDataToChunk(new Vector3(x, y, z));
+					AddVoxelDataToChunk(new Coords(x, y, z));
 				}
 			}
 		}
 	}
 
 	//adds the triangels and textures of a single block to the chunk mesh
-	void	AddVoxelDataToChunk(Vector3 pos)
+	void	AddVoxelDataToChunk(Coords blockPos)
 	{
-		byte blockID = voxelMap [Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z)];
+		byte blockID = voxelMap [blockPos.x, blockPos.y, blockPos.z];
 
 		if (blockID > 0)
 		{
-			for (int face = 0; face < 6; face++)
+			for (int faceIndex = 0; faceIndex < 6; faceIndex++)
 			{
-				if (!CheckVoxelTransparency(pos + VoxelData.neighbors[face]))
+				Vector3 vPos = blockPos.ToVector3();
+				if (!CheckVoxelTransparency(blockPos.AddPos(VoxelData.neighbors[faceIndex])))
 				{
 					AddQuad (
-						pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 0]],
-						pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 1]],
-						pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 2]],
-						pos + VoxelData.voxelVerts [VoxelData.voxelQuads [face, 3]]
+						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 0]],
+						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 1]],
+						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 2]],
+						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 3]]
 					);
-					AddTexture(world.blocktypes[blockID].GetTextureId(face));
+					AddTexture(world.blocktypes[blockID].GetTextureId(faceIndex));
 				}
 			}
 		}

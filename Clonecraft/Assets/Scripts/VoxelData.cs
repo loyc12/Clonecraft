@@ -6,24 +6,24 @@ public static class	VoxelData
 {
 	public static readonly Vector3[]	voxelVerts = new Vector3[8]
 	{
-		new Vector3(-0f, -0f, -0f),	//0
-		new Vector3( 1f, -0f, -0f),	//1
-		new Vector3( 1f,  1f, -0f),	//2
-		new Vector3(-0f,  1f, -0f),	//3
-		new Vector3(-0f, -0f,  1f),	//4
-		new Vector3( 1f, -0f,  1f),	//5
-		new Vector3( 1f,  1f,  1f),	//6
-		new Vector3(-0f,  1f,  1f)	//7
+		new Vector3(0f, 0f, 0f),	//0
+		new Vector3(1f, 0f, 0f),	//1
+		new Vector3(1f, 1f, 0f),	//2
+		new Vector3(0f, 1f, 0f),	//3
+		new Vector3(0f, 0f, 1f),	//4
+		new Vector3(1f, 0f, 1f),	//5
+		new Vector3(1f, 1f, 1f),	//6
+		new Vector3(0f, 1f, 1f)		//7
 	};
 
-	public static readonly Vector3[]	neighbors = new Vector3[6]
+	public static readonly Coords[]	neighbors = new Coords[6]
 	{
-		new Vector3(0.0f, 0.0f, -1.0f),	//0 : front neighbor
-		new Vector3(0.0f, 0.0f,  1.0f),	//1 : back neighbor
-		new Vector3(0.0f,  1.0f, 0.0f),	//2 : top neighbor
-		new Vector3(0.0f, -1.0f, 0.0f),	//3 : bottom neighbor
-		new Vector3(-1.0f, 0.0f, 0.0f),	//4 : left neighbor
-		new Vector3( 1.0f, 0.0f, 0.0f)	//5 : right neighbor
+		new Coords( 0,  0, -1),	//0 : front neighbor
+		new Coords( 0,  0,  1),	//1 : back neighbor
+		new Coords( 0,  1,  0),	//2 : top neighbor
+		new Coords( 0, -1,  0),	//3 : bottom neighbor
+		new Coords(-1,  0,  0),	//4 : left neighbor
+		new Coords( 1,  0,  0),	//5 : right neighbor
 	};
 
 	public static readonly int[,]		voxelQuads = new int[6,4]

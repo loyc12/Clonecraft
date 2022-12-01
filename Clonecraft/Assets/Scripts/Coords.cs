@@ -33,5 +33,24 @@ public class Coords
 
 		return (Mathf.Sqrt(dsquare));
 	}
+
+	public Coords	AddPos(Coords pos)
+	{
+		int	x = pos.x + this.x;
+		int	y = pos.y + this.y;
+		int	z = pos.z + this.z;
+
+		return (new Coords(x, y, z));
+	}
+
+	public Vector3	ToVector3()
+	{
+		return (new Vector3(this.x, this.y, this.z));
+	}
+
+	public Vector2	ToVector2()
+	{
+		return (new Vector2(this.x, this.z));
+	}
 }
 
