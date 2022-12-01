@@ -124,7 +124,7 @@ public class	Chunk
 		Coords blockPos = new Coords(worldPos.SubPos(chunkPos));
 		
 		if (!IsBlockInChunk(blockPos))
-			return (world.GetBlockID(worldPos));
+			return (world.GetBlockID(worldPos));					//NORMALLY IS SUPPOSED TO TAKE THE DATA FROM ANOTHER CHUNK
 			//return (BlockID.AIR);
 
 		return voxelMap[blockPos.x, blockPos.y, blockPos.z];
