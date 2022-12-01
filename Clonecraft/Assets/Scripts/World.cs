@@ -15,19 +15,19 @@ public class	World : MonoBehaviour
 
 	Chunk[,,]				region = new Chunk[WorldData.WorldChunkSize, WorldData.WorldChunkHeight, WorldData.WorldChunkSize];	//Chunks
 
-	List<Coords>			activeChunks = new List<Coords>();
+	List<Coords>			loadedChunks = new List<Coords>();
 	public Coords			playerChunk;
 	public Coords			playerLastChunk;
 
-	List<Coords>			chunkQueue = new List<Coords>();	//chunksToCreate
-	private bool			isCreatingChunks;
+	List<Coords>			queuedChunks = new List<Coords>();		//chunksToCreate
+	private bool			isLoadingChunks;
 
 	private void	Start()
 	{
 		Random.InitState(seed);
 
-		GenerateWorld();
 		SpawnPlayer();
+		GenerateSpawn();
 	}
 
 	private void	Update()
@@ -35,47 +35,21 @@ public class	World : MonoBehaviour
 		playerChunk = FindChunkPos(player.position);
 	
 		if (!playerChunk.SamePos(playerLastChunk))
-		{
-			playerLastChunk = playerChunk;
-			RetractRenderDistance();
-			ExtendRenderDistance();
-		}
+			ApplyRenderDistance();
 
-		if (chunkQueue.Count > 0 && !isCreatingChunks)
-			StartCoroutine("CreateChunk");
+		if (queuedChunks.Count > 0 && !isLoadingChunks)
+			StartCoroutine("LoadChunks");
 
 	}
 
-	IEnumerator CreateChunk()
-	{
-		isCreatingChunks = true;
-
-		while (chunkQueue.Count > 0)
-		{
-			if (!IsChunkInRenderDistance(chunkQueue[0]))
-			{
-				chunkQueue.RemoveAt(0);
-				continue;
-			}
-
-			region [chunkQueue[0].x, chunkQueue[0].y, chunkQueue[0].z].Load();
-			chunkQueue.RemoveAt(0);
-
-			yield return (null);
-		}
-
-
-		isCreatingChunks = false;
-	}
-
-	//generate the chunks inside the render distance (square) at spawn
-	void	GenerateWorld()
+	//generate the chunks inside the initial render distance (square) (at spawn)
+	void	GenerateSpawn()
 	{
 		int	center = Mathf.FloorToInt(WorldData.WorldChunkSize / 2f);
 
-		for (int x = center - WorldData.RenderDistance; x < center + WorldData.RenderDistance; x++)
+		for (int y = 0; y < WorldData.WorldChunkHeight; y++)
 		{
-			for (int y = 0; y < WorldData.WorldChunkHeight; y++)
+			for (int x = center - WorldData.RenderDistance; x < center + WorldData.RenderDistance; x++)
 			{
 				for (int z = center - WorldData.RenderDistance; z < center + WorldData.RenderDistance; z++)
 				{
@@ -83,8 +57,56 @@ public class	World : MonoBehaviour
 
 					if (IsChunkInWorld(chunkPos))
 					{
-						region[x, y, z] = new Chunk(chunkPos, this, true);
-						activeChunks.Add(chunkPos);
+						if (IsChunkInRenderDistance(chunkPos))
+						{
+							region[x, y, z] = new Chunk(chunkPos, this, true);
+							region[x, y, z].Load();
+							loadedChunks.Add(chunkPos);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//informs LoadChunks about which chunks to create, activate or deactivate based on rander distance
+	void	ApplyRenderDistance()
+	{
+		playerLastChunk = playerChunk;
+
+		foreach (Coords chunkPos in loadedChunks)
+		{
+			if (IsChunkInWorld(chunkPos) && !IsChunkInRenderDistance(chunkPos))
+				FindChunk(chunkPos).Unload();
+		}
+
+		for (int y = 0; y < WorldData.WorldChunkHeight; y++)
+		{
+			for (int x = playerChunk.x - WorldData.RenderDistance; x <= playerChunk.x + WorldData.RenderDistance; x++)
+			{
+				for (int z = playerChunk.z - WorldData.RenderDistance; z <= playerChunk.z + WorldData.RenderDistance; z++)
+				{
+					Coords	chunkPos = new Coords(x, y, z);
+
+					if (IsChunkInWorld(chunkPos) && IsChunkInRenderDistance(chunkPos))
+					{
+						//if chunk doesn't exist, create it
+						if (region[x, y, z] == null)
+						{
+							region[x, y, z] = new Chunk(chunkPos, this, false);
+							queuedChunks.Add(chunkPos);
+						}
+						//if chunk isn't generated, generate it
+						else if (!region[x, y, z].isGenerated)
+						{
+							queuedChunks.Add(chunkPos);
+						}
+						//if chunk isn't loaded, load it
+						else if (!region[x, y, z].isLoaded)
+						{
+							region[x, y, z].Load();
+							loadedChunks.Add(chunkPos);
+						}
 					}
 				}
 			}
@@ -100,6 +122,51 @@ public class	World : MonoBehaviour
 		player.position = new Vector3(spawnPoint.x - 0.5f, spawnPoint.y + 0.1f, spawnPoint.z - 0.5f);
 
 		playerLastChunk = FindChunkPos(player.position);
+		playerChunk = FindChunkPos(player.position);
+	}
+
+	IEnumerator LoadChunks()	//CreateChunk
+	{
+		isLoadingChunks = true;
+
+		while (0 < queuedChunks.Count)
+		{
+			Chunk	targetChunk = FindChunk(queuedChunks[0]);
+
+			queuedChunks.RemoveAt(0);
+
+			if (targetChunk.isGenerated)
+				LoadOrUnload(targetChunk);
+			else
+			{
+				if (!IsChunkInTooFar(targetChunk.chunkPos, 3f))
+				{
+					targetChunk.Generate();
+
+					LoadOrUnload(targetChunk);
+
+					yield return (null);
+				}
+			}
+		}
+
+		isLoadingChunks = false;
+	}
+
+	void	LoadOrUnload(Chunk targetChunk)
+	{
+		Coords	chunkPos = targetChunk.chunkPos;
+
+		if (IsChunkInRenderDistance(chunkPos))
+		{
+			targetChunk.Load();
+			loadedChunks.Add(chunkPos);
+		}
+		else
+		{
+			targetChunk.Unload();
+			loadedChunks.Remove(chunkPos);
+		}
 	}
 
 	//finds the chunk of a given voxel pos
@@ -112,60 +179,25 @@ public class	World : MonoBehaviour
 		return (new Coords (x, y, z));
 	}
 
-	//creates or reactivates chunks inside the player's render distance
-	void	ExtendRenderDistance()
-	{
-		for (int x = playerChunk.x - WorldData.RenderDistance; x <= playerChunk.x + WorldData.RenderDistance; x++)
-		{
-			for (int z = playerChunk.z - WorldData.RenderDistance; z <= playerChunk.z + WorldData.RenderDistance; z++)
-			{
-				for (int y = 0; y < WorldData.WorldChunkHeight; y++)
-				{
-					Coords	chunkPos = new Coords(x, y, z);
-
-					if (IsChunkInWorld(chunkPos) && IsChunkInRenderDistance(chunkPos))
-					{
-						if (region[x, y, z] == null)
-						{
-							region[x, y, z] = new Chunk(chunkPos, this, false);
-							chunkQueue.Add(chunkPos);
-						}
-						else if (!region[x, y, z].isActive)
-						{
-							region[x, y, z].isActive = true;
-						}
-						activeChunks.Add(chunkPos);
-
-					}
-				}
-			}
-		}
-	}
-
-	//deactivates chunks outside the player's render distance
-	void	RetractRenderDistance()
-	{
-		for (int i = 0; i < activeChunks.Count; i++)
-		{
-			Coords	chunkPos = activeChunks[i];
-			if (!IsChunkInRenderDistance(chunkPos))
-			{
-				FindChunk(chunkPos).isActive = false;
-				activeChunks.Remove(chunkPos);
-				i--;
-			}
-		}
-	}
-
-	//returns true if the given pos is inside the player's render distance
+	//returns true if the given pos is inside the player's render distance (sphere)
 	bool	IsChunkInRenderDistance(Coords chunkPos)
 	{
-
-		if (!IsChunkInWorld(chunkPos) || WorldData.RenderDistance < playerChunk.CubeDistance(chunkPos))
+		if (!IsChunkInWorld(chunkPos) || IsChunkInTooFar(chunkPos, 1f))
 			return (false);
+
 		if (WorldData.RenderDistance < playerChunk.SphereDistance(chunkPos))
 			return (false);
+
 		return (true);
+	}
+
+	//returns true if the given pos further than factor * render distance (cube)
+	bool	IsChunkInTooFar(Coords chunkPos, float factor)
+	{
+		if (!IsChunkInWorld(chunkPos) || factor * WorldData.RenderDistance < playerChunk.CubeDistance(chunkPos))
+			return (true);
+
+		return (false);
 	}
 
 	//returns true if the given chunk pos is inside the worldgen limits
@@ -195,7 +227,7 @@ public class	World : MonoBehaviour
 	int	GetTerrainHeight(Coords worldPos)
 	{
 		float	height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
-		//float	height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 2);
+		//float	height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 3);
 		
 		height *= biome.maxElevation;
 		height += biome.baseElevation;
@@ -236,7 +268,7 @@ public class	World : MonoBehaviour
 		else
 			blockID = BlockID.STONE;
 
-		/* === ORE TERRAIN PASS === */
+		/* === ORE TERRAIN PASS === *//*
 		if (blockID == BlockID.STONE || blockID == BlockID.DIRT || blockID == BlockID.GRASS)
 		{
 			foreach (Vein vein in biome.veins)
@@ -245,7 +277,7 @@ public class	World : MonoBehaviour
 					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(worldPos.ToVector3(), vein))
 						blockID = (BlockID)vein.blockID;
 			}
-		}
+		}*/
 
 		/* === FINAL PASS === */
 		if (y < WorldData.RockLevel && blockID == BlockID.STONE)
@@ -254,7 +286,7 @@ public class	World : MonoBehaviour
 		return (blockID);
 	}
 
-	public bool	CheckForVoxel(Coords worldPos)
+	public bool	CheckForOpacity(Coords worldPos)
 	{
 		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.WorldChunkSize));
 
@@ -263,16 +295,42 @@ public class	World : MonoBehaviour
 
 		Chunk	targetChunk = FindChunk(chunkPos);
 
+		if(targetChunk == null)
+			return (false);
+
+		if (targetChunk.isPopulated && targetChunk.isEmpty)
+			return (false);
+
 		if (targetChunk != null && targetChunk.isPopulated)
-			return (blocktypes[targetChunk.FindBlockPos(worldPos)].isOpaque);
+			return (blocktypes[(int)targetChunk.FindBlockID(worldPos)].isOpaque);
 
 		return (blocktypes[(int)GetBlockID(worldPos)].isOpaque);
+	}
+
+	public bool	CheckForSolidity(Coords worldPos)
+	{
+		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.WorldChunkSize));
+
+		if (!IsChunkInWorld(worldPos))
+			return (false);
+
+		Chunk	targetChunk = FindChunk(chunkPos);
+
+		if (targetChunk.isEmpty)
+			return (false);
+
+		if (targetChunk != null && targetChunk.isPopulated)
+			return (blocktypes[(int)targetChunk.FindBlockID(worldPos)].isSolid);
+
+		return (blocktypes[(int)GetBlockID(worldPos)].isSolid);
 	}
 
 	public Chunk	FindChunk(Coords chunkPos)
 	{
 		return (region[chunkPos.x, chunkPos.y, chunkPos.z]);
 	}
+
+	
 
 }
 
@@ -295,6 +353,6 @@ public class	World : MonoBehaviour
 		mixPos.y -= chunkPos.y * WorldData.ChunkSize;
 		mixPos.z -= chunkPos.z * WorldData.ChunkSize;
 
-		return (blocktypes [region [chunkPos.x, chunkPos.y, chunkPos.z].voxelMap [mixPos.x, mixPos.y, mixPos.z]].isSolid);
+		return (blocktypes (int)[FindChunk(chunkPos).voxelMap [mixPos.x, mixPos.y, mixPos.z]].isSolid);
 	}
 */

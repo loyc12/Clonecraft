@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
 	public readonly float	walkSpeed = 6f;
 	public readonly float	sprintSpeed = 12f;
 
-	public readonly float	flySpeed = 4f;
+	public readonly float	flySpeed = 8f;
 	public readonly float	ascentSpeed = 12f;
 
 	public readonly float	jumpForce = 8f;
@@ -44,6 +44,8 @@ public class Player : MonoBehaviour
 	{
 		playerCamera = GameObject.Find("Player Camera").transform;
 		world = GameObject.Find("World").GetComponent<World>();
+
+		isFlying = true;
 
 		verticalRotation = 0;
 	}
@@ -91,7 +93,7 @@ public class Player : MonoBehaviour
 		if (Input.GetButtonDown("Alt"))
 			isFlying = false;
 		if (Input.GetButtonDown("TP"))
-			transform.Translate((Vector3.up * 8f), Space.World);
+			transform.Translate((Vector3.up * WorldData.ChunkSize), Space.World);
 	}
 
 	private void	CalculateVelocity()
@@ -176,21 +178,25 @@ public class Player : MonoBehaviour
 
 	private float	checkFallSpeed (float fallSpeed)	//checkDownSpeed
 	{
-		if (world.CheckForVoxel(new Coords(transform.position.x + playerWidht,
-			transform.position.y + fallSpeed,
-			transform.position.z + playerWidht)) ||
+		if (world.CheckForSolidity(new Coords(
+				transform.position.x + playerWidht,
+				transform.position.y + fallSpeed,
+				transform.position.z + playerWidht)) ||
 
-			world.CheckForVoxel(new Coords(transform.position.x - playerWidht,
-			transform.position.y + fallSpeed,
-			transform.position.z + playerWidht)) ||
+			world.CheckForSolidity(new Coords(
+				transform.position.x - playerWidht,
+				transform.position.y + fallSpeed,
+				transform.position.z + playerWidht)) ||
 
-			world.CheckForVoxel(new Coords(transform.position.x + playerWidht,
-			transform.position.y + fallSpeed,
-			transform.position.z - playerWidht)) ||
+			world.CheckForSolidity(new Coords(
+				transform.position.x + playerWidht,
+				transform.position.y + fallSpeed,
+				transform.position.z - playerWidht)) ||
 
-			world.CheckForVoxel(new Coords(transform.position.x - playerWidht, 
-			transform.position.y + fallSpeed,
-			transform.position.z - playerWidht)))
+			world.CheckForSolidity(new Coords(
+				transform.position.x - playerWidht, 
+				transform.position.y + fallSpeed,
+				transform.position.z - playerWidht)))
 		{
 			isGrounded = true;
 			return (0);
@@ -198,28 +204,30 @@ public class Player : MonoBehaviour
 
 		isGrounded = false;
 
-		//if (fallSpeed < maxFallSpeed * Time.fixedDeltaTime)
-			//return (maxFallSpeed * Time.fixedDeltaTime);
 		return (fallSpeed);
 	}
 
 	private float	checkJumpSpeed (float jumpSpeed)	//checkDownSpeed
 	{
-		if (world.CheckForVoxel(new Coords(transform.position.x + playerWidht,
-			transform.position.y + playerHeight + jumpSpeed,
-			transform.position.z + playerWidht)) ||
+		if (world.CheckForSolidity(new Coords(
+				transform.position.x + playerWidht,
+				transform.position.y + playerHeight + jumpSpeed,
+				transform.position.z + playerWidht)) ||
 
-			world.CheckForVoxel(new Coords(transform.position.x - playerWidht,
-			transform.position.y + playerHeight + jumpSpeed,
-			transform.position.z + playerWidht)) ||
+			world.CheckForSolidity(new Coords(
+				transform.position.x - playerWidht,
+				transform.position.y + playerHeight + jumpSpeed,
+				transform.position.z + playerWidht)) ||
 
-			world.CheckForVoxel(new Coords(transform.position.x + playerWidht,
-			transform.position.y + playerHeight + jumpSpeed,
-			transform.position.z - playerWidht)) ||
+			world.CheckForSolidity(new Coords(
+				transform.position.x + playerWidht,
+				transform.position.y + playerHeight + jumpSpeed,
+				transform.position.z - playerWidht)) ||
 
-			world.CheckForVoxel(new Coords(transform.position.x - playerWidht, 
-			transform.position.y + playerHeight + jumpSpeed,
-			transform.position.z - playerWidht)))
+			world.CheckForSolidity(new Coords(
+				transform.position.x - playerWidht, 
+				transform.position.y + playerHeight + jumpSpeed,
+				transform.position.z - playerWidht)))
 		{
 			return (0);
 		}
@@ -231,11 +239,13 @@ public class Player : MonoBehaviour
 	{
 		get
 		{
-			if (world.CheckForVoxel(new Coords(transform.position.x,
-				transform.position.y, transform.position.z + playerWidht)) ||
-
-				world.CheckForVoxel(new Coords(transform.position.x,
-				transform.position.y + 1f, transform.position.z + playerWidht)))
+			if (world.CheckForSolidity(new Coords(
+					transform.position.x, transform.position.y,
+					transform.position.z + playerWidht))
+				||
+				world.CheckForSolidity(new Coords(
+					transform.position.x, transform.position.y + 1f,
+					transform.position.z + playerWidht)))
 			{
 				return (true);
 			}
@@ -247,11 +257,13 @@ public class Player : MonoBehaviour
 	{
 		get
 		{
-			if (world.CheckForVoxel(new Coords(transform.position.x,
-				transform.position.y, transform.position.z - playerWidht)) ||
-
-				world.CheckForVoxel(new Coords(transform.position.x,
-				transform.position.y + 1f, transform.position.z - playerWidht)))
+			if (world.CheckForSolidity(new Coords(
+					transform.position.x, transform.position.y,
+					transform.position.z - playerWidht))
+				||
+				world.CheckForSolidity(new Coords(
+					transform.position.x, transform.position.y + 1f,
+					transform.position.z - playerWidht)))
 			{
 				return (true);
 			}
@@ -263,11 +275,13 @@ public class Player : MonoBehaviour
 	{
 		get
 		{
-			if (world.CheckForVoxel(new Coords(transform.position.x + playerWidht,
-				transform.position.y, transform.position.z)) ||
-
-				world.CheckForVoxel(new Coords(transform.position.x + playerWidht,
-				transform.position.y + 1f, transform.position.z)))
+			if (world.CheckForSolidity(new Coords(
+					transform.position.x + playerWidht,
+					transform.position.y, transform.position.z))
+				||
+				world.CheckForSolidity(new Coords(
+					transform.position.x + playerWidht,
+					transform.position.y + 1f, transform.position.z)))
 			{
 				return (true);
 			}
@@ -279,11 +293,13 @@ public class Player : MonoBehaviour
 	{
 		get
 		{
-			if (world.CheckForVoxel(new Coords(transform.position.x - playerWidht,
-				transform.position.y, transform.position.z)) ||
-
-				world.CheckForVoxel(new Coords(transform.position.x - playerWidht,
-				transform.position.y + 1f, transform.position.z)))
+			if (world.CheckForSolidity(new Coords(
+					transform.position.x - playerWidht,
+					transform.position.y, transform.position.z))
+				||
+				world.CheckForSolidity(new Coords(
+					transform.position.x - playerWidht,
+					transform.position.y + 1f, transform.position.z)))
 			{
 				return (true);
 			}

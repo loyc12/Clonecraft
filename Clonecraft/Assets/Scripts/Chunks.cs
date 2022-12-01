@@ -14,25 +14,27 @@ public class	Chunk
 	List<int> 			triangles = new List<int>();
 	List<Vector2>		uvs = new List<Vector2>();
 
-	public byte[,,]		voxelMap = new byte[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
+	public BlockID[,,]		voxelMap = new BlockID[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
 
 	World				world;
 
-	private bool		_isActive;
+	private bool		_isLoaded = false;
+	public bool			isGenerated = false;
 	public	bool		isPopulated = false;
+	public	bool		isEmpty = true;
 
 	//chunk fabricator
 	public	Chunk (Coords _chunkPos, World _world, bool forceLoad)
 	{
 		chunkPos = _chunkPos;
 		world = _world;
-		isActive = true;
+		isLoaded = true;
 
 		if (forceLoad)
-			Load();
+			Generate();
 	}
 
-	public void Load()
+	public void Generate()	//Init
 	{
 		chunkObject = new GameObject();
 		meshFilter = chunkObject.AddComponent<MeshFilter>();
@@ -44,8 +46,24 @@ public class	Chunk
 		chunkObject.name = "Chunk " + chunkPos.x + ":" + chunkPos.y + ":" + chunkPos.z;
 
 		PopulateVoxelMap();
-		LoadChunkMesh();
-		CreateMesh();
+		if (isPopulated && !isEmpty)
+		{
+			LoadChunkMesh();
+			BuildChunkMesh();
+		}
+		
+		isGenerated = true;
+
+	}
+
+	public void Load()
+	{
+		isLoaded = true;
+	}
+
+	public void Unload()
+	{
+		isLoaded = false;
 	}
 
 	//pregenerate the chunk's voxel map for use in mesh loading
@@ -58,7 +76,9 @@ public class	Chunk
 				for (int z = 0; z < WorldData.ChunkSize; z++)
 				{
 					Coords blockPos = new Coords(x, y, z);
-					voxelMap[x, y, z] = (byte)world.GetBlockID(blockPos.AddPos(chunkObjectPos));
+					voxelMap[x, y, z] = (BlockID)world.GetBlockID(blockPos.AddPos(chunkObjectPos));
+					if (voxelMap[x, y, z] != BlockID.AIR)
+						isEmpty = false;
 				}
 			}
 		}
@@ -86,12 +106,12 @@ public class	Chunk
 		int	z = blockPos.z;
 
 		if (!IsVoxelInChunk(x, y, z))
-			return (world.CheckForVoxel(blockPos.AddPos(chunkObjectPos)));
+			return (world.CheckForOpacity(blockPos.AddPos(chunkObjectPos)));
 
-		return (world.blocktypes [voxelMap [x, y, z]].isOpaque);
+		return (world.blocktypes [(int)voxelMap [x, y, z]].isOpaque);
 	}
 
-	public byte FindBlockPos(Coords worldPos)	//GetVoxelFromGlobalVector3
+	public BlockID FindBlockID(Coords worldPos)	//GetVoxelFromGlobalVector3
 	{
 		Coords blockPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));
 
@@ -112,7 +132,7 @@ public class	Chunk
 		}
 	}
 
-	//creates the chunk's mesh
+	//loads the chunk's mesh
 	void	LoadChunkMesh()
 	{
 		for (int y = 0; y < WorldData.ChunkSize; y++)
@@ -130,7 +150,7 @@ public class	Chunk
 	//adds the triangels and textures of a single block to the chunk mesh
 	void	AddVoxelDataToChunk(Coords blockPos)
 	{
-		byte blockID = voxelMap [blockPos.x, blockPos.y, blockPos.z];
+		BlockID blockID = voxelMap [blockPos.x, blockPos.y, blockPos.z];
 
 		if (blockID > 0)
 		{
@@ -145,14 +165,14 @@ public class	Chunk
 						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 2]],
 						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 3]]
 					);
-					AddTexture(world.blocktypes[blockID].GetTextureId(faceIndex));
+					AddTexture(world.blocktypes[(int)blockID].GetTextureId(faceIndex));
 				}
 			}
 		}
 	}
 
-	//creates a single chunk's mesh
-	void	CreateMesh()
+	//builds the chunk's mesh
+	void	BuildChunkMesh()
 	{
 		Mesh	mesh = new Mesh();
 
@@ -166,12 +186,12 @@ public class	Chunk
 	}
 
 	//wheter the chunk is loaded or not
-	public bool	isActive
+	public bool	isLoaded	//isActive
 	{
-		get { return _isActive; }
+		get { return _isLoaded; }
 		set
 		{
-			_isActive = value;
+			_isLoaded = value;
 			if (chunkObject != null)
 				chunkObject.SetActive(value);
 		}
