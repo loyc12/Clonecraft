@@ -9,15 +9,15 @@ public class	World : MonoBehaviour
 
 	public Transform		player;
 	public Vector3 			spawnPoint;
-	public ChunkCoord		playerChunk;
-	public ChunkCoord		playerLastChunk;
+	public Coords			playerChunk;
+	public Coords			playerLastChunk;
 
 	public Material			material;
 	public BlockType[]		blocktypes;
 
-	Chunk[,,]				region = new Chunk[WorldData.WorldSize, WorldData.WorldHeight, WorldData.WorldSize];	//stores all chunks for now
+	Chunk[,,]				region = new Chunk[WorldData.WorldChunkSize, WorldData.WorldChunkHeight, WorldData.WorldChunkSize];	//stores all chunks for now
 
-	List<ChunkCoord>		activeChunks = new List<ChunkCoord>();	//stores active chunks
+	List<Coords>			activeChunks = new List<Coords>();	//stores active chunks
 
 	private void	Start()
 	{
@@ -37,7 +37,7 @@ public class	World : MonoBehaviour
 	private void	FixedUpdate()
 	{
 		playerChunk = GetChunkPos (player.position);
-		if (playerChunk.cx != playerLastChunk.cx || playerChunk.cy != playerLastChunk.cy || playerChunk.cz != playerLastChunk.cz)
+		if (playerChunk.x != playerLastChunk.x || playerChunk.y != playerLastChunk.y || playerChunk.z != playerLastChunk.z)
 		{
 			playerLastChunk = playerChunk;
 			RetractRenderDistance();
@@ -48,52 +48,52 @@ public class	World : MonoBehaviour
 	//generate the chunks inside the render distance at spawn
 	void	GenerateWorld()
 	{
-		int	center = Mathf.FloorToInt(WorldData.WorldSize / 2);
+		int	center = Mathf.FloorToInt(WorldData.WorldChunkSize / 2);
 
-		for (int cx = center - WorldData.RenderDistance; cx < center + WorldData.RenderDistance; cx++)
+		for (int x = center - WorldData.RenderDistance; x < center + WorldData.RenderDistance; x++)
 		{
-			for (int cy = 0; cy < WorldData.WorldHeight; cy++)
+			for (int y = 0; y < WorldData.WorldChunkHeight; y++)
 			{
-				for (int cz = center - WorldData.RenderDistance; cz < center + WorldData.RenderDistance; cz++)
+				for (int z = center - WorldData.RenderDistance; z < center + WorldData.RenderDistance; z++)
 				{
-					ChunkCoord	coord = new ChunkCoord(cx, cy, cz);
+					Coords	chunkPos = new Coords(x, y, z);
 
-					if (IsChunkInRenderDistance(coord))
-						CreateNewChunk(cx, cy, cz);
+					if (IsChunkInRenderDistance(chunkPos))
+						CreateNewChunk(x, y, z);
 				}
 			}
 		}
 	}
 
 	//finds the chunk of a given voxel pos
-	ChunkCoord GetChunkPos (Vector3 pos)
+	Coords GetChunkPos (Vector3 pos)
 	{
 		int x = Mathf.FloorToInt(pos.x / WorldData.ChunkSize);
 		int y = Mathf.FloorToInt(pos.y / WorldData.ChunkSize);
 		int z = Mathf.FloorToInt(pos.z / WorldData.ChunkSize);
 
-		return (new ChunkCoord (x, y, z));
+		return (new Coords (x, y, z));
 	}
 
 	//creates or reactivates chunks inside the player's render distance
 	void	ExtendRenderDistance()
 	{
-		for (int cx = playerChunk.cx - WorldData.RenderDistance; cx <= playerChunk.cx + WorldData.RenderDistance; cx++)
+		for (int x = playerChunk.x - WorldData.RenderDistance; x <= playerChunk.x + WorldData.RenderDistance; x++)
 		{
-			for (int cz = playerChunk.cz - WorldData.RenderDistance; cz <= playerChunk.cz + WorldData.RenderDistance; cz++)
+			for (int z = playerChunk.z - WorldData.RenderDistance; z <= playerChunk.z + WorldData.RenderDistance; z++)
 			{
-				for (int cy = 0; cy < WorldData.WorldHeight; cy++)
+				for (int y = 0; y < WorldData.WorldChunkHeight; y++)
 				{
-					ChunkCoord	renderChunk = new ChunkCoord(cx, cy, cz);
+					Coords	chunkPos = new Coords(x, y, z);
 
-					if (IsChunkInRenderDistance(renderChunk))
+					if (IsChunkInRenderDistance(chunkPos))
 					{
-						if (region[cx, cy, cz] == null)
-							CreateNewChunk(cx, cy, cz);
-						else if (!region[cx, cy, cz].isActive)
+						if (region[x, y, z] == null)
+							CreateNewChunk(x, y, z);
+						else if (!region[x, y, z].isActive)
 						{
-							region[cx, cy, cz].isActive = true;
-							activeChunks.Add(renderChunk);
+							region[x, y, z].isActive = true;
+							activeChunks.Add(chunkPos);
 						}
 
 					}
@@ -107,41 +107,41 @@ public class	World : MonoBehaviour
 	{
 		for (int i = 0; i < activeChunks.Count; i++)
 		{
-			ChunkCoord	coord = activeChunks[i];
-			if (!IsChunkInRenderDistance(coord))
+			Coords	chunkPos= activeChunks[i];
+			if (!IsChunkInRenderDistance(chunkPos))
 			{
-				region[coord.cx, coord.cy, coord.cz].isActive = false;
-				activeChunks.Remove(coord);
+				region[chunkPos.x, chunkPos.y, chunkPos.z].isActive = false;
+				activeChunks.Remove(chunkPos);
 				i--;
 			}
 		}
 	}
 
 	//creates and activates a chunk form a given chunk pos
-	void	CreateNewChunk(int cx, int cy, int cz)
+	void	CreateNewChunk(int x, int y, int z)
 	{
-		region[cx, cy, cz] = new Chunk(new ChunkCoord(cx, cy, cz), this);
-		activeChunks.Add(new ChunkCoord(cx, cy, cz));
+		region[x, y, z] = new Chunk(new Coords(x, y, z), this);
+		activeChunks.Add(new Coords(x, y, z));
 	}
 
 	//returns true if the given pos is inside the player's render distance
-	bool	IsChunkInRenderDistance(ChunkCoord coord)
+	bool	IsChunkInRenderDistance(Coords chunkPos)
 	{
 
-		if (!IsChunkInWorld(coord) || WorldData.RenderDistance < playerChunk.ChunkDistance(coord))
+		if (!IsChunkInWorld(chunkPos) || WorldData.RenderDistance < playerChunk.SphereDistance(chunkPos))
 			return (false);
 		return (true);
 	}
 
 	//returns true if the given chunk pos is inside the worldgen limits
-	bool	IsChunkInWorld(ChunkCoord coord)
+	bool	IsChunkInWorld(Coords chunkPos)
 	{
 
-		if (coord.cx < 0 || WorldData.WorldSize <= coord.cx)
+		if (chunkPos.x < 0 || WorldData.WorldChunkSize <= chunkPos.x)
 			return (false);
-		if (coord.cy < 0 || WorldData.WorldHeight <= coord.cy)
+		if (chunkPos.y < 0 || WorldData.WorldChunkHeight <= chunkPos.y)
 			return (false);
-		if (coord.cz < 0 || WorldData.WorldSize <= coord.cz)
+		if (chunkPos.z < 0 || WorldData.WorldChunkSize <= chunkPos.z)
 			return (false);
 		return (true);
 	}
@@ -160,10 +160,11 @@ public class	World : MonoBehaviour
 
 	float	GetTerrainHeight(Vector3 pos)
 	{
-		//float	height = biome.maxElevation * Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale);
-		float	height = biome.maxElevation * Noise.Get2DRecursiveNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale, 2f, 3);
+		float	height = Noise.Get2DNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale);
+		//float	height = Noise.Get2DRecursiveNoise(new Vector2(pos.x, pos.z), 0, biome.terrainScale, 2f, 2);
 		
-		height += WorldData.RockLevel + biome.baseElevation;
+		height *= biome.maxElevation;
+		height += biome.baseElevation;
 
 		return (height);
 	}

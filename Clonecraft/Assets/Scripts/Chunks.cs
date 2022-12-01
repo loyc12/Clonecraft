@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class	Chunk
 {
-	public ChunkCoord	coord;
+	public Coords		chunkPos;
 
 	GameObject			chunkObject;
 
@@ -20,9 +20,9 @@ public class	Chunk
 	public byte[,,]		voxelMap = new byte[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
 
 	//chunk fabricator
-	public	Chunk (ChunkCoord _coord, World _world)
+	public	Chunk (Coords _chunkPos, World _world)
 	{
-		coord = _coord;
+		chunkPos = _chunkPos;
 		world = _world;
 		chunkObject = new GameObject();
 		meshFilter = chunkObject.AddComponent<MeshFilter>();
@@ -30,8 +30,8 @@ public class	Chunk
 
 		meshRenderer.material = world.material;
 		chunkObject.transform.SetParent(world.transform);
-		chunkObject.transform.position = new Vector3(coord.cx * WorldData.ChunkSize, coord.cy * WorldData.ChunkSize, coord.cz * WorldData.ChunkSize);
-		chunkObject.name = "Chunk " + coord.cx + ":" + coord.cy + ":" + coord.cz;
+		chunkObject.transform.position = new Vector3(chunkPos.x * WorldData.ChunkSize, chunkPos.y * WorldData.ChunkSize, chunkPos.z * WorldData.ChunkSize);
+		chunkObject.name = "Chunk " + chunkPos.x + ":" + chunkPos.y + ":" + chunkPos.z;
 
 		PopulateVoxelMap();
 		LoadChunkMesh();
@@ -47,7 +47,7 @@ public class	Chunk
 			{
 				for (int z = 0; z < WorldData.ChunkSize; z++)
 				{
-					voxelMap[x, y, z] = (byte)world.GetBlockID(new Vector3(x, y, z) + chunkpos);
+					voxelMap[x, y, z] = (byte)world.GetBlockID(new Vector3(x, y, z) + chunkBasePos);
 				}
 			}
 		}
@@ -73,7 +73,7 @@ public class	Chunk
 		int	z = Mathf.FloorToInt(pos.z);
 
 		if (!IsVoxelInChunk(x, y, z))
-			return (world.blocktypes [(int)world.GetBlockID(pos + chunkpos)].isOpaque);
+			return (world.blocktypes [(int)world.GetBlockID(pos + chunkBasePos)].isOpaque);
 		return (world.blocktypes [voxelMap [x, y, z]].isOpaque);
 	}
 
@@ -85,7 +85,7 @@ public class	Chunk
 	}
 
 	//the current chunk's pos
-	public Vector3 chunkpos
+	public Vector3 chunkBasePos
 	{
 		get { return chunkObject.transform.position; }
 	}
@@ -189,30 +189,4 @@ public class	Chunk
 		triangles.Add(vertexIndex + 2);
 	}
 
-}
-
-//coordinate system for chunks only
-public class	ChunkCoord
-{
-	public int	cx;
-	public int	cy;
-	public int	cz;
-
-	public	ChunkCoord (int _cx, int _cy, int _cz)
-	{
-		cx = _cx;
-		cy = _cy;
-		cz = _cz;
-	}
-
-	public float	ChunkDistance(ChunkCoord coord)
-	{
-		int	x = coord.cx - this.cx;
-		int	y = coord.cy - this.cy;
-		int	z = coord.cz - this.cz;
-
-		int	dsquare = (x * x) + (y * y) + (z * z);
-
-		return (Mathf.Sqrt(dsquare));
-	}
 }

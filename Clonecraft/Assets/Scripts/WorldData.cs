@@ -11,16 +11,16 @@ public static class	WorldData
 
 	public static readonly int	RenderDistance = 24;	//in chunk
 
-	public static readonly int	WorldSize = 36;			//in chunk
+	public static readonly int	WorldChunkSize = 24;	//in chunk
 	public static int			WorldVoxelSize			//in voxel
 	{
-		get { return WorldSize * ChunkSize; }
+		get { return WorldChunkSize * ChunkSize; }
 	}
 
-	public static readonly int	WorldHeight = 24;		//in chunk
+	public static readonly int	WorldChunkHeight = 18;	//in chunk
 	public static int			WorldVoxelHeight		//in voxel
 	{
-		get { return WorldHeight * ChunkSize; }
+		get { return WorldChunkHeight * ChunkSize; }
 	}
 
 	public static readonly int	ChunkSize = 8;			//in voxel

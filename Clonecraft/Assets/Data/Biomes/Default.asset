@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   biomeName: Default
   baseElevation: 16
-  maxElevation: 128
-  terrainScale: 16
+  maxElevation: 96
+  terrainScale: 32
   veins:
   - nodeName: Cave
     blockID: 0
