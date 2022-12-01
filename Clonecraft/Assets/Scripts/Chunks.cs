@@ -18,17 +18,16 @@ public class	Chunk
 
 	World				world;
 
-	private bool		_isLoaded = false;
-	public bool			isGenerated = false;
-	public	bool		isPopulated = false;
-	public	bool		isEmpty = true;
+	private bool	_isLoaded = false;
+	public bool		isGenerated = false;
+	public bool		isPopulated = false;
+	public bool		isEmpty = true;
 
 	//chunk fabricator
 	public	Chunk (Coords _chunkPos, World _world, bool forceLoad)
 	{
 		chunkPos = _chunkPos;
 		world = _world;
-		isLoaded = true;
 
 		if (forceLoad)
 			Generate();
@@ -76,7 +75,7 @@ public class	Chunk
 				for (int z = 0; z < WorldData.ChunkSize; z++)
 				{
 					Coords blockPos = new Coords(x, y, z);
-					voxelMap[x, y, z] = (BlockID)world.GetBlockID(blockPos.AddPos(chunkObjectPos));
+					voxelMap[x, y, z] = world.GetBlockID(blockPos.AddPos(chunkWorldPos));
 					if (voxelMap[x, y, z] != BlockID.AIR)
 						isEmpty = false;
 				}
@@ -87,76 +86,60 @@ public class	Chunk
 	}
 
 	//returns true if the given voxel is inside the current chunk
-	bool	IsVoxelInChunk(int x, int y, int z)
+	bool	IsBlockInChunk(Coords blockPos)
 	{
-		if (x < 0 || WorldData.ChunkSize <= x)
+		if (blockPos.x < 0 || WorldData.ChunkSize <= blockPos.x)
 			return (false);
-		if (y < 0 || WorldData.ChunkSize <= y)
+		if (blockPos.y < 0 || WorldData.ChunkSize <= blockPos.y)
 			return (false);
-		if (z < 0 || WorldData.ChunkSize <= z)
+		if (blockPos.z < 0 || WorldData.ChunkSize <= blockPos.z)
 			return (false);
 		return (true);
 	}
 
 	//returns true of the given voxel is not opaque
-	bool	CheckVoxelTransparency (Coords blockPos)	//CheckVoxel
+	bool	CheckBlockTransparency (Coords blockPos)	//CheckVoxel
 	{
-		int	x = blockPos.x;
-		int	y = blockPos.y;
-		int	z = blockPos.z;
+		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
+		
+		if (!IsBlockInChunk(blockPos))
+			return (world.CheckForOpacity(worldPos));
 
-		if (!IsVoxelInChunk(x, y, z))
-			return (world.CheckForOpacity(blockPos.AddPos(chunkObjectPos)));
+		return (world.blocktypes [(int)FindBlockID(worldPos)].isOpaque);
+	}
 
-		return (world.blocktypes [(int)voxelMap [x, y, z]].isOpaque);
+	//returns true of the given voxel is not opaque
+	bool	CheckBlockSolidity (Coords blockPos)		//CheckVoxel
+	{
+		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
+	
+		if (!IsBlockInChunk(blockPos))
+			return (world.CheckForSolidity(worldPos));
+
+		return (world.blocktypes [(int)FindBlockID(worldPos)].isSolid);
 	}
 
 	public BlockID FindBlockID(Coords worldPos)	//GetVoxelFromGlobalVector3
 	{
-		Coords blockPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));
+		Coords blockPos = new Coords(worldPos.SubPos(chunkPos));
+		
+		if (!IsBlockInChunk(blockPos))
+			return (world.GetBlockID(worldPos));
+			//return (BlockID.AIR);
 
 		return voxelMap[blockPos.x, blockPos.y, blockPos.z];
 	}
 
-	//the current Chunk.position
-	public Coords chunkObjectPos	//position
-	{
-		get
-		{
-			int	x = Mathf.FloorToInt(chunkObject.transform.position.x);
-			int	y = Mathf.FloorToInt(chunkObject.transform.position.y);
-			int	z = Mathf.FloorToInt(chunkObject.transform.position.z);
-
-			return (new Coords(x, y, z));
-			
-		}
-	}
-
-	//loads the chunk's mesh
-	void	LoadChunkMesh()
-	{
-		for (int y = 0; y < WorldData.ChunkSize; y++)
-		{
-			for (int x = 0; x < WorldData.ChunkSize; x++)
-			{
-				for (int z = 0; z < WorldData.ChunkSize; z++)
-				{
-					AddVoxelDataToChunk(new Coords(x, y, z));
-				}
-			}
-		}
-	}
-
 	//adds the triangels and textures of a single block to the chunk mesh
-	void	AddVoxelDataToChunk(Coords blockPos)
+	void	AddBlockDataToChunk(Coords blockPos)
 	{
-		BlockID blockID = voxelMap [blockPos.x, blockPos.y, blockPos.z];
+		BlockID blockID = voxelMap[blockPos.x, blockPos.y, blockPos.z];
 
 		if (blockID > 0)
 		{
 			for (int faceIndex = 0; faceIndex < 6; faceIndex++)
 			{
-				if (!CheckVoxelTransparency(blockPos.GetNeighbor(faceIndex)))
+				if (!CheckBlockTransparency(blockPos.GetNeighbor(faceIndex)))
 				{
 					Vector3 vPos = blockPos.ToVector3();
 					AddQuad (
@@ -171,18 +154,9 @@ public class	Chunk
 		}
 	}
 
-	//builds the chunk's mesh
-	void	BuildChunkMesh()
+	public Coords chunkWorldPos	//position
 	{
-		Mesh	mesh = new Mesh();
-
-		mesh.vertices = vertices.ToArray();
-		mesh.triangles = triangles.ToArray();
-		mesh.uv = uvs.ToArray();
-
-		mesh.RecalculateNormals();
-
-		meshFilter.mesh = mesh;
+		get { return (chunkPos.MulPos(WorldData.ChunkSize)); }
 	}
 
 	//wheter the chunk is loaded or not
@@ -195,6 +169,35 @@ public class	Chunk
 			if (chunkObject != null)
 				chunkObject.SetActive(value);
 		}
+	}
+
+	//loads the chunk's mesh
+	void	LoadChunkMesh()	//CreateMeshData
+	{
+		for (int y = 0; y < WorldData.ChunkSize; y++)
+		{
+			for (int x = 0; x < WorldData.ChunkSize; x++)
+			{
+				for (int z = 0; z < WorldData.ChunkSize; z++)
+				{
+					AddBlockDataToChunk(new Coords(x, y, z));
+				}
+			}
+		}
+	}
+
+	//builds the chunk's mesh
+	void	BuildChunkMesh()	//CreateMesh
+	{
+		Mesh	mesh = new Mesh();
+
+		mesh.vertices = vertices.ToArray();
+		mesh.triangles = triangles.ToArray();
+		mesh.uv = uvs.ToArray();
+
+		mesh.RecalculateNormals();
+
+		meshFilter.mesh = mesh;
 	}
 
 	//add a texture to the lastest two triangle

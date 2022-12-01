@@ -200,30 +200,6 @@ public class	World : MonoBehaviour
 		return (false);
 	}
 
-	//returns true if the given chunk pos is inside the worldgen limits
-	bool	IsChunkInWorld(Coords chunkPos)
-	{
-		if (chunkPos.x < 0 || WorldData.WorldChunkSize <= chunkPos.x)
-			return (false);
-		if (chunkPos.y < 0 || WorldData.WorldChunkHeight <= chunkPos.y)
-			return (false);
-		if (chunkPos.z < 0 || WorldData.WorldChunkSize <= chunkPos.z)
-			return (false);
-		return (true);
-	}
-
-	//returns true if the given voxel pos is inside the worldgen limits
-	bool	IsVoxelInWorld(Coords worldPos)
-	{
-		if (worldPos.x < 0 || WorldData.WorldVoxelSize <= worldPos.x)
-			return (false);
-		if (worldPos.y < 0 || WorldData.WorldVoxelHeight <= worldPos.y)
-			return (false);
-		if (worldPos.z < 0 || WorldData.WorldVoxelSize <= worldPos.z)
-			return (false);
-		return (true);
-	}
-
 	int	GetTerrainHeight(Coords worldPos)
 	{
 		float	height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
@@ -241,7 +217,7 @@ public class	World : MonoBehaviour
 		BlockID blockID = BlockID.AIR;
 
 		/* === ABSOLUTE PASS === */
-		if (!IsVoxelInWorld(worldPos))
+		if (!IsBlockInWorld(worldPos))
 			return (BlockID.AIR);
 
 		else if (y == 0)
@@ -286,11 +262,11 @@ public class	World : MonoBehaviour
 		return (blockID);
 	}
 
-	public bool	CheckForOpacity(Coords worldPos)
+	public bool	CheckForOpacity(Coords worldPos)	//CheckForVoxel
 	{
-		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.WorldChunkSize));
+		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));
 
-		if (!IsChunkInWorld(worldPos))
+		if (!IsBlockInWorld(worldPos))
 			return (false);
 
 		Chunk	targetChunk = FindChunk(chunkPos);
@@ -301,28 +277,52 @@ public class	World : MonoBehaviour
 		if (targetChunk.isPopulated && targetChunk.isEmpty)
 			return (false);
 
-		if (targetChunk != null && targetChunk.isPopulated)
+		if (targetChunk != null && targetChunk.isGenerated)
 			return (blocktypes[(int)targetChunk.FindBlockID(worldPos)].isOpaque);
 
 		return (blocktypes[(int)GetBlockID(worldPos)].isOpaque);
 	}
 
-	public bool	CheckForSolidity(Coords worldPos)
+	public bool	CheckForSolidity(Coords worldPos)	//CheckForVoxel
 	{
-		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.WorldChunkSize));
+		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));
 
-		if (!IsChunkInWorld(worldPos))
+		if (!IsBlockInWorld(worldPos))
 			return (false);
 
 		Chunk	targetChunk = FindChunk(chunkPos);
 
-		if (targetChunk.isEmpty)
+		if (targetChunk.isPopulated && targetChunk.isEmpty)
 			return (false);
 
-		if (targetChunk != null && targetChunk.isPopulated)
+		if (targetChunk != null && targetChunk.isGenerated)
 			return (blocktypes[(int)targetChunk.FindBlockID(worldPos)].isSolid);
 
 		return (blocktypes[(int)GetBlockID(worldPos)].isSolid);
+	}
+
+	//returns true if the given chunk pos is inside the worldgen limits
+	bool	IsChunkInWorld(Coords chunkPos)
+	{
+		if (chunkPos.x < 0 || WorldData.WorldChunkSize <= chunkPos.x)
+			return (false);
+		if (chunkPos.y < 0 || WorldData.WorldChunkHeight <= chunkPos.y)
+			return (false);
+		if (chunkPos.z < 0 || WorldData.WorldChunkSize <= chunkPos.z)
+			return (false);
+		return (true);
+	}
+
+	//returns true if the given voxel pos is inside the worldgen limits
+	bool	IsBlockInWorld(Coords worldPos)
+	{
+		if (worldPos.x < 0 || WorldData.WorldVoxelSize <= worldPos.x)
+			return (false);
+		if (worldPos.y < 0 || WorldData.WorldVoxelHeight <= worldPos.y)
+			return (false);
+		if (worldPos.z < 0 || WorldData.WorldVoxelSize <= worldPos.z)
+			return (false);
+		return (true);
 	}
 
 	public Chunk	FindChunk(Coords chunkPos)
@@ -333,26 +333,3 @@ public class	World : MonoBehaviour
 	
 
 }
-
-/*
-	public bool	CheckForVoxel(float _x, float _y, float _z)
-	{
-
-		Coords mixPos = new Coords(Mathf.FloorToInt(_x), Mathf.FloorToInt(_y), Mathf.FloorToInt(_z));
-
-		if (!IsVoxelInWorld(mixPos))
-			return (false);
-
-		Coords chunkPos = new Coords();
-		
-		chunkPos.x = Mathf.FloorToInt(mixPos.x / WorldData.ChunkSize);
-		chunkPos.y = Mathf.FloorToInt(mixPos.y / WorldData.ChunkSize);
-		chunkPos.z = Mathf.FloorToInt(mixPos.z / WorldData.ChunkSize);
-
-		mixPos.x -= chunkPos.x * WorldData.ChunkSize;
-		mixPos.y -= chunkPos.y * WorldData.ChunkSize;
-		mixPos.z -= chunkPos.z * WorldData.ChunkSize;
-
-		return (blocktypes (int)[FindChunk(chunkPos).voxelMap [mixPos.x, mixPos.y, mixPos.z]].isSolid);
-	}
-*/
