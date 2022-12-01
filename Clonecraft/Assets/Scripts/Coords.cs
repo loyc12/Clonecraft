@@ -16,11 +16,35 @@ public class Coords
 	public int	y;
 	public int	z;
 
+	public	Coords ()
+	{
+		x = 0;
+		y = 0;
+		z = 0;
+	}
 	public	Coords (int _x, int _y, int _z)
 	{
 		x = _x;
 		y = _y;
 		z = _z;
+	}
+	public	Coords (Coords pos)
+	{
+		x = pos.x;
+		y = pos.y;
+		z = pos.z;
+	}
+	public	Coords (float _x, float _y, float _z)
+	{
+		x = Mathf.FloorToInt(_x);
+		y = Mathf.FloorToInt(_y);
+		z = Mathf.FloorToInt(_z);
+	}
+	public	Coords (Vector3 vPos)
+	{
+		x = Mathf.FloorToInt(vPos.x);
+		y = Mathf.FloorToInt(vPos.y);
+		z = Mathf.FloorToInt(vPos.z);
 	}
 
 	public Coords	GetNeighbor(int faceIndex)
@@ -47,34 +71,85 @@ public class Coords
 		return (pos);
 	}
 
-	public float	SphereDistance(Coords pos)
+	public float	CubeDistance(Coords other)
 	{
-		int	x = pos.x - this.x;
-		int	y = pos.y - this.y;
-		int	z = pos.z - this.z;
+		int	x = this.x - other.x;
+		int	y = this.y - other.y;
+		int	z = this.z - other.z;
+
+		return (Mathf.Max(Mathf.Abs(x), Mathf.Max(Mathf.Abs(y), Mathf.Abs(z))));
+	}
+
+	public float	SphereDistance(Coords other)
+	{
+		int	x = this.x - other.x;
+		int	y = this.y - other.y;
+		int	z = this.z - other.z;
 
 		int	dsquare = (x * x) + (y * y) + (z * z);
 
 		return (Mathf.Sqrt(dsquare));
 	}
 
-	public Coords	AddPos(Coords pos)
+	public Coords	AddPos(Coords other)
 	{
-		int	x = pos.x + this.x;
-		int	y = pos.y + this.y;
-		int	z = pos.z + this.z;
+		int	x = this.x + other.x;
+		int	y = this.y + other.y;
+		int	z = this.z + other.z;
 
 		return (new Coords(x, y, z));
+	}
+
+	public Coords	SubPos(Coords other)
+	{
+		int	x = this.x - other.x;
+		int	y = this.y - other.y;
+		int	z = this.z - other.z;
+
+		return (new Coords(x, y, z));
+	}
+
+	public Coords	MulPos(float factor)
+	{
+		int	x = Mathf.FloorToInt(this.x * factor);
+		int	y = Mathf.FloorToInt(this.y * factor);
+		int	z = Mathf.FloorToInt(this.z * factor);
+
+		return (new Coords(x, y, z));
+	}
+
+	public Coords	DivPos(float factor)
+	{
+		int	x = Mathf.FloorToInt(this.x / factor);
+		int	y = Mathf.FloorToInt(this.y / factor);
+		int	z = Mathf.FloorToInt(this.z / factor);
+
+		return (new Coords(x, y, z));
+	}
+
+	public bool	SamePos(Coords other)
+	{
+		//if (this == null && pos == null )
+			//return (true);
+
+		if (this == null  || other == null )
+			return (false);
+
+		else if (this.x == other.x && this.y == other.y && this.z == other.z)
+			return (true);
+
+		return (false);
 	}
 
 	public Vector3	ToVector3()
 	{
 		return (new Vector3(this.x, this.y, this.z));
 	}
-
+	/*
 	public Vector2	ToVector2()
 	{
 		return (new Vector2(this.x, this.z));
 	}
+	*/
 }
 

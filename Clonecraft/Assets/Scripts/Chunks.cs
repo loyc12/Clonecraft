@@ -7,7 +7,6 @@ public class	Chunk
 	public Coords		chunkPos;
 
 	GameObject			chunkObject;
-
 	MeshRenderer		meshRenderer;
 	MeshFilter			meshFilter;
 
@@ -15,15 +14,26 @@ public class	Chunk
 	List<int> 			triangles = new List<int>();
 	List<Vector2>		uvs = new List<Vector2>();
 
-	World				world;
-
 	public byte[,,]		voxelMap = new byte[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
 
+	World				world;
+
+	private bool		_isActive;
+	public	bool		isPopulated = false;
+
 	//chunk fabricator
-	public	Chunk (Coords _chunkPos, World _world)
+	public	Chunk (Coords _chunkPos, World _world, bool forceLoad)
 	{
 		chunkPos = _chunkPos;
 		world = _world;
+		isActive = true;
+
+		if (forceLoad)
+			Load();
+	}
+
+	public void Load()
+	{
 		chunkObject = new GameObject();
 		meshFilter = chunkObject.AddComponent<MeshFilter>();
 		meshRenderer = chunkObject.AddComponent<MeshRenderer>();
@@ -52,6 +62,8 @@ public class	Chunk
 				}
 			}
 		}
+
+		isPopulated = true;
 	}
 
 	//returns true if the given voxel is inside the current chunk
@@ -67,19 +79,27 @@ public class	Chunk
 	}
 
 	//returns true of the given voxel is not opaque
-	bool	CheckVoxelTransparency (Coords blockPos)
+	bool	CheckVoxelTransparency (Coords blockPos)	//CheckVoxel
 	{
 		int	x = blockPos.x;
 		int	y = blockPos.y;
 		int	z = blockPos.z;
 
 		if (!IsVoxelInChunk(x, y, z))
-			return (world.blocktypes [(int)world.GetBlockID(blockPos.AddPos(chunkObjectPos))].isOpaque);
+			return (world.CheckForVoxel(blockPos.AddPos(chunkObjectPos)));
+
 		return (world.blocktypes [voxelMap [x, y, z]].isOpaque);
 	}
 
+	public byte FindBlockPos(Coords worldPos)	//GetVoxelFromGlobalVector3
+	{
+		Coords blockPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));
+
+		return voxelMap[blockPos.x, blockPos.y, blockPos.z];
+	}
+
 	//the current Chunk.position
-	public Coords chunkObjectPos
+	public Coords chunkObjectPos	//position
 	{
 		get
 		{
@@ -90,13 +110,6 @@ public class	Chunk
 			return (new Coords(x, y, z));
 			
 		}
-	}
-
-	//wheter the chunk is loaded or not
-	public bool	isActive
-	{
-		get { return chunkObject.activeSelf; }
-		set { chunkObject.SetActive(value); }
 	}
 
 	//creates the chunk's mesh
@@ -150,6 +163,18 @@ public class	Chunk
 		mesh.RecalculateNormals();
 
 		meshFilter.mesh = mesh;
+	}
+
+	//wheter the chunk is loaded or not
+	public bool	isActive
+	{
+		get { return _isActive; }
+		set
+		{
+			_isActive = value;
+			if (chunkObject != null)
+				chunkObject.SetActive(value);
+		}
 	}
 
 	//add a texture to the lastest two triangle

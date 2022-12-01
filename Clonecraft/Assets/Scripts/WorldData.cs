@@ -9,21 +9,21 @@ using UnityEngine;
 public static class	WorldData
 {
 
-	public static readonly int	RenderDistance = 24;	//in chunk
+	public static readonly int	RenderDistance = 8;		//in chunk
 
-	public static readonly int	WorldChunkSize = 24;	//in chunk
+	public static readonly int	WorldChunkSize = 20;	//in chunk
 	public static int			WorldVoxelSize			//in voxel
 	{
 		get { return WorldChunkSize * ChunkSize; }
 	}
 
-	public static readonly int	WorldChunkHeight = 18;	//in chunk
+	public static readonly int	WorldChunkHeight = 5;	//in chunk
 	public static int			WorldVoxelHeight		//in voxel
 	{
 		get { return WorldChunkHeight * ChunkSize; }
 	}
 
-	public static readonly int	ChunkSize = 8;			//in voxel
+	public static readonly int	ChunkSize = 32;			//in voxel
 	public static readonly int	TextureAtlasSize = 16;	//in face
 	public static float			NormalizedTextureSize	//over 1
 	{
