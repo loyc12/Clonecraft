@@ -24,7 +24,7 @@ public class	World : MonoBehaviour
 		Random.InitState(seed);
 	
 		spawnPoint = new Coords(Mathf.FloorToInt(WorldData.WorldVoxelSize / 2f), 0, Mathf.FloorToInt(WorldData.WorldVoxelSize / 2f));
-		spawnPoint.y = GetTerrainHeight(spawnPoint);
+		spawnPoint.y = 1 + GetTerrainHeight(spawnPoint);
 	
 		player.position = new Vector3(spawnPoint.x - 0.5f, spawnPoint.y + 0.1f, spawnPoint.z - 0.5f);
 		playerChunk = GetChunkPos(player.position);

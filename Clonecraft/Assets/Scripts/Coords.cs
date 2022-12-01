@@ -23,6 +23,30 @@ public class Coords
 		z = _z;
 	}
 
+	public Coords	GetNeighbor(int faceIndex)
+	{
+		Coords pos = new Coords(this.x, this.y, this.z);
+
+		if (faceIndex == 0)
+			pos.z -= 1;
+		else if (faceIndex == 1)
+			pos.z += 1;
+		else if (faceIndex == 2)
+			pos.y += 1;
+		else if (faceIndex == 3)
+			pos.y -= 1;
+		else if (faceIndex == 4)
+			pos.x -= 1;
+		else if (faceIndex == 5)
+			pos.x += 1;
+		else
+		{
+			Debug.Log("Error in GetNeighbor : invalid face index given");
+			return (null);
+		}
+		return (pos);
+	}
+
 	public float	SphereDistance(Coords pos)
 	{
 		int	x = pos.x - this.x;

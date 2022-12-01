@@ -48,7 +48,7 @@ public class	Chunk
 				for (int z = 0; z < WorldData.ChunkSize; z++)
 				{
 					Coords blockPos = new Coords(x, y, z);
-					voxelMap[x, y, z] = (byte)world.GetBlockID(blockPos.AddPos(chunkRealPos));
+					voxelMap[x, y, z] = (byte)world.GetBlockID(blockPos.AddPos(chunkObjectPos));
 				}
 			}
 		}
@@ -74,12 +74,12 @@ public class	Chunk
 		int	z = blockPos.z;
 
 		if (!IsVoxelInChunk(x, y, z))
-			return (world.blocktypes [(int)world.GetBlockID(blockPos.AddPos(chunkRealPos))].isOpaque);
+			return (world.blocktypes [(int)world.GetBlockID(blockPos.AddPos(chunkObjectPos))].isOpaque);
 		return (world.blocktypes [voxelMap [x, y, z]].isOpaque);
 	}
 
-	//the current chunk's pos
-	public Coords chunkRealPos
+	//the current Chunk.position
+	public Coords chunkObjectPos
 	{
 		get
 		{
@@ -123,9 +123,9 @@ public class	Chunk
 		{
 			for (int faceIndex = 0; faceIndex < 6; faceIndex++)
 			{
-				Vector3 vPos = blockPos.ToVector3();
-				if (!CheckVoxelTransparency(blockPos.AddPos(VoxelData.neighbors[faceIndex])))
+				if (!CheckVoxelTransparency(blockPos.GetNeighbor(faceIndex)))
 				{
+					Vector3 vPos = blockPos.ToVector3();
 					AddQuad (
 						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 0]],
 						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 1]],
