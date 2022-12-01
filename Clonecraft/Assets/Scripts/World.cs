@@ -222,22 +222,22 @@ public class	World : MonoBehaviour
 	public bool	CheckForVoxel(float _x, float _y, float _z)
 	{
 
-		int x = Mathf.FloorToInt(_x);	//use Mathf.FloorToInt if buggy
-		int y = Mathf.FloorToInt(_y);
-		int z = Mathf.FloorToInt(_z);
+		Coords mixPos = new Coords(Mathf.FloorToInt(_x), Mathf.FloorToInt(_y), Mathf.FloorToInt(_z));
 
-		if (!IsVoxelInWorld(new Coords(x, y, z)))
+		if (!IsVoxelInWorld(mixPos))
 			return (false);
 
-		int xChunk = x / WorldData.ChunkSize;
-		int yChunk = y / WorldData.ChunkSize;
-		int zChunk = z / WorldData.ChunkSize;
+		Coords chunkPos = new Coords(0, 0, 0);
+		
+		chunkPos.x = Mathf.FloorToInt(mixPos.x / WorldData.ChunkSize);
+		chunkPos.y = Mathf.FloorToInt(mixPos.y / WorldData.ChunkSize);
+		chunkPos.z = Mathf.FloorToInt(mixPos.z / WorldData.ChunkSize);
 
-		x -= xChunk * WorldData.ChunkSize;
-		y -= yChunk * WorldData.ChunkSize;
-		z -= zChunk * WorldData.ChunkSize;
+		mixPos.x -= chunkPos.x * WorldData.ChunkSize;
+		mixPos.y -= chunkPos.y * WorldData.ChunkSize;
+		mixPos.z -= chunkPos.z * WorldData.ChunkSize;
 
-		return (blocktypes [region [xChunk, yChunk, zChunk].voxelMap [x, y, z]].isSolid);
+		return (blocktypes [region [chunkPos.x, chunkPos.y, chunkPos.z].voxelMap [mixPos.x, mixPos.y, mixPos.z]].isSolid);
 	}
 
 }
