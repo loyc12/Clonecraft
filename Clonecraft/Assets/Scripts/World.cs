@@ -15,12 +15,14 @@ public class	World : MonoBehaviour
 
 	Chunk[,,]				region = new Chunk[WorldData.WorldChunkSize, WorldData.WorldChunkHeight, WorldData.WorldChunkSize];	//Chunks
 
-	List<Coords>			loadedChunks = new List<Coords>();
 	public Coords			playerChunk;
-	public Coords			playerLastChunk;
+	Coords					playerLastChunk;
 
+	List<Coords>			loadedChunks = new List<Coords>();
 	List<Coords>			queuedChunks = new List<Coords>();		//chunksToCreate
 	private bool			isLoadingChunks;
+
+	public GameObject		debugScreen;
 
 	private void	Start()
 	{
@@ -40,6 +42,8 @@ public class	World : MonoBehaviour
 		if (queuedChunks.Count > 0 && !isLoadingChunks)
 			StartCoroutine("LoadChunks");
 
+		if (Input.GetButtonDown("F3"))
+			debugScreen.SetActive(!debugScreen.activeSelf);
 	}
 
 	//generate the chunks inside the initial render distance (square) (at spawn)
@@ -119,7 +123,7 @@ public class	World : MonoBehaviour
 		spawnPoint = new Coords(Mathf.FloorToInt(WorldData.WorldVoxelSize / 2f), 0, Mathf.FloorToInt(WorldData.WorldVoxelSize / 2f));
 		spawnPoint.y = (1 + GetTerrainHeight(spawnPoint));
 
-		player.position = new Vector3(spawnPoint.x - 0.5f, spawnPoint.y + 0.1f, spawnPoint.z - 0.5f);
+		player.position = new Vector3(spawnPoint.x + 0.5f, spawnPoint.y + 0.1f, spawnPoint.z + 0.5f);
 
 		playerLastChunk = FindChunkPos(player.position);
 		playerChunk = FindChunkPos(player.position);

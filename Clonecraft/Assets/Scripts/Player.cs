@@ -87,15 +87,11 @@ public class Player : MonoBehaviour
 		else if (Input.GetButtonUp("Jump"))
 			isJumping = false;
 
-		if (Input.GetButtonDown("NoClip"))
-			isGhosting = true;
-		else if (Input.GetButtonDown("Alt"))
-			isGhosting = false;
+		if (Input.GetButtonDown("Ghost"))
+			isGhosting = !isGhosting;
 	
 		if (Input.GetButtonDown("Fly"))
-			isFlying = true;
-		else if (Input.GetButtonDown("Alt"))
-			isFlying = false;
+			isFlying = !isFlying;
 
 		if (Input.GetButtonDown("TP"))
 			transform.Translate((Vector3.up * WorldData.ChunkSize), Space.World);
