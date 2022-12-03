@@ -107,38 +107,47 @@ public class Player : MonoBehaviour
 			transform.Translate((Vector3.up * WorldData.ChunkSize), Space.World);
 	}
 
-	private void	FindTargetedBlocks()
+	private void	FindTargetedBlocks()	//doesn't entirely prevent placing a block that clips
 	{
 		Vector3	firstPos = new Vector3();
 		Vector3	secondPos = new Vector3();
 		//Vector3	thirdPos = new Vector3();
+
 		float	step = 0;
+		
+		firstPos = playerCamera.position;
 
 		while (step <= reach)
 		{
+			secondPos = firstPos;
 			firstPos = playerCamera.position + (playerCamera.forward * step);
-			if (0 < (int)world.FindBlockID(new Coords(firstPos)))
+
+			if (0 < (int)world.FindBlockID(new Coords(firstPos)))					//optimize me
 			{
 				breakBlock.position = new Vector3(
 					Mathf.FloorToInt(firstPos.x),
-					Mathf.FloorToInt(firstPos.x),
-					Mathf.FloorToInt(firstPos.x));
+					Mathf.FloorToInt(firstPos.y),
+					Mathf.FloorToInt(firstPos.z));
 				
 				breakBlock.gameObject.SetActive(true);
 
-				if (new Coords(secondPos) != new Coords())
+				Coords	rPos = new Coords(secondPos);
+				Coords	camPos = new Coords(playerCamera.position);
+
+				if ((rPos.y != camPos.y && rPos.y != (camPos.y - 1)) || rPos.x != camPos.x || rPos.z != camPos.z)
 				{
-					placeBlock.position = secondPos;
+					placeBlock.position = new Vector3(
+						Mathf.FloorToInt(secondPos.x),
+						Mathf.FloorToInt(secondPos.y),
+						Mathf.FloorToInt(secondPos.z));
+
 					placeBlock.gameObject.SetActive(true);
 				}
+				else
+					placeBlock.gameObject.SetActive(false);
 
 				return ;
 			}
-
-			secondPos = new Vector3(
-				Mathf.FloorToInt(firstPos.x),
-				Mathf.FloorToInt(firstPos.x),
-				Mathf.FloorToInt(firstPos.x));
 
 			step += checkIncrement;
 		}

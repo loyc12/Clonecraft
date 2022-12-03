@@ -4,6 +4,7 @@ using UnityEngine;
 
 /*
 pos				generalized pos
+rPos			(relative to something unspecified)
 vPos			Vector (relative to world, in float)
 worldPos		blocks (relative to world, in voxel increments)
 blockPos		blocks (relative to chunk, in voxel increments)
