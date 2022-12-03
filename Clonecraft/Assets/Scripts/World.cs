@@ -266,7 +266,7 @@ public class	World : MonoBehaviour
 		return (blockID);
 	}
 
-
+	//returns the block ID of the specified location
 	public BlockID	FindBlockID(Coords worldPos)				//CheckForVoxel
 	{
 		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -43,7 +43,10 @@ public class Player : MonoBehaviour
 	private float			frontward;				//Vertical		(a d)
 
 	public Transform		placeBlock;
-	public Transform		breakBlock;
+	public Transform		breakBlock;				//highlightBlock
+
+	public Text				selectionScreenText;	//selectedBlockText
+	public BlockID			selectedBlockID;
 
 	private World			world;
 
@@ -68,6 +71,7 @@ public class Player : MonoBehaviour
 
 	private void	Update()
 	{
+		FindTargetedBlocks();
 		GetPlayerInputs();
 	}
 
@@ -102,23 +106,47 @@ public class Player : MonoBehaviour
 		if (Input.GetButtonDown("TP"))
 			transform.Translate((Vector3.up * WorldData.ChunkSize), Space.World);
 	}
-/*
-	private void	FindSelectedBlocks()
+
+	private void	FindTargetedBlocks()
 	{
 		Vector3	firstPos = new Vector3();
 		Vector3	secondPos = new Vector3();
 		//Vector3	thirdPos = new Vector3();
-		float	step = checkIncrement;
+		float	step = 0;
 
-		while (step < reach)
+		while (step <= reach)
 		{
-			Vector3 = playerCamera.position + (cam.forward * step);
-			if ()
+			firstPos = playerCamera.position + (playerCamera.forward * step);
+			if (0 < (int)world.FindBlockID(new Coords(firstPos)))
+			{
+				breakBlock.position = new Vector3(
+					Mathf.FloorToInt(firstPos.x),
+					Mathf.FloorToInt(firstPos.x),
+					Mathf.FloorToInt(firstPos.x));
+				
+				breakBlock.gameObject.SetActive(true);
+
+				if (new Coords(secondPos) != new Coords())
+				{
+					placeBlock.position = secondPos;
+					placeBlock.gameObject.SetActive(true);
+				}
+
+				return ;
+			}
+
+			secondPos = new Vector3(
+				Mathf.FloorToInt(firstPos.x),
+				Mathf.FloorToInt(firstPos.x),
+				Mathf.FloorToInt(firstPos.x));
+
+			step += checkIncrement;
 		}
 
-		
+		breakBlock.gameObject.SetActive(false);
+		placeBlock.gameObject.SetActive(false);
 	}
-*/
+
 	private void	CalculateVelocity()
 	{
 		//gravity implementation

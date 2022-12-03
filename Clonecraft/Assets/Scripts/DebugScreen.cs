@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class DebugScreen : MonoBehaviour
 {
 	World	world;
-	Text	textComponent;
+	Text	debugScreenText;
 
 	float	frameRate;
 	float	updateTimer;
@@ -14,7 +14,7 @@ public class DebugScreen : MonoBehaviour
     void Start()
     {
 		world = GameObject.Find("World").GetComponent<World>();
-		textComponent = GetComponent<Text>();
+		debugScreenText = GetComponent<Text>();
     }
 
     void Update()
@@ -33,7 +33,6 @@ public class DebugScreen : MonoBehaviour
 		debugText += "\n Y " + world.playerChunk.y;
 		debugText += "\n Z " + world.playerChunk.z;
 
-		textComponent.text = debugText;
 
 		if (updateTimer > 1f)
 		{
@@ -42,5 +41,7 @@ public class DebugScreen : MonoBehaviour
 		}
 		else
 			updateTimer += Time.deltaTime;
+
+		debugScreenText.text = debugText;
     }
 }

@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//	EP07:25M
+//	EP08:16M
 
 /*	IDEAS
 
+	make crouch crouchier
 	add chunk collumns
 
 */

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /*
-pos			generalized
-worldPos	blocks (relative to world)
-blockPos	blocks (relative to chunk)
-chunkPos	chunks (relative to world)
+pos				generalized pos
+vPos			Vector (relative to world, in float)
+worldPos		blocks (relative to world, in voxel increments)
+blockPos		blocks (relative to chunk, in voxel increments)
+chunkPos		chunks (relative to world, in chunk increments)
+chunkWorldPos	chunks (relative to world, in voxel increments)		
 */
 
 //coordinate system to avoid using floats
