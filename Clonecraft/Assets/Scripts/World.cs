@@ -139,7 +139,7 @@ public class	World : MonoBehaviour
 				LoadOrUnload(targetChunk);
 			else
 			{
-				if (!IsChunkInTooFar(targetChunk.chunkPos, 3f))
+				if (!IsChunkInTooFar(targetChunk.chunkPos, 2f))
 				{
 					targetChunk.Generate();
 
@@ -202,8 +202,8 @@ public class	World : MonoBehaviour
 
 	int	GetTerrainHeight(Coords worldPos)
 	{
-		float	height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
-		//float	height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 3);
+		//float	height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
+		float	height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 3);
 		
 		height *= biome.maxElevation;
 		height += biome.baseElevation;
