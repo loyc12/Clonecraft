@@ -26,8 +26,11 @@ public class Player : MonoBehaviour
 	public readonly float	playerWidht = 0.32f;		//radius~~
 	public readonly float	playerHeight = 1.85f;
 
+	public readonly float	checkIncrement = 0.04f;
+	public readonly float	reach = 4.8f;
+
 	public readonly float	cameraSpeed = 4f;
-	private Transform		playerCamera;
+	private Transform		playerCamera;			//cam
 	private float			verticalRotation;
 
 	private float			mouseHorizontal;
@@ -38,6 +41,9 @@ public class Player : MonoBehaviour
 
 	private float			rightward;				//Horizontal	(w s)
 	private float			frontward;				//Vertical		(a d)
+
+	public Transform		placeBlock;
+	public Transform		breakBlock;
 
 	private World			world;
 
@@ -96,7 +102,23 @@ public class Player : MonoBehaviour
 		if (Input.GetButtonDown("TP"))
 			transform.Translate((Vector3.up * WorldData.ChunkSize), Space.World);
 	}
+/*
+	private void	FindSelectedBlocks()
+	{
+		Vector3	firstPos = new Vector3();
+		Vector3	secondPos = new Vector3();
+		//Vector3	thirdPos = new Vector3();
+		float	step = checkIncrement;
 
+		while (step < reach)
+		{
+			Vector3 = playerCamera.position + (cam.forward * step);
+			if ()
+		}
+
+		
+	}
+*/
 	private void	CalculateVelocity()
 	{
 		//gravity implementation
@@ -179,22 +201,22 @@ public class Player : MonoBehaviour
 
 	private float	checkFallSpeed (float fallSpeed)	//checkDownSpeed
 	{
-		if (world.CheckForSolidity(new Coords(
+		if (world.IsBlockSolid(new Coords(
 				transform.position.x + playerWidht,
 				transform.position.y + fallSpeed,
-				transform.position.z + playerWidht)) ||
-
-			world.CheckForSolidity(new Coords(
+				transform.position.z + playerWidht))
+			||
+			world.IsBlockSolid(new Coords(
 				transform.position.x - playerWidht,
 				transform.position.y + fallSpeed,
-				transform.position.z + playerWidht)) ||
-
-			world.CheckForSolidity(new Coords(
+				transform.position.z + playerWidht))
+			||
+			world.IsBlockSolid(new Coords(
 				transform.position.x + playerWidht,
 				transform.position.y + fallSpeed,
-				transform.position.z - playerWidht)) ||
-
-			world.CheckForSolidity(new Coords(
+				transform.position.z - playerWidht))
+			||
+			world.IsBlockSolid(new Coords(
 				transform.position.x - playerWidht, 
 				transform.position.y + fallSpeed,
 				transform.position.z - playerWidht)))
@@ -210,22 +232,22 @@ public class Player : MonoBehaviour
 
 	private float	checkJumpSpeed (float jumpSpeed)	//checkUpSpeed
 	{
-		if (world.CheckForSolidity(new Coords(
+		if (world.IsBlockSolid(new Coords(
 				transform.position.x + playerWidht,
 				transform.position.y + playerHeight + jumpSpeed,
-				transform.position.z + playerWidht)) ||
-
-			world.CheckForSolidity(new Coords(
+				transform.position.z + playerWidht))
+			||
+			world.IsBlockSolid(new Coords(
 				transform.position.x - playerWidht,
 				transform.position.y + playerHeight + jumpSpeed,
-				transform.position.z + playerWidht)) ||
-
-			world.CheckForSolidity(new Coords(
+				transform.position.z + playerWidht))
+			||
+			world.IsBlockSolid(new Coords(
 				transform.position.x + playerWidht,
 				transform.position.y + playerHeight + jumpSpeed,
-				transform.position.z - playerWidht)) ||
-
-			world.CheckForSolidity(new Coords(
+				transform.position.z - playerWidht))
+			||
+			world.IsBlockSolid(new Coords(
 				transform.position.x - playerWidht, 
 				transform.position.y + playerHeight + jumpSpeed,
 				transform.position.z - playerWidht)))
@@ -240,17 +262,17 @@ public class Player : MonoBehaviour
 	{
 		get
 		{
-			if (world.CheckForSolidity(new Coords(
+			if (world.IsBlockSolid(new Coords(
 					transform.position.x,
 					transform.position.y,
 					transform.position.z + playerWidht))
 				||
-				world.CheckForSolidity(new Coords(
+				world.IsBlockSolid(new Coords(
 					transform.position.x,
 					transform.position.y + (playerHeight / 2),
 					transform.position.z + playerWidht))
 				||
-				world.CheckForSolidity(new Coords(
+				world.IsBlockSolid(new Coords(
 					transform.position.x,
 					transform.position.y + playerHeight,
 					transform.position.z + playerWidht)))
@@ -265,17 +287,17 @@ public class Player : MonoBehaviour
 	{
 		get
 		{
-			if (world.CheckForSolidity(new Coords(
+			if (world.IsBlockSolid(new Coords(
 					transform.position.x,
 					transform.position.y,
 					transform.position.z - playerWidht))
 				||
-				world.CheckForSolidity(new Coords(
+				world.IsBlockSolid(new Coords(
 					transform.position.x,
 					transform.position.y + (playerHeight / 2),
 					transform.position.z - playerWidht))
 				||
-				world.CheckForSolidity(new Coords(
+				world.IsBlockSolid(new Coords(
 					transform.position.x,
 					transform.position.y + playerHeight,
 					transform.position.z - playerWidht)))
@@ -290,16 +312,16 @@ public class Player : MonoBehaviour
 	{
 		get
 		{
-			if (world.CheckForSolidity(new Coords(
+			if (world.IsBlockSolid(new Coords(
 					transform.position.x + playerWidht,
 					transform.position.y, transform.position.z))
 				||
-				world.CheckForSolidity(new Coords(
+				world.IsBlockSolid(new Coords(
 					transform.position.x + playerWidht,
 					transform.position.y + (playerHeight / 2),
 					transform.position.z))
 				||
-				world.CheckForSolidity(new Coords(
+				world.IsBlockSolid(new Coords(
 					transform.position.x + playerWidht,
 					transform.position.y + playerHeight,
 					transform.position.z)))
@@ -314,17 +336,17 @@ public class Player : MonoBehaviour
 	{
 		get
 		{
-			if (world.CheckForSolidity(new Coords(
+			if (world.IsBlockSolid(new Coords(
 					transform.position.x - playerWidht,
 					transform.position.y,
 					transform.position.z))
 				||
-				world.CheckForSolidity(new Coords(
+				world.IsBlockSolid(new Coords(
 					transform.position.x - playerWidht,
 					transform.position.y + (playerHeight / 2),
 					transform.position.z))
 				||
-				world.CheckForSolidity(new Coords(
+				world.IsBlockSolid(new Coords(
 					transform.position.x - playerWidht,
 					transform.position.y + playerHeight,
 					transform.position.z)))

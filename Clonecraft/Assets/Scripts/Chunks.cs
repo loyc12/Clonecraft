@@ -14,7 +14,7 @@ public class	Chunk
 	List<int> 			triangles = new List<int>();
 	List<Vector2>		uvs = new List<Vector2>();
 
-	public BlockID[,,]		voxelMap = new BlockID[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
+	public BlockID[,,]	blockMap = new BlockID[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
 
 	World				world;
 
@@ -44,7 +44,7 @@ public class	Chunk
 		chunkObject.transform.position = new Vector3(chunkPos.x * WorldData.ChunkSize, chunkPos.y * WorldData.ChunkSize, chunkPos.z * WorldData.ChunkSize);
 		chunkObject.name = "Chunk " + chunkPos.x + ":" + chunkPos.y + ":" + chunkPos.z;
 
-		PopulateVoxelMap();
+		PopulateBlockMap();
 		if (isPopulated && !isEmpty)
 		{
 			LoadChunkMesh();
@@ -66,7 +66,7 @@ public class	Chunk
 	}
 
 	//pregenerate the chunk's voxel map for use in mesh loading
-	void	PopulateVoxelMap()
+	void	PopulateBlockMap()
 	{
 		for (int y = 0; y < WorldData.ChunkSize; y++)
 		{
@@ -75,8 +75,8 @@ public class	Chunk
 				for (int z = 0; z < WorldData.ChunkSize; z++)
 				{
 					Coords blockPos = new Coords(x, y, z);
-					voxelMap[x, y, z] = world.GetBlockID(blockPos.AddPos(chunkWorldPos));
-					if (voxelMap[x, y, z] != BlockID.AIR)
+					blockMap[x, y, z] = world.GetBlockID(blockPos.AddPos(chunkWorldPos));
+					if (blockMap[x, y, z] != BlockID.AIR)
 						isEmpty = false;
 				}
 			}
@@ -97,26 +97,26 @@ public class	Chunk
 		return (true);
 	}
 
-	//returns true of the given voxel is not opaque
-	bool	CheckBlockTransparency (Coords blockPos)	//CheckVoxel
-	{
-		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
-		
-		if (!IsBlockInChunk(blockPos))
-			return (world.CheckForOpacity(worldPos));
-
-		return (world.blocktypes [(int)FindBlockID(worldPos)].isOpaque);
-	}
-
-	//returns true of the given voxel is not opaque
+	//returns true of the given voxel is solid
 	bool	CheckBlockSolidity (Coords blockPos)		//CheckVoxel
 	{
 		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
 	
 		if (!IsBlockInChunk(blockPos))
-			return (world.CheckForSolidity(worldPos));
+			return (world.IsBlockSolid(worldPos));
 
 		return (world.blocktypes [(int)FindBlockID(worldPos)].isSolid);
+	}
+
+	//returns true of the given voxel is opaque
+	bool	CheckBlockOpacity (Coords blockPos)	//CheckVoxel
+	{
+		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
+		
+		if (!IsBlockInChunk(blockPos))
+			return (world.IsBlockOpaque(worldPos));
+
+		return (world.blocktypes [(int)FindBlockID(worldPos)].isOpaque);
 	}
 
 	public BlockID FindBlockID(Coords worldPos)	//GetVoxelFromGlobalVector3
@@ -125,21 +125,20 @@ public class	Chunk
 		
 		if (!IsBlockInChunk(blockPos))
 			return (world.GetBlockID(worldPos));					//NORMALLY IS SUPPOSED TO TAKE THE DATA FROM ANOTHER CHUNK
-			//return (BlockID.AIR);
 
-		return voxelMap[blockPos.x, blockPos.y, blockPos.z];
+		return blockMap[blockPos.x, blockPos.y, blockPos.z];
 	}
 
 	//adds the triangels and textures of a single block to the chunk mesh
 	void	AddBlockDataToChunk(Coords blockPos)
 	{
-		BlockID blockID = voxelMap[blockPos.x, blockPos.y, blockPos.z];
+		BlockID blockID = blockMap[blockPos.x, blockPos.y, blockPos.z];
 
 		if (blockID > 0)
 		{
 			for (int faceIndex = 0; faceIndex < 6; faceIndex++)
 			{
-				if (!CheckBlockTransparency(blockPos.GetNeighbor(faceIndex)))
+				if (!CheckBlockOpacity(blockPos.GetNeighbor(faceIndex)))
 				{
 					Vector3 vPos = blockPos.ToVector3();
 					AddQuad (

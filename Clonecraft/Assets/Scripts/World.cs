@@ -13,7 +13,7 @@ public class	World : MonoBehaviour
 	public Material			material;
 	public BlockType[]		blocktypes;
 
-	Chunk[,,]				region = new Chunk[WorldData.WorldChunkSize, WorldData.WorldChunkHeight, WorldData.WorldChunkSize];	//Chunks
+	Chunk[,,]				chunkMap = new Chunk[WorldData.WorldChunkSize, WorldData.WorldChunkHeight, WorldData.WorldChunkSize];	//Chunks
 
 	public Coords			playerChunk;
 	Coords					playerLastChunk;
@@ -63,8 +63,8 @@ public class	World : MonoBehaviour
 					{
 						if (IsChunkInRenderDistance(chunkPos))
 						{
-							region[x, y, z] = new Chunk(chunkPos, this, true);
-							region[x, y, z].Load();
+							chunkMap[x, y, z] = new Chunk(chunkPos, this, true);
+							chunkMap[x, y, z].Load();
 							loadedChunks.Add(chunkPos);
 						}
 					}
@@ -95,20 +95,20 @@ public class	World : MonoBehaviour
 					if (IsChunkInWorld(chunkPos) && IsChunkInRenderDistance(chunkPos))
 					{
 						//if chunk doesn't exist, create it
-						if (region[x, y, z] == null)
+						if (chunkMap[x, y, z] == null)
 						{
-							region[x, y, z] = new Chunk(chunkPos, this, false);
+							chunkMap[x, y, z] = new Chunk(chunkPos, this, false);
 							queuedChunks.Add(chunkPos);
 						}
 						//if chunk isn't generated, generate it
-						else if (!region[x, y, z].isGenerated)
+						else if (!chunkMap[x, y, z].isGenerated)
 						{
 							queuedChunks.Add(chunkPos);
 						}
 						//if chunk isn't loaded, load it
-						else if (!region[x, y, z].isLoaded)
+						else if (!chunkMap[x, y, z].isLoaded)
 						{
-							region[x, y, z].Load();
+							chunkMap[x, y, z].Load();
 							loadedChunks.Add(chunkPos);
 						}
 					}
@@ -206,8 +206,8 @@ public class	World : MonoBehaviour
 
 	int	GetTerrainHeight(Coords worldPos)
 	{
-		//float	height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
-		float	height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 3);
+		float	height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
+		//float	height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 3);
 		
 		height *= biome.maxElevation;
 		height += biome.baseElevation;
@@ -266,43 +266,28 @@ public class	World : MonoBehaviour
 		return (blockID);
 	}
 
-	public bool	CheckForOpacity(Coords worldPos)	//CheckForVoxel
+
+	public BlockID	FindBlockID(Coords worldPos)				//CheckForVoxel
 	{
 		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));
 
 		if (!IsBlockInWorld(worldPos))
-			return (false);
+			return (BlockID.AIR);
 
 		Chunk	targetChunk = FindChunk(chunkPos);
 
-		if(targetChunk == null)
-			return (false);
+		if (targetChunk != null)
+		{
+			if (targetChunk.isPopulated && targetChunk.isEmpty)
+				return (BlockID.AIR);
 
-		if (targetChunk.isPopulated && targetChunk.isEmpty)
-			return (false);
+			Coords blockPos = worldPos.SubPos(chunkPos.MulPos(WorldData.ChunkSize));
 
-		if (targetChunk != null && targetChunk.isGenerated)
-			return (blocktypes[(int)targetChunk.FindBlockID(worldPos)].isOpaque);
+			if (targetChunk.isPopulated)
+				return (chunkMap[chunkPos.x, chunkPos.y, chunkPos.z].blockMap[blockPos.x, blockPos.y, blockPos.z]);
+		}
 
-		return (blocktypes[(int)GetBlockID(worldPos)].isOpaque);
-	}
-
-	public bool	CheckForSolidity(Coords worldPos)	//CheckForVoxel
-	{
-		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));
-
-		if (!IsBlockInWorld(worldPos))
-			return (false);
-
-		Chunk	targetChunk = FindChunk(chunkPos);
-
-		if (targetChunk.isPopulated && targetChunk.isEmpty)
-			return (false);
-
-		if (targetChunk != null && targetChunk.isGenerated)
-			return (blocktypes[(int)targetChunk.FindBlockID(worldPos)].isSolid);
-
-		return (blocktypes[(int)GetBlockID(worldPos)].isSolid);
+		return (GetBlockID(worldPos));
 	}
 
 	//returns true if the given chunk pos is inside the worldgen limits
@@ -331,9 +316,16 @@ public class	World : MonoBehaviour
 
 	public Chunk	FindChunk(Coords chunkPos)
 	{
-		return (region[chunkPos.x, chunkPos.y, chunkPos.z]);
+		return (chunkMap[chunkPos.x, chunkPos.y, chunkPos.z]);
 	}
 
-	
+	public bool	IsBlockSolid(Coords blockPos)
+	{
+		return (blocktypes[(int)FindBlockID(blockPos)].isSolid);
+	}
 
+	public bool IsBlockOpaque(Coords blockPos)
+	{
+		return (blocktypes[(int)FindBlockID(blockPos)].isOpaque);
+	}
 }
