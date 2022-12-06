@@ -6,10 +6,10 @@ using UnityEngine;
 pos				generalized pos
 rPos			(relative to something unspecified)
 vPos			Vector (relative to world, in float)
-worldPos		blocks (relative to world, in voxel increments)
-blockPos		blocks (relative to chunk, in voxel increments)
+worldPos		blocks (relative to world, in Block increments)
+blockPos		blocks (relative to chunk, in Block increments)
 chunkPos		chunks (relative to world, in chunk increments)
-chunkWorldPos	chunks (relative to world, in voxel increments)		
+chunkWorldPos	chunks (relative to world, in Block increments)
 */
 
 //coordinate system to avoid using floats
@@ -130,7 +130,7 @@ public class Coords
 		return (new Coords(x, y, z));
 	}
 
-	public bool	SamePos(Coords other)
+	public bool	SamePosAs(Coords other)
 	{
 		//if (this == null && pos == null )
 			//return (true);
@@ -144,10 +144,59 @@ public class Coords
 		return (false);
 	}
 
+	public Coords	WorldToChunkPos()
+	{
+		return (this.DivPos(WorldData.ChunkSize));
+	}
+
+	public Coords	ChunkToWorldPos()
+	{
+		return (this.MulPos(WorldData.ChunkSize));
+	}
+
+	public Coords	WorldToBlockPos()
+	{
+		return (this.SubPos(this.WorldToChunkPos().MulPos(WorldData.ChunkSize)));
+	}
+
+	public bool 	IsBlockInWorld()	//for worldPos
+	{
+		if (this.x < 0 || WorldData.WorldBlockSize <= this.x)
+			return (false);
+		if (this.y < 0 || WorldData.WorldBlockHeight <= this.y)
+			return (false);
+		if (this.z < 0 || WorldData.WorldBlockSize <= this.z)
+			return (false);
+		return (true);
+	}
+
+	public bool 	IsChunkInWorld()	//for chunkPos
+	{
+		if (this.x < 0 || WorldData.WorldChunkSize <= this.x)
+			return (false);
+		if (this.y < 0 || WorldData.WorldChunkHeight <= this.y)
+			return (false);
+		if (this.z < 0 || WorldData.WorldChunkSize <= this.z)
+			return (false);
+		return (true);
+	}
+
+	public bool 	IsBlockInChunk()	//for blockPos
+	{
+		if (this.x < 0 || WorldData.ChunkSize <= this.x)
+			return (false);
+		if (this.y < 0 || WorldData.ChunkSize <= this.y)
+			return (false);
+		if (this.z < 0 || WorldData.ChunkSize <= this.z)
+			return (false);
+		return (true);
+	}
+
 	public Vector3	ToVector3()
 	{
 		return (new Vector3(this.x, this.y, this.z));
 	}
+
 	/*
 	public Vector2	ToVector2()
 	{

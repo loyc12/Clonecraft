@@ -208,11 +208,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 405045152}
-  - component: {fileID: 405045155}
   - component: {fileID: 405045154}
   - component: {fileID: 405045153}
   m_Layer: 5
-  m_Name: Selection Screen
+  m_Name: SelectionScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -271,7 +270,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Block Info
+  m_Text: Empty
 --- !u!222 &405045154
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -280,18 +279,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 405045151}
   m_CullTransparentMesh: 1
---- !u!114 &405045155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 405045151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b23ffea522f4074890845ece1de3f0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &527485285
 GameObject:
   m_ObjectHideFlags: 0
@@ -613,7 +600,7 @@ GameObject:
   - component: {fileID: 1209610938}
   - component: {fileID: 1209610937}
   m_Layer: 5
-  m_Name: Debug Screen
+  m_Name: DebugScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -672,7 +659,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Debug Information
+  m_Text: Empty
 --- !u!222 &1209610938
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1140,5 +1127,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   placeBlock: {fileID: 2053212673}
   breakBlock: {fileID: 527485286}
-  selectionScreenText: {fileID: 405045153}
+  selectedBlockText: {fileID: 405045153}
   selectedBlockID: 0

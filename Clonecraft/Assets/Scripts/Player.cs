@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*	IDEAS
+
+	make croutch croutchier
+
+*/
+
 public class Player : MonoBehaviour
 {
 	private bool	isSprinting;
@@ -12,29 +18,12 @@ public class Player : MonoBehaviour
 	private bool	isFlying;
 	private bool	isGhosting;
 
-	public readonly float	croutchSpeed = 3f;
-	public readonly float	walkSpeed = 6f;
-	public readonly float	sprintSpeed = 12f;
-
-	public readonly float	flySpeed = 8f;
-	public readonly float	ascentSpeed = 12f;
-
-	public readonly float	jumpForce = 8f;
-	public readonly float	gravityForce = -24f;
-	public readonly float 	maxFallSpeed = -120f;
-
-	public readonly float	playerWidht = 0.32f;		//radius~~
-	public readonly float	playerHeight = 1.85f;
-
-	public readonly float	checkIncrement = 0.04f;
-	public readonly float	reach = 4.8f;
-
-	public readonly float	cameraSpeed = 4f;
 	private Transform		playerCamera;			//cam
 	private float			verticalRotation;
 
 	private float			mouseHorizontal;
 	private float			mouseVertical;
+	private float			mouseScroll;				//Scroll
 
 	private Vector3			velocity;
 	private float			verticalSpeed;			//vertical Momentum
@@ -45,7 +34,7 @@ public class Player : MonoBehaviour
 	public Transform		placeBlock;
 	public Transform		breakBlock;				//highlightBlock
 
-	public Text				selectionScreenText;	//selectedBlockText
+	public Text				selectedBlockText;
 	public BlockID			selectedBlockID;
 
 	private World			world;
@@ -55,7 +44,11 @@ public class Player : MonoBehaviour
 		playerCamera = GameObject.Find("Player Camera").transform;
 		world = GameObject.Find("World").GetComponent<World>();
 
+		Cursor.lockState = CursorLockMode.Locked;
+
 		verticalRotation = 0;
+
+		UpdatedSelectedBlockID(PlayerData.defaultBlock);
 	}
 
 	private void	FixedUpdate()
@@ -81,6 +74,7 @@ public class Player : MonoBehaviour
 		frontward = Input.GetAxis("Vertical");
 		mouseHorizontal = Input.GetAxis("Mouse X");
 		mouseVertical = Input.GetAxis("Mouse Y");
+		mouseScroll = Input.GetAxis("Mouse ScrollWheel");
 
 		if (Input.GetButtonDown("Sprint"))
 			isSprinting = true;
@@ -99,12 +93,24 @@ public class Player : MonoBehaviour
 
 		if (Input.GetButtonDown("Ghost"))
 			isGhosting = !isGhosting;
-	
+
 		if (Input.GetButtonDown("Fly"))
 			isFlying = !isFlying;
 
 		if (Input.GetButtonDown("TP"))
 			transform.Translate((Vector3.up * WorldData.ChunkSize), Space.World);
+
+		if (mouseScroll != 0)
+			ChangeSelectedBlock(BlockID.AIR);
+
+		if (breakBlock.gameObject.activeSelf)
+			BlockAction();
+	}
+
+	private void	UpdatedSelectedBlockID(BlockID value)
+	{
+		selectedBlockID = value;
+		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
 	}
 
 	private void	FindTargetedBlocks()	//doesn't entirely prevent placing a block that clips
@@ -114,21 +120,21 @@ public class Player : MonoBehaviour
 		//Vector3	thirdPos = new Vector3();
 
 		float	step = 0;
-		
+
 		firstPos = playerCamera.position;
 
-		while (step <= reach)
+		while (step <= PlayerData.reach)
 		{
 			secondPos = firstPos;
 			firstPos = playerCamera.position + (playerCamera.forward * step);
 
-			if (0 < (int)world.FindBlockID(new Coords(firstPos)))					//optimize me
+			if (BlockID.AIR < world.FindBlockID(new Coords(firstPos)))					//optimize me
 			{
 				breakBlock.position = new Vector3(
 					Mathf.FloorToInt(firstPos.x),
 					Mathf.FloorToInt(firstPos.y),
 					Mathf.FloorToInt(firstPos.z));
-				
+
 				breakBlock.gameObject.SetActive(true);
 
 				Coords	rPos = new Coords(secondPos);
@@ -149,11 +155,61 @@ public class Player : MonoBehaviour
 				return ;
 			}
 
-			step += checkIncrement;
+			step += PlayerData.reachIncrement;
 		}
 
 		breakBlock.gameObject.SetActive(false);
 		placeBlock.gameObject.SetActive(false);
+	}
+
+	private void	ChangeSelectedBlock(BlockID value)
+	{
+		if (value == BlockID.AIR)
+		{
+			if (mouseScroll > 0)
+				selectedBlockID++;
+			else
+				selectedBlockID--;
+
+			BlockID maxID = BlockType.maxID;
+
+			if (selectedBlockID > maxID - 1)
+				selectedBlockID = BlockID.GRASS;
+			if (selectedBlockID < BlockID.GRASS)
+				selectedBlockID = maxID - 1;
+		}
+		else
+			selectedBlockID = value;
+
+		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
+	}
+
+	private void	BlockAction()
+	{
+		if (Input.GetMouseButton(0))	//break block
+		{
+			Coords worldPos = new Coords(breakBlock.position);
+			Coords chunkPos = worldPos.WorldToChunkPos();
+
+			if (worldPos.IsBlockInWorld())
+				world.FindChunk(chunkPos).SetBlockID(worldPos, BlockID.AIR);
+		}
+		if (Input.GetMouseButton(1))	//place block
+		{
+			Coords worldPos = new Coords(placeBlock.position);
+			Coords chunkPos = worldPos.WorldToChunkPos();
+
+			if (worldPos.IsBlockInWorld())
+				world.FindChunk(chunkPos).SetBlockID(worldPos, selectedBlockID);
+		}
+		if (Input.GetMouseButton(2))	//copy block
+		{
+			Coords worldPos = new Coords(breakBlock.position);
+			Coords chunkPos = worldPos.WorldToChunkPos();
+
+			if (worldPos.IsBlockInWorld())
+				UpdatedSelectedBlockID(world.FindChunk(chunkPos).FindBlockID(worldPos));
+		}
 	}
 
 	private void	CalculateVelocity()
@@ -161,19 +217,19 @@ public class Player : MonoBehaviour
 		//gravity implementation
 		if (isGrounded || isFlying)
 			verticalSpeed *= 0;
-		if (verticalSpeed > maxFallSpeed)
-			verticalSpeed += gravityForce * Time.fixedDeltaTime;
-		
+		if (verticalSpeed > PlayerData.maxFallSpeed)
+			verticalSpeed += PlayerData.gravityForce * Time.fixedDeltaTime;
+
 		//horizontal movements controls
 		velocity = (transform.forward * frontward) + (transform.right * rightward);
 
 		//speed controls
 		if (isCroutching)
-			velocity *= croutchSpeed;
+			velocity *= PlayerData.croutchSpeed;
 		else if (isSprinting)
-			velocity *= sprintSpeed;
+			velocity *= PlayerData.sprintSpeed;
 		else
-			velocity *= walkSpeed;
+			velocity *= PlayerData.walkSpeed;
 
 		//checks for sideways obstacles
 		if (!isGhosting && ((velocity.x > 0 && isRightBlocked) || (velocity.x < 0 && isLeftBlocked)))
@@ -184,23 +240,23 @@ public class Player : MonoBehaviour
 		//fly controls
 		if (isFlying)
 		{
-			velocity *= flySpeed;
+			velocity *= PlayerData.flySpeed;
 
 			if (isJumping && isCroutching)
 				velocity.y = 0;
 			else if (isJumping)
-				velocity.y = ascentSpeed;
+				velocity.y = PlayerData.ascentSpeed;
 			else if (isCroutching)
-				velocity.y = -ascentSpeed;
+				velocity.y = -PlayerData.ascentSpeed;
 			if (isSprinting)
-				velocity.y *= sprintSpeed / 3f;
+				velocity.y *= PlayerData.sprintSpeed / 3f;
 		}
 		else
 			velocity.y += verticalSpeed;
 
 		//makes movement speed proporional to time
 		velocity *= Time.fixedDeltaTime;
-	
+
 		//checks for vertical obstacles
 		if (!isGhosting && velocity.y < 0 )
 			velocity.y = checkFallSpeed(velocity.y);
@@ -210,18 +266,18 @@ public class Player : MonoBehaviour
 
 	private void TurnCamera()
 	{
-		transform.Rotate(Vector3.up * mouseHorizontal * cameraSpeed);					// left/right cam movement
+		transform.Rotate(Vector3.up * mouseHorizontal * PlayerData.cameraSpeed);					// left/right cam movement
 
 		//playerCamera.transform.Rotate(Vector3.right * -mouseVertical * cameraSpeed);	//  up/down   cam movement (unbounded)
 
-		verticalRotation += -mouseVertical * cameraSpeed;
+		verticalRotation += -mouseVertical * PlayerData.cameraSpeed;
 
 		//clamping camera
 		if (verticalRotation > 90f)
 			verticalRotation = 90f;
 		else if (verticalRotation < -90f)
 			verticalRotation = -90f;
-	
+
 		playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);	//  up/down   cam movement
 	}
 
@@ -229,9 +285,9 @@ public class Player : MonoBehaviour
 	{
 		if (isGrounded)
 		{
-			verticalSpeed = jumpForce;
+			verticalSpeed = PlayerData.jumpForce;
 			if (isCroutching)
-				verticalSpeed *= 0.5f;			//REMOVE ???
+				verticalSpeed *= PlayerData.croutchJumpFactor;
 			isGrounded = false;
 		}
 	}
@@ -239,24 +295,24 @@ public class Player : MonoBehaviour
 	private float	checkFallSpeed (float fallSpeed)	//checkDownSpeed
 	{
 		if (world.IsBlockSolid(new Coords(
-				transform.position.x + playerWidht,
+				transform.position.x + PlayerData.playerWidht,
 				transform.position.y + fallSpeed,
-				transform.position.z + playerWidht))
+				transform.position.z + PlayerData.playerWidht))
 			||
 			world.IsBlockSolid(new Coords(
-				transform.position.x - playerWidht,
+				transform.position.x - PlayerData.playerWidht,
 				transform.position.y + fallSpeed,
-				transform.position.z + playerWidht))
+				transform.position.z + PlayerData.playerWidht))
 			||
 			world.IsBlockSolid(new Coords(
-				transform.position.x + playerWidht,
+				transform.position.x + PlayerData.playerWidht,
 				transform.position.y + fallSpeed,
-				transform.position.z - playerWidht))
+				transform.position.z - PlayerData.playerWidht))
 			||
 			world.IsBlockSolid(new Coords(
-				transform.position.x - playerWidht, 
+				transform.position.x - PlayerData.playerWidht,
 				transform.position.y + fallSpeed,
-				transform.position.z - playerWidht)))
+				transform.position.z - PlayerData.playerWidht)))
 		{
 			isGrounded = true;
 			return (0);
@@ -270,24 +326,24 @@ public class Player : MonoBehaviour
 	private float	checkJumpSpeed (float jumpSpeed)	//checkUpSpeed
 	{
 		if (world.IsBlockSolid(new Coords(
-				transform.position.x + playerWidht,
-				transform.position.y + playerHeight + jumpSpeed,
-				transform.position.z + playerWidht))
+				transform.position.x + PlayerData.playerWidht,
+				transform.position.y + PlayerData.playerHeight + jumpSpeed,
+				transform.position.z + PlayerData.playerWidht))
 			||
 			world.IsBlockSolid(new Coords(
-				transform.position.x - playerWidht,
-				transform.position.y + playerHeight + jumpSpeed,
-				transform.position.z + playerWidht))
+				transform.position.x - PlayerData.playerWidht,
+				transform.position.y + PlayerData.playerHeight + jumpSpeed,
+				transform.position.z + PlayerData.playerWidht))
 			||
 			world.IsBlockSolid(new Coords(
-				transform.position.x + playerWidht,
-				transform.position.y + playerHeight + jumpSpeed,
-				transform.position.z - playerWidht))
+				transform.position.x + PlayerData.playerWidht,
+				transform.position.y + PlayerData.playerHeight + jumpSpeed,
+				transform.position.z - PlayerData.playerWidht))
 			||
 			world.IsBlockSolid(new Coords(
-				transform.position.x - playerWidht, 
-				transform.position.y + playerHeight + jumpSpeed,
-				transform.position.z - playerWidht)))
+				transform.position.x - PlayerData.playerWidht,
+				transform.position.y + PlayerData.playerHeight + jumpSpeed,
+				transform.position.z - PlayerData.playerWidht)))
 		{
 			return (0);
 		}
@@ -302,17 +358,17 @@ public class Player : MonoBehaviour
 			if (world.IsBlockSolid(new Coords(
 					transform.position.x,
 					transform.position.y,
-					transform.position.z + playerWidht))
+					transform.position.z + PlayerData.playerWidht))
 				||
 				world.IsBlockSolid(new Coords(
 					transform.position.x,
-					transform.position.y + (playerHeight / 2),
-					transform.position.z + playerWidht))
+					transform.position.y + (PlayerData.playerHeight / 2),
+					transform.position.z + PlayerData.playerWidht))
 				||
 				world.IsBlockSolid(new Coords(
 					transform.position.x,
-					transform.position.y + playerHeight,
-					transform.position.z + playerWidht)))
+					transform.position.y + PlayerData.playerHeight,
+					transform.position.z + PlayerData.playerWidht)))
 			{
 				return (true);
 			}
@@ -327,17 +383,17 @@ public class Player : MonoBehaviour
 			if (world.IsBlockSolid(new Coords(
 					transform.position.x,
 					transform.position.y,
-					transform.position.z - playerWidht))
+					transform.position.z - PlayerData.playerWidht))
 				||
 				world.IsBlockSolid(new Coords(
 					transform.position.x,
-					transform.position.y + (playerHeight / 2),
-					transform.position.z - playerWidht))
+					transform.position.y + (PlayerData.playerHeight / 2),
+					transform.position.z - PlayerData.playerWidht))
 				||
 				world.IsBlockSolid(new Coords(
 					transform.position.x,
-					transform.position.y + playerHeight,
-					transform.position.z - playerWidht)))
+					transform.position.y + PlayerData.playerHeight,
+					transform.position.z - PlayerData.playerWidht)))
 			{
 				return (true);
 			}
@@ -350,17 +406,17 @@ public class Player : MonoBehaviour
 		get
 		{
 			if (world.IsBlockSolid(new Coords(
-					transform.position.x + playerWidht,
+					transform.position.x + PlayerData.playerWidht,
 					transform.position.y, transform.position.z))
 				||
 				world.IsBlockSolid(new Coords(
-					transform.position.x + playerWidht,
-					transform.position.y + (playerHeight / 2),
+					transform.position.x + PlayerData.playerWidht,
+					transform.position.y + (PlayerData.playerHeight / 2),
 					transform.position.z))
 				||
 				world.IsBlockSolid(new Coords(
-					transform.position.x + playerWidht,
-					transform.position.y + playerHeight,
+					transform.position.x + PlayerData.playerWidht,
+					transform.position.y + PlayerData.playerHeight,
 					transform.position.z)))
 			{
 				return (true);
@@ -374,18 +430,18 @@ public class Player : MonoBehaviour
 		get
 		{
 			if (world.IsBlockSolid(new Coords(
-					transform.position.x - playerWidht,
+					transform.position.x - PlayerData.playerWidht,
 					transform.position.y,
 					transform.position.z))
 				||
 				world.IsBlockSolid(new Coords(
-					transform.position.x - playerWidht,
-					transform.position.y + (playerHeight / 2),
+					transform.position.x - PlayerData.playerWidht,
+					transform.position.y + (PlayerData.playerHeight / 2),
 					transform.position.z))
 				||
 				world.IsBlockSolid(new Coords(
-					transform.position.x - playerWidht,
-					transform.position.y + playerHeight,
+					transform.position.x - PlayerData.playerWidht,
+					transform.position.y + PlayerData.playerHeight,
 					transform.position.z)))
 			{
 				return (true);

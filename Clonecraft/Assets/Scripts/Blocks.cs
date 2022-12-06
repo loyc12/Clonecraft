@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BlockID : byte	//shoddy casting oof
+public enum BlockID : byte
 {
 	AIR		= 0,
 	GRASS	= 1,
@@ -18,10 +18,11 @@ public enum BlockID : byte	//shoddy casting oof
 [System.Serializable]
 public class	BlockType
 {
-	public string 	blockName;
-	public bool		isOpaque;		//isSolid
-	public bool		isSolid;		//isColidable
-	public bool		isMonofaced;	//Custom : whether to use front texture for all sides
+	public string 			blockName;
+	public bool				isOpaque;			//isSolid
+	public bool				isSolid;			//isColidable
+	public bool				isMonofaced;		//Custom : whether to use front texture for all sides
+	public static BlockID	maxID = (BlockID)9;	//DE-HARDCODE ME
 
 	[Header("Texture Values")]
 	public int	frontFaceTexture;

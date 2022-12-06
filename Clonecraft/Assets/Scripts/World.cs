@@ -35,8 +35,8 @@ public class	World : MonoBehaviour
 	private void	Update()
 	{
 		playerChunk = FindChunkPos(player.position);
-	
-		if (!playerChunk.SamePos(playerLastChunk))
+
+		if (!playerChunk.SamePosAs(playerLastChunk))
 			ApplyRenderDistance();
 
 		if (queuedChunks.Count > 0 && !isLoadingChunks)
@@ -59,9 +59,9 @@ public class	World : MonoBehaviour
 				{
 					Coords	chunkPos = new Coords(x, y, z);
 
-					if (IsChunkInWorld(chunkPos))
+					if (chunkPos.IsChunkInWorld())
 					{
-						if (IsChunkInRenderDistance(chunkPos))
+						if (chunkPos.IsChunkInWorld())
 						{
 							chunkMap[x, y, z] = new Chunk(chunkPos, this, true);
 							chunkMap[x, y, z].Load();
@@ -80,7 +80,7 @@ public class	World : MonoBehaviour
 
 		foreach (Coords chunkPos in loadedChunks)
 		{
-			if (IsChunkInWorld(chunkPos) && !IsChunkInRenderDistance(chunkPos))
+			if (chunkPos.IsChunkInWorld() && !IsChunkInRenderDistance(chunkPos))
 				FindChunk(chunkPos).Unload();
 		}
 
@@ -92,7 +92,7 @@ public class	World : MonoBehaviour
 				{
 					Coords	chunkPos = new Coords(x, y, z);
 
-					if (IsChunkInWorld(chunkPos) && IsChunkInRenderDistance(chunkPos))
+					if (chunkPos.IsChunkInWorld() && IsChunkInRenderDistance(chunkPos))
 					{
 						//if chunk doesn't exist, create it
 						if (chunkMap[x, y, z] == null)
@@ -120,7 +120,7 @@ public class	World : MonoBehaviour
 	//puts the player at the spawnpoint
 	void	SpawnPlayer()
 	{
-		spawnPoint = new Coords(Mathf.FloorToInt(WorldData.WorldVoxelSize / 2f), 0, Mathf.FloorToInt(WorldData.WorldVoxelSize / 2f));
+		spawnPoint = new Coords(Mathf.FloorToInt(WorldData.WorldBlockSize / 2f), 0, Mathf.FloorToInt(WorldData.WorldBlockSize / 2f));
 		spawnPoint.y = (1 + GetTerrainHeight(spawnPoint));
 
 		player.position = new Vector3(spawnPoint.x + 0.5f, spawnPoint.y + 0.1f, spawnPoint.z + 0.5f);
@@ -173,7 +173,7 @@ public class	World : MonoBehaviour
 		}
 	}
 
-	//finds the chunk of a given voxel pos
+	//finds chunk Coords from world Coords
 	Coords FindChunkPos (Vector3 vPos)	//GetChunkCoordFromVoxel3D
 	{
 		int x = Mathf.FloorToInt(vPos.x / WorldData.ChunkSize);
@@ -186,7 +186,7 @@ public class	World : MonoBehaviour
 	//returns true if the given pos is inside the player's render distance (sphere)
 	bool	IsChunkInRenderDistance(Coords chunkPos)
 	{
-		if (!IsChunkInWorld(chunkPos) || IsChunkInTooFar(chunkPos, 1f))
+		if (!chunkPos.IsChunkInWorld() || IsChunkInTooFar(chunkPos, 1f))
 			return (false);
 
 		if (WorldData.RenderDistance < playerChunk.SphereDistance(chunkPos))
@@ -198,7 +198,7 @@ public class	World : MonoBehaviour
 	//returns true if the given pos further than factor * render distance (cube)
 	bool	IsChunkInTooFar(Coords chunkPos, float factor)
 	{
-		if (!IsChunkInWorld(chunkPos) || factor * WorldData.RenderDistance < playerChunk.CubeDistance(chunkPos))
+		if (!chunkPos.IsChunkInWorld() || factor * WorldData.RenderDistance < playerChunk.CubeDistance(chunkPos))
 			return (true);
 
 		return (false);
@@ -208,7 +208,7 @@ public class	World : MonoBehaviour
 	{
 		float	height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
 		//float	height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 3);
-		
+
 		height *= biome.maxElevation;
 		height += biome.baseElevation;
 
@@ -221,7 +221,7 @@ public class	World : MonoBehaviour
 		BlockID blockID = BlockID.AIR;
 
 		/* === ABSOLUTE PASS === */
-		if (!IsBlockInWorld(worldPos))
+		if (!worldPos.IsBlockInWorld())
 			return (BlockID.AIR);
 
 		else if (y == 0)
@@ -271,7 +271,7 @@ public class	World : MonoBehaviour
 	{
 		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));
 
-		if (!IsBlockInWorld(worldPos))
+		if (!worldPos.IsBlockInWorld())
 			return (BlockID.AIR);
 
 		Chunk	targetChunk = FindChunk(chunkPos);
@@ -288,30 +288,6 @@ public class	World : MonoBehaviour
 		}
 
 		return (GetBlockID(worldPos));
-	}
-
-	//returns true if the given chunk pos is inside the worldgen limits
-	bool	IsChunkInWorld(Coords chunkPos)
-	{
-		if (chunkPos.x < 0 || WorldData.WorldChunkSize <= chunkPos.x)
-			return (false);
-		if (chunkPos.y < 0 || WorldData.WorldChunkHeight <= chunkPos.y)
-			return (false);
-		if (chunkPos.z < 0 || WorldData.WorldChunkSize <= chunkPos.z)
-			return (false);
-		return (true);
-	}
-
-	//returns true if the given voxel pos is inside the worldgen limits
-	bool	IsBlockInWorld(Coords worldPos)
-	{
-		if (worldPos.x < 0 || WorldData.WorldVoxelSize <= worldPos.x)
-			return (false);
-		if (worldPos.y < 0 || WorldData.WorldVoxelHeight <= worldPos.y)
-			return (false);
-		if (worldPos.z < 0 || WorldData.WorldVoxelSize <= worldPos.z)
-			return (false);
-		return (true);
 	}
 
 	public Chunk	FindChunk(Coords chunkPos)

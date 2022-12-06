@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*	IDEAS
+
+	add chunk collumns
+
+*/
+
 public class	Chunk
 {
 	public Coords		chunkPos;
@@ -45,12 +51,10 @@ public class	Chunk
 		chunkObject.name = "Chunk " + chunkPos.x + ":" + chunkPos.y + ":" + chunkPos.z;
 
 		PopulateBlockMap();
+
 		if (isPopulated && !isEmpty)
-		{
-			LoadChunkMesh();
-			BuildChunkMesh();
-		}
-		
+			UpdateChunkMesh();
+
 		isGenerated = true;
 
 	}
@@ -85,24 +89,12 @@ public class	Chunk
 		isPopulated = true;
 	}
 
-	//returns true if the given voxel is inside the current chunk
-	bool	IsBlockInChunk(Coords blockPos)
-	{
-		if (blockPos.x < 0 || WorldData.ChunkSize <= blockPos.x)
-			return (false);
-		if (blockPos.y < 0 || WorldData.ChunkSize <= blockPos.y)
-			return (false);
-		if (blockPos.z < 0 || WorldData.ChunkSize <= blockPos.z)
-			return (false);
-		return (true);
-	}
-
 	//returns true of the given voxel is solid
 	bool	CheckBlockSolidity (Coords blockPos)		//CheckVoxel
 	{
 		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
-	
-		if (!IsBlockInChunk(blockPos))
+
+		if (!blockPos.IsBlockInChunk())
 			return (world.IsBlockSolid(worldPos));
 
 		return (world.blocktypes [(int)FindBlockID(worldPos)].isSolid);
@@ -112,8 +104,8 @@ public class	Chunk
 	bool	CheckBlockOpacity (Coords blockPos)	//CheckVoxel
 	{
 		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
-		
-		if (!IsBlockInChunk(blockPos))
+
+		if (!blockPos.IsBlockInChunk())
 			return (world.IsBlockOpaque(worldPos));
 
 		return (world.blocktypes [(int)FindBlockID(worldPos)].isOpaque);
@@ -121,12 +113,59 @@ public class	Chunk
 
 	public BlockID FindBlockID(Coords worldPos)	//GetVoxelFromGlobalVector3
 	{
-		Coords blockPos = new Coords(worldPos.SubPos(chunkPos));
-		
-		if (!IsBlockInChunk(blockPos))
+		Coords blockPos = worldPos.WorldToBlockPos();
+
+		if (!blockPos.IsBlockInChunk())
 			return (world.GetBlockID(worldPos));					//NORMALLY IS SUPPOSED TO TAKE THE DATA FROM ANOTHER CHUNK
 
 		return blockMap[blockPos.x, blockPos.y, blockPos.z];
+	}
+
+	public void	SetBlockID(Coords worldPos, BlockID value)	//EditVoxel
+	{
+		Coords blockPos = worldPos.WorldToBlockPos();
+
+		if (!blockPos.IsBlockInChunk() || BlockType.maxID < value)
+			return;
+
+		blockMap[blockPos.x, blockPos.y, blockPos.z] = value;
+
+		UpdateChunkMesh();
+
+		UpdateNeighboringChunk(blockPos);
+	}
+
+	//(re)loads the chunk's mesh
+	void	UpdateNeighboringChunk(Coords blockPos)	//UpdateSurroundingVoxels
+	{
+		for (int faceIndex = 0; faceIndex < 6; faceIndex++)
+		{
+			Coords updateBlock = blockPos.GetNeighbor(faceIndex);
+
+			Coords worldPos = chunkPos.ChunkToWorldPos().AddPos(updateBlock);
+
+			if (!updateBlock.IsBlockInChunk() && worldPos.IsBlockInWorld())
+				world.FindChunk(chunkPos.GetNeighbor(faceIndex)).UpdateChunkMesh();
+		}
+	}
+
+	//(re)loads the chunk's mesh
+	void	UpdateChunkMesh()	//UpdateChunk
+	{
+		ClearChunkMesh();
+
+		for (int y = 0; y < WorldData.ChunkSize; y++)
+		{
+			for (int x = 0; x < WorldData.ChunkSize; x++)
+			{
+				for (int z = 0; z < WorldData.ChunkSize; z++)
+				{
+					AddBlockDataToChunk(new Coords(x, y, z));
+				}
+			}
+		}
+
+		BuildChunkMesh();
 	}
 
 	//adds the triangels and textures of a single block to the chunk mesh
@@ -134,8 +173,9 @@ public class	Chunk
 	{
 		BlockID blockID = blockMap[blockPos.x, blockPos.y, blockPos.z];
 
-		if (blockID > 0)
+		if (blockID > BlockID.AIR)
 		{
+			isEmpty = false;
 			for (int faceIndex = 0; faceIndex < 6; faceIndex++)
 			{
 				if (!CheckBlockOpacity(blockPos.GetNeighbor(faceIndex)))
@@ -153,6 +193,32 @@ public class	Chunk
 		}
 	}
 
+	//clears the chunk's mesh
+	void	ClearChunkMesh()	//ClearMeshData
+	{
+		Mesh	mesh = new Mesh();
+
+		isEmpty = true;
+
+		vertices.Clear();
+		triangles.Clear();
+		uvs.Clear();
+	}
+
+	//builds the chunk's mesh
+	void	BuildChunkMesh()	//CreateMesh
+	{
+		Mesh	mesh = new Mesh();
+
+		mesh.vertices = vertices.ToArray();
+		mesh.triangles = triangles.ToArray();
+		mesh.uv = uvs.ToArray();
+
+		mesh.RecalculateNormals();
+
+		meshFilter.mesh = mesh;
+	}
+
 	public Coords chunkWorldPos	//position
 	{
 		get { return (chunkPos.MulPos(WorldData.ChunkSize)); }
@@ -168,35 +234,6 @@ public class	Chunk
 			if (chunkObject != null)
 				chunkObject.SetActive(value);
 		}
-	}
-
-	//loads the chunk's mesh
-	void	LoadChunkMesh()	//CreateMeshData
-	{
-		for (int y = 0; y < WorldData.ChunkSize; y++)
-		{
-			for (int x = 0; x < WorldData.ChunkSize; x++)
-			{
-				for (int z = 0; z < WorldData.ChunkSize; z++)
-				{
-					AddBlockDataToChunk(new Coords(x, y, z));
-				}
-			}
-		}
-	}
-
-	//builds the chunk's mesh
-	void	BuildChunkMesh()	//CreateMesh
-	{
-		Mesh	mesh = new Mesh();
-
-		mesh.vertices = vertices.ToArray();
-		mesh.triangles = triangles.ToArray();
-		mesh.uv = uvs.ToArray();
-
-		mesh.RecalculateNormals();
-
-		meshFilter.mesh = mesh;
 	}
 
 	//add a texture to the lastest two triangle

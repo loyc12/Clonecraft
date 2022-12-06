@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*	IDEA
+
+	add recent max coord values
+	add camera rotation
+
+*/
+
 public class DebugScreen : MonoBehaviour
 {
 	World	world;
