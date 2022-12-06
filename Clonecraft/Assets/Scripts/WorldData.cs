@@ -4,6 +4,7 @@ using UnityEngine;
 
 public static class	WorldData
 {
+	public static readonly bool	UseSimpleGen = true;
 
 	public static readonly int	RenderDistance = 8;		//in chunk
 

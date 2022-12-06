@@ -206,8 +206,12 @@ public class	World : MonoBehaviour
 
 	int	GetTerrainHeight(Coords worldPos)
 	{
-		float	height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
-		//float	height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 3);
+		float	height;
+
+		if (WorldData.UseSimpleGen)
+			height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
+		else
+			height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 3);
 
 		height *= biome.maxElevation;
 		height += biome.baseElevation;

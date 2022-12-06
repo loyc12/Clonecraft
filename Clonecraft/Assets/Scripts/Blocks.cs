@@ -19,10 +19,10 @@ public enum BlockID : byte
 public class	BlockType
 {
 	public string 			blockName;
-	public bool				isOpaque;			//isSolid
-	public bool				isSolid;			//isColidable
-	public bool				isMonofaced;		//Custom : whether to use front texture for all sides
-	public static BlockID	maxID = (BlockID)9;	//DE-HARDCODE ME
+	public bool				isOpaque;				//isSolid
+	public bool				isSolid;				//isColidable
+	public bool				isMonofaced;
+	public static BlockID	maxID = (BlockID)9;		//DE-HARDCODE ME
 
 	[Header("Texture Values")]
 	public int	frontFaceTexture;

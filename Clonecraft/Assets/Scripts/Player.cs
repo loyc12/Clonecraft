@@ -5,31 +5,34 @@ using UnityEngine.UI;
 
 /*	IDEAS
 
-	make croutch croutchier
+	make crouch crouchier
 
 */
 
 public class Player : MonoBehaviour
 {
 	private bool	isSprinting;
-	private bool	isCroutching;
+	private bool	isCrouching;
 	private bool	isGrounded;
 	private bool	isJumping;	//jumpRequest
 	private bool	isFlying;
 	private bool	isGhosting;
 
-	private Transform		playerCamera;			//cam
-	private float			verticalRotation;
+	private Transform		playerCam;				//cam
 
 	private float			mouseHorizontal;
+	private float			yRotation;
+
 	private float			mouseVertical;
-	private float			mouseScroll;				//Scroll
+	private float			xRotation;
+
+	private float			mouseScroll;			//Scroll
 
 	private Vector3			velocity;
 	private float			verticalSpeed;			//vertical Momentum
 
-	private float			rightward;				//Horizontal	(w s)
-	private float			frontward;				//Vertical		(a d)
+	private float			horizontal;				//(w s)
+	private float			vertical;				//(a d)
 
 	public Transform		placeBlock;
 	public Transform		breakBlock;				//highlightBlock
@@ -41,12 +44,10 @@ public class Player : MonoBehaviour
 
 	private void	Start()
 	{
-		playerCamera = GameObject.Find("Player Camera").transform;
+		playerCam = GameObject.Find("Camera").transform;
 		world = GameObject.Find("World").GetComponent<World>();
 
 		Cursor.lockState = CursorLockMode.Locked;
-
-		verticalRotation = 0;
 
 		UpdatedSelectedBlockID(PlayerData.defaultBlock);
 	}
@@ -59,32 +60,32 @@ public class Player : MonoBehaviour
 			Jump();
 
 		transform.Translate(velocity, Space.World);
-		TurnCamera();
 	}
 
 	private void	Update()
 	{
 		FindTargetedBlocks();
 		GetPlayerInputs();
+		TurnCamera();
 	}
 
 	private void	GetPlayerInputs()
 	{
-		rightward = Input.GetAxis("Horizontal");	//in project settings
-		frontward = Input.GetAxis("Vertical");
-		mouseHorizontal = Input.GetAxis("Mouse X");
 		mouseVertical = Input.GetAxis("Mouse Y");
-		mouseScroll = Input.GetAxis("Mouse ScrollWheel");
+		mouseHorizontal = Input.GetAxis("Mouse X");
+
+		vertical = Input.GetAxis("Vertical");
+		horizontal = Input.GetAxis("Horizontal");
 
 		if (Input.GetButtonDown("Sprint"))
 			isSprinting = true;
 		else if (Input.GetButtonUp("Sprint"))
 			isSprinting = false;
 
-		if (Input.GetButtonDown("Croutch"))
-			isCroutching = true;
-		else if (Input.GetButtonUp("Croutch"))
-			isCroutching = false;
+		if (Input.GetButtonDown("Crouch"))
+			isCrouching = true;
+		else if (Input.GetButtonUp("Crouch"))
+			isCrouching = false;
 
 		if (Input.GetButtonDown("Jump"))
 			isJumping = true;
@@ -100,17 +101,12 @@ public class Player : MonoBehaviour
 		if (Input.GetButtonDown("TP"))
 			transform.Translate((Vector3.up * WorldData.ChunkSize), Space.World);
 
+		mouseScroll = Input.GetAxis("Mouse ScrollWheel");
 		if (mouseScroll != 0)
 			ChangeSelectedBlock(BlockID.AIR);
 
 		if (breakBlock.gameObject.activeSelf)
 			BlockAction();
-	}
-
-	private void	UpdatedSelectedBlockID(BlockID value)
-	{
-		selectedBlockID = value;
-		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
 	}
 
 	private void	FindTargetedBlocks()	//doesn't entirely prevent placing a block that clips
@@ -121,12 +117,12 @@ public class Player : MonoBehaviour
 
 		float	step = 0;
 
-		firstPos = playerCamera.position;
+		firstPos = playerCam.position;
 
 		while (step <= PlayerData.reach)
 		{
 			secondPos = firstPos;
-			firstPos = playerCamera.position + (playerCamera.forward * step);
+			firstPos = playerCam.position + (playerCam.forward * step);
 
 			if (BlockID.AIR < world.FindBlockID(new Coords(firstPos)))					//optimize me
 			{
@@ -138,7 +134,7 @@ public class Player : MonoBehaviour
 				breakBlock.gameObject.SetActive(true);
 
 				Coords	rPos = new Coords(secondPos);
-				Coords	camPos = new Coords(playerCamera.position);
+				Coords	camPos = new Coords(playerCam.position);
 
 				if ((rPos.y != camPos.y && rPos.y != (camPos.y - 1)) || rPos.x != camPos.x || rPos.z != camPos.z)
 				{
@@ -184,9 +180,15 @@ public class Player : MonoBehaviour
 		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
 	}
 
+	private void	UpdatedSelectedBlockID(BlockID value)
+	{
+		selectedBlockID = value;
+		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
+	}
+
 	private void	BlockAction()
 	{
-		if (Input.GetMouseButton(0))	//break block
+		if (Input.GetMouseButtonDown(0))	//break block
 		{
 			Coords worldPos = new Coords(breakBlock.position);
 			Coords chunkPos = worldPos.WorldToChunkPos();
@@ -194,7 +196,7 @@ public class Player : MonoBehaviour
 			if (worldPos.IsBlockInWorld())
 				world.FindChunk(chunkPos).SetBlockID(worldPos, BlockID.AIR);
 		}
-		if (Input.GetMouseButton(1))	//place block
+		if (Input.GetMouseButtonDown(1))	//place block
 		{
 			Coords worldPos = new Coords(placeBlock.position);
 			Coords chunkPos = worldPos.WorldToChunkPos();
@@ -202,7 +204,7 @@ public class Player : MonoBehaviour
 			if (worldPos.IsBlockInWorld())
 				world.FindChunk(chunkPos).SetBlockID(worldPos, selectedBlockID);
 		}
-		if (Input.GetMouseButton(2))	//copy block
+		if (Input.GetMouseButtonDown(2))	//copy block
 		{
 			Coords worldPos = new Coords(breakBlock.position);
 			Coords chunkPos = worldPos.WorldToChunkPos();
@@ -221,11 +223,11 @@ public class Player : MonoBehaviour
 			verticalSpeed += PlayerData.gravityForce * Time.fixedDeltaTime;
 
 		//horizontal movements controls
-		velocity = (transform.forward * frontward) + (transform.right * rightward);
+		velocity = (transform.forward * vertical) + (transform.right * horizontal);
 
 		//speed controls
-		if (isCroutching)
-			velocity *= PlayerData.croutchSpeed;
+		if (isCrouching)
+			velocity *= PlayerData.crouchSpeed;
 		else if (isSprinting)
 			velocity *= PlayerData.sprintSpeed;
 		else
@@ -242,11 +244,11 @@ public class Player : MonoBehaviour
 		{
 			velocity *= PlayerData.flySpeed;
 
-			if (isJumping && isCroutching)
+			if (isJumping && isCrouching)
 				velocity.y = 0;
 			else if (isJumping)
 				velocity.y = PlayerData.ascentSpeed;
-			else if (isCroutching)
+			else if (isCrouching)
 				velocity.y = -PlayerData.ascentSpeed;
 			if (isSprinting)
 				velocity.y *= PlayerData.sprintSpeed / 3f;
@@ -266,19 +268,15 @@ public class Player : MonoBehaviour
 
 	private void TurnCamera()
 	{
-		transform.Rotate(Vector3.up * mouseHorizontal * PlayerData.cameraSpeed);					// left/right cam movement
+		mouseHorizontal *= PlayerData.cameraSpeed * Time.deltaTime * 100f;
+		yRotation += mouseHorizontal;
 
-		//playerCamera.transform.Rotate(Vector3.right * -mouseVertical * cameraSpeed);	//  up/down   cam movement (unbounded)
+		mouseVertical *= PlayerData.cameraSpeed * Time.deltaTime * 100f;
+		xRotation -= mouseVertical;
+		xRotation = Mathf.Clamp(xRotation, -89f, 89f);
 
-		verticalRotation += -mouseVertical * PlayerData.cameraSpeed;
-
-		//clamping camera
-		if (verticalRotation > 90f)
-			verticalRotation = 90f;
-		else if (verticalRotation < -90f)
-			verticalRotation = -90f;
-
-		playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);	//  up/down   cam movement
+		playerCam.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);		//moves the head around
+		transform.rotation = Quaternion.Euler(0f, yRotation, 0f);						//turns the body left/right
 	}
 
 	private void	Jump()
@@ -286,8 +284,8 @@ public class Player : MonoBehaviour
 		if (isGrounded)
 		{
 			verticalSpeed = PlayerData.jumpForce;
-			if (isCroutching)
-				verticalSpeed *= PlayerData.croutchJumpFactor;
+			if (isCrouching)
+				verticalSpeed *= PlayerData.crouchJumpFactor;
 			isGrounded = false;
 		}
 	}
