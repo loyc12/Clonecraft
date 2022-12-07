@@ -9,7 +9,8 @@ public static class PlayerData
 	public static readonly float	walkSpeed = 6f;
 	public static readonly float	sprintSpeed = 12f;
 
-	public static readonly float	flySpeed = 8f;
+	public static readonly float	flyFactor = 3f;
+	public static readonly float	flySpeed = 6f;
 	public static readonly float	ascentSpeed = 12f;
 
 	public static readonly float	jumpForce = 8f;
@@ -22,9 +23,9 @@ public static class PlayerData
 	public static readonly float	playerHeight = 1.85f;
 
 	public static readonly float	reachIncrement = 0.04f;		//checkIncrement
-	public static readonly float	reach = 4.8f;
+	public static readonly float	reach = 5f;
 
-	public static readonly float	cameraSpeed = 16f;
+	public static readonly float	cameraSpeed = 3f;
 
 	public static readonly BlockID	defaultBlock = BlockID.GRASS;
 }

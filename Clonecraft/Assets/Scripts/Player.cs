@@ -11,36 +11,38 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-	private bool	isSprinting;
-	private bool	isCrouching;
-	private bool	isGrounded;
-	private bool	isJumping;	//jumpRequest
-	private bool	isFlying;
-	private bool	isGhosting;
+	private bool		isSprinting;
+	private bool		isCrouching;
+	private bool		isGrounded;
+	private bool		isJumping;	//jumpRequest
+	private bool		isFlying;
+	private bool		isGhosting;
 
-	private Transform		playerCam;				//cam
+	private Transform	playerCam;				//cam
 
-	private float			mouseHorizontal;
-	private float			yRotation;
+	private float		mouseHorizontal;
+	private float		yRotation;
 
-	private float			mouseVertical;
-	private float			xRotation;
+	private float		mouseVertical;
+	private float		xRotation;
 
-	private float			mouseScroll;			//Scroll
+	private float		mouseScroll;			//Scroll
 
-	private Vector3			velocity;
-	private float			verticalSpeed;			//vertical Momentum
+	private Vector3		velocity;
+	private float		verticalSpeed;			//vertical Momentum
 
-	private float			horizontal;				//(w s)
-	private float			vertical;				//(a d)
+	private float		horizontal;				//(w s)
+	private float		vertical;				//(a d)
 
-	public Transform		placeBlock;
-	public Transform		breakBlock;				//highlightBlock
+	public Transform	placeBlock;
+	public Transform	breakBlock;				//highlightBlock
 
-	public Text				selectedBlockText;
-	public BlockID			selectedBlockID;
+	public Text			selectedBlockText;
+	public BlockID		selectedBlockID;
 
-	private World			world;
+	private World		world;
+
+
 
 	private void	Start()
 	{
@@ -173,22 +175,16 @@ public class Player : MonoBehaviour
 				selectedBlockID = BlockID.GRASS;
 			if (selectedBlockID < BlockID.GRASS)
 				selectedBlockID = maxID - 1;
+			selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
 		}
 		else
-			selectedBlockID = value;
+			UpdatedSelectedBlockID(value);
 
-		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
-	}
-
-	private void	UpdatedSelectedBlockID(BlockID value)
-	{
-		selectedBlockID = value;
-		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
 	}
 
 	private void	BlockAction()
 	{
-		if (Input.GetMouseButtonDown(0))	//break block
+		if (Input.GetMouseButtonDown(0) || (isSprinting && Input.GetMouseButton(0)))	//break block
 		{
 			Coords worldPos = new Coords(breakBlock.position);
 			Coords chunkPos = worldPos.WorldToChunkPos();
@@ -196,7 +192,7 @@ public class Player : MonoBehaviour
 			if (worldPos.IsBlockInWorld())
 				world.FindChunk(chunkPos).SetBlockID(worldPos, BlockID.AIR);
 		}
-		if (Input.GetMouseButtonDown(1))	//place block
+		if (Input.GetMouseButtonDown(1) || (isSprinting && Input.GetMouseButton(1)))	//place block
 		{
 			Coords worldPos = new Coords(placeBlock.position);
 			Coords chunkPos = worldPos.WorldToChunkPos();
@@ -214,14 +210,14 @@ public class Player : MonoBehaviour
 		}
 	}
 
+	private void	UpdatedSelectedBlockID(BlockID value)
+	{
+		selectedBlockID = value;
+		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
+	}
+
 	private void	CalculateVelocity()
 	{
-		//gravity implementation
-		if (isGrounded || isFlying)
-			verticalSpeed *= 0;
-		if (verticalSpeed > PlayerData.maxFallSpeed)
-			verticalSpeed += PlayerData.gravityForce * Time.fixedDeltaTime;
-
 		//horizontal movements controls
 		velocity = (transform.forward * vertical) + (transform.right * horizontal);
 
@@ -233,16 +229,24 @@ public class Player : MonoBehaviour
 		else
 			velocity *= PlayerData.walkSpeed;
 
-		//checks for sideways obstacles
-		if (!isGhosting && ((velocity.x > 0 && isRightBlocked) || (velocity.x < 0 && isLeftBlocked)))
-			velocity.x = 0;
-		if (!isGhosting && ((velocity.z > 0 && isFrontBlocked) || (velocity.z < 0 && isBackBlocked)))
-			velocity.z = 0;
+		velocity.x *= Time.fixedDeltaTime;
+		velocity.z *= Time.fixedDeltaTime;
+
+		velocity = CheckHorizontalSpeed(velocity);
+
+		//gravity implementation
+		if (isGrounded || isFlying)
+			verticalSpeed *= 0;
+		if (verticalSpeed > PlayerData.maxFallSpeed)
+			verticalSpeed += PlayerData.gravityForce * Time.fixedDeltaTime;
 
 		//fly controls
 		if (isFlying)
 		{
-			velocity *= PlayerData.flySpeed;
+			if (isSprinting)
+				velocity *= PlayerData.flySpeed;
+			else
+				velocity *= 2f;
 
 			if (isJumping && isCrouching)
 				velocity.y = 0;
@@ -250,30 +254,63 @@ public class Player : MonoBehaviour
 				velocity.y = PlayerData.ascentSpeed;
 			else if (isCrouching)
 				velocity.y = -PlayerData.ascentSpeed;
+
 			if (isSprinting)
-				velocity.y *= PlayerData.sprintSpeed / 3f;
+				velocity.y *= PlayerData.flyFactor;
 		}
 		else
 			velocity.y += verticalSpeed;
 
 		//makes movement speed proporional to time
-		velocity *= Time.fixedDeltaTime;
+		velocity.y *= Time.fixedDeltaTime;
 
-		//checks for vertical obstacles
-		if (!isGhosting && velocity.y < 0 )
-			velocity.y = checkFallSpeed(velocity.y);
-		else if (!isGhosting && velocity.y > 0)
-			velocity.y = checkJumpSpeed(velocity.y);
+		velocity = CheckVerticalSpeed(velocity);
 	}
 
-	private void TurnCamera()
+	private Vector3	CheckHorizontalSpeed(Vector3 velocity)	//TODO : calculate where the player should end up after colision
 	{
-		mouseHorizontal *= PlayerData.cameraSpeed * Time.deltaTime * 100f;
+		if (!isGhosting)
+		{
+			if (velocity.x > 0 && isRightBlocked)
+			{
+				velocity.x = 0;
+			}
+			if (velocity.x < 0 && isLeftBlocked)
+			{
+				velocity.x = 0;
+			}
+			if (velocity.z > 0 && isFrontBlocked)
+			{
+				velocity.z = 0;
+			}
+			if (velocity.z < 0 && isBackBlocked)
+			{
+				velocity.z = 0;
+			}
+		}
+		return (velocity);
+	}
+
+	private Vector3	CheckVerticalSpeed(Vector3 velocity)	//TODO : calculate where the player should end up after colision
+	{
+		if (!isGhosting)
+		{
+			if (velocity.y < 0 )
+				velocity.y = checkFallSpeed(velocity.y);
+			else if (velocity.y > 0)
+				velocity.y = checkJumpSpeed(velocity.y);
+		}
+		return (velocity);
+	}
+
+	private void	TurnCamera()
+	{
+		mouseHorizontal *= PlayerData.cameraSpeed;
 		yRotation += mouseHorizontal;
 
-		mouseVertical *= PlayerData.cameraSpeed * Time.deltaTime * 100f;
+		mouseVertical *= PlayerData.cameraSpeed;
 		xRotation -= mouseVertical;
-		xRotation = Mathf.Clamp(xRotation, -89f, 89f);
+		xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
 		playerCam.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);		//moves the head around
 		transform.rotation = Quaternion.Euler(0f, yRotation, 0f);						//turns the body left/right
