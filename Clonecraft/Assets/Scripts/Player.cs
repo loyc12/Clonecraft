@@ -184,7 +184,7 @@ public class Player : MonoBehaviour
 
 	private void	BlockAction()
 	{
-		if (Input.GetMouseButtonDown(0) || (isSprinting && Input.GetMouseButton(0)))	//break block
+		if (Input.GetMouseButtonDown(0) || (Input.GetMouseButton(0) && Input.GetButton("Alt")))	//break block
 		{
 			Coords worldPos = new Coords(breakBlock.position);
 			Coords chunkPos = worldPos.WorldToChunkPos();
@@ -192,7 +192,7 @@ public class Player : MonoBehaviour
 			if (worldPos.IsBlockInWorld())
 				world.FindChunk(chunkPos).SetBlockID(worldPos, BlockID.AIR);
 		}
-		if (Input.GetMouseButtonDown(1) || (isSprinting && Input.GetMouseButton(1)))	//place block
+		if (Input.GetMouseButtonDown(1) || (Input.GetMouseButton(1) && Input.GetButton("Alt")))	//place block
 		{
 			Coords worldPos = new Coords(placeBlock.position);
 			Coords chunkPos = worldPos.WorldToChunkPos();
@@ -295,10 +295,15 @@ public class Player : MonoBehaviour
 	{
 		if (!isGhosting)
 		{
-			if (velocity.y < 0 )
-				velocity.y = checkFallSpeed(velocity.y);
-			else if (velocity.y > 0)
-				velocity.y = checkJumpSpeed(velocity.y);
+			if (velocity.y < 0 && isBottomBlocked(velocity.y))
+			{
+				velocity.y = 0;
+				isGrounded = true;
+			}
+			else
+				isGrounded = false;
+			if (velocity.y > 0 && isTopBlocked(velocity.y))
+				velocity.y = 0;
 		}
 		return (velocity);
 	}
@@ -327,7 +332,7 @@ public class Player : MonoBehaviour
 		}
 	}
 
-	private float	checkFallSpeed (float fallSpeed)	//checkDownSpeed
+	private bool	isBottomBlocked (float fallSpeed)	//checkDownSpeed
 	{
 		if (world.IsBlockSolid(new Coords(
 				transform.position.x + PlayerData.playerWidht,
@@ -349,16 +354,12 @@ public class Player : MonoBehaviour
 				transform.position.y + fallSpeed,
 				transform.position.z - PlayerData.playerWidht)))
 		{
-			isGrounded = true;
-			return (0);
+			return (true);
 		}
-
-		isGrounded = false;
-
-		return (fallSpeed);
+		return (false);
 	}
 
-	private float	checkJumpSpeed (float jumpSpeed)	//checkUpSpeed
+	private bool	isTopBlocked (float jumpSpeed)	//checkUpSpeed
 	{
 		if (world.IsBlockSolid(new Coords(
 				transform.position.x + PlayerData.playerWidht,
@@ -380,10 +381,9 @@ public class Player : MonoBehaviour
 				transform.position.y + PlayerData.playerHeight + jumpSpeed,
 				transform.position.z - PlayerData.playerWidht)))
 		{
-			return (0);
+			return (true);
 		}
-
-		return (jumpSpeed);
+		return (false);
 	}
 
 	public bool	isFrontBlocked
