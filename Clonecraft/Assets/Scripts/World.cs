@@ -219,7 +219,43 @@ public class	World : MonoBehaviour
 		return (Mathf.FloorToInt(height));
 	}
 
+	float	Get3DTerrain(Coords worldPos)	//EXPERIMENTAL
+	{
+		float	value;
+
+		//if (WorldData.UseSimpleGen)
+			//value = Noise.Get3DNoise(new Vector3(worldPos.x, worldPos.y, worldPos.z), 0, biome.terrainScale);
+		//else
+			value = Noise.Get3DRecursiveNoise(new Vector3(worldPos.x, worldPos.y, worldPos.z), 0, biome.terrainScale, 2f, 3);
+
+		return (value);
+	}
+
 	public BlockID GetBlockID(Coords worldPos)		//GetVoxel
+	{
+		int		y = worldPos.y;
+
+		/* === ABSOLUTE PASS === */
+		if (!worldPos.IsBlockInWorld())
+			return (BlockID.AIR);
+
+		else if (y == 0)
+			return (BlockID.BEDROCK);
+
+		/* === BASIC TERRAIN PASS === */
+
+		float	center = 0.5f;
+		float	slope = 4f;
+		float	noiseValue = 1f; //Get3DTerrain(worldPos);
+		float	heightFactor = 0.5f; //(y / WorldData.WorldBlockHeight);
+		float	threshold = (slope * Mathf.Pow((heightFactor - center), 3) + heightFactor);
+
+		if (threshold < noiseValue)
+			return (BlockID.STONE);
+		return (BlockID.AIR);
+	}
+
+	public BlockID GetBlockID_Old(Coords worldPos)		//GetVoxel
 	{
 		int	y = worldPos.y;
 		BlockID blockID = BlockID.AIR;

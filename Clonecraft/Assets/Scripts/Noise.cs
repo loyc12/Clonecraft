@@ -27,14 +27,24 @@ public static class	Noise
 		return (noise);
 	}
 
+	//terrain recursive 3D perlin noise (INVERTED SCALE FACTOR)
+	public static float	Get3DRecursiveNoise(Vector3 pos, float offset, float scale, float factor, int n)
+	{
+		float	noise = Get3DNoise(pos, (offset + n) * offsetFactor, scale * (n + 1));
+
+		if (n > 0)
+			noise += (0.5f - Get3DRecursiveNoise(pos, offset, scale / factor, factor, n - 1)) * (1f / factor);
+		return (noise);
+	}
+
 	//generalized 3D perlin noise (INVERTED SCALE FACTOR)
-	public static bool	Get3DNoise(Vector3 pos, float offset, float scale, float threshold)
+	public static float	Get3DNoise(Vector3 pos, float offset, float scale)
 	{
 		float	mainScale = WorldData.ChunkSize * scale * WorldData.noiseScale;
 
-		float	x = (pos.x + 0.192837465f + (offset * offsetFactor)) / mainScale;
+		float	x = (pos.x + 0.192837465f + ((offset - 0.5f) * offsetFactor)) / mainScale;
 		float	y = (pos.y + 0.192837465f + (offset * offsetFactor)) / mainScale;
-		float	z = (pos.z + 0.192837465f + (offset * offsetFactor)) / mainScale;
+		float	z = (pos.z + 0.192837465f + ((offset + 0.5f) * offsetFactor)) / mainScale;
 
 		float	XY = Mathf.PerlinNoise(x, y);
 		float	XZ = Mathf.PerlinNoise(x, z);
@@ -43,9 +53,7 @@ public static class	Noise
 		float	ZX = Mathf.PerlinNoise(z, x);
 		float	YX = Mathf.PerlinNoise(y, x);
 
-		if ((XY + XZ + YZ + ZY + ZX + YX) / 6 > threshold)
-			return (true);
-		return (false);
+		return ((XY + XZ + YZ + ZY + ZX + YX) / 6);
 	}
 
 	//for ore and cave noise (INVERTED SCALE FACTOR)

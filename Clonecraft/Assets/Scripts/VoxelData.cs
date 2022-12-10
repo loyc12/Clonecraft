@@ -39,14 +39,3 @@ public static class	VoxelData
 		{1f, 0.9f, 0.8f, 0.7f}	//from lightest (top) to darkest (bottom)
 	};
 }
-/*	DEPRECATED - see GetNeighbor()
-	public static readonly Coords[]	neighbors = new Coords[6]
-	{
-		new Coords( 0,  0, -1),	//0 : front neighbor
-		new Coords( 0,  0,  1),	//1 : back neighbor
-		new Coords( 0,  1,  0),	//2 : top neighbor
-		new Coords( 0, -1,  0),	//3 : bottom neighbor
-		new Coords(-1,  0,  0),	//4 : left neighbor
-		new Coords( 1,  0,  0),	//5 : right neighbor
-	};
-*/
