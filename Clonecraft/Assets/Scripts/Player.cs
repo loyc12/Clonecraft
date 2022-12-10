@@ -188,25 +188,28 @@ public class Player : MonoBehaviour
 		{
 			Coords worldPos = new Coords(breakBlock.position);
 			Coords chunkPos = worldPos.WorldToChunkPos();
+			Chunk	targetChunk = world.FindChunk(chunkPos);
 
-			if (worldPos.IsBlockInWorld())
-				world.FindChunk(chunkPos).SetBlockID(worldPos, BlockID.AIR);
+			if (worldPos.IsBlockInWorld() && targetChunk.isLoaded)
+				targetChunk.SetBlockID(worldPos, BlockID.AIR);
 		}
 		if (Input.GetMouseButtonDown(1) || (Input.GetMouseButton(1) && Input.GetButton("Alt")))	//place block
 		{
 			Coords worldPos = new Coords(placeBlock.position);
 			Coords chunkPos = worldPos.WorldToChunkPos();
+			Chunk	targetChunk = world.FindChunk(chunkPos);
 
-			if (worldPos.IsBlockInWorld())
-				world.FindChunk(chunkPos).SetBlockID(worldPos, selectedBlockID);
+			if (worldPos.IsBlockInWorld() && targetChunk.isLoaded)
+				targetChunk.SetBlockID(worldPos, selectedBlockID);
 		}
 		if (Input.GetMouseButtonDown(2))	//copy block
 		{
 			Coords worldPos = new Coords(breakBlock.position);
 			Coords chunkPos = worldPos.WorldToChunkPos();
+			Chunk	targetChunk = world.FindChunk(chunkPos);
 
-			if (worldPos.IsBlockInWorld())
-				UpdatedSelectedBlockID(world.FindChunk(chunkPos).FindBlockID(worldPos));
+			if (worldPos.IsBlockInWorld() && targetChunk.isLoaded)
+				UpdatedSelectedBlockID(targetChunk.FindBlockID(worldPos));
 		}
 	}
 

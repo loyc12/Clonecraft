@@ -5,6 +5,8 @@ using UnityEngine;
 public class	World : MonoBehaviour
 {
 	public int				seed;
+	public Coords			randomOffset;
+
 	public BiomeAttributes	biome;
 
 	public Transform		player;
@@ -26,10 +28,11 @@ public class	World : MonoBehaviour
 
 	private void	Start()
 	{
-		Random.InitState(seed);
+		InitializeRandomness();
 
 		SpawnPlayer();
-		GenerateSpawn();
+		if (WorldData.PreGenSpawn)
+			GenerateSpawn();
 	}
 
 	private void	Update()
@@ -44,6 +47,15 @@ public class	World : MonoBehaviour
 
 		if (Input.GetButtonDown("F3"))
 			debugScreen.SetActive(!debugScreen.activeSelf);
+	}
+
+	private void	InitializeRandomness()
+	{
+		Random.InitState(seed);
+		randomOffset = new Coords(
+			Random.Range(-WorldData.RandomRange, WorldData.RandomRange),
+			Random.Range(-WorldData.RandomRange, WorldData.RandomRange),
+			Random.Range(-WorldData.RandomRange, WorldData.RandomRange));
 	}
 
 	//generate the chunks inside the initial render distance (square) (at spawn)
@@ -120,8 +132,8 @@ public class	World : MonoBehaviour
 	//puts the player at the spawnpoint
 	void	SpawnPlayer()
 	{
-		spawnPoint = new Coords(Mathf.FloorToInt(WorldData.WorldBlockSize / 2f), 0, Mathf.FloorToInt(WorldData.WorldBlockSize / 2f));
-		spawnPoint.y = (1 + GetTerrainHeight(spawnPoint));
+		spawnPoint = new Coords(Mathf.FloorToInt(WorldData.WorldBlockSize / 2f), WorldData.WorldBlockHeight, Mathf.FloorToInt(WorldData.WorldBlockSize / 2f));
+		//spawnPoint.y = (1 + GetTerrainHeight(spawnPoint));
 
 		player.position = new Vector3(spawnPoint.x + 0.5f, spawnPoint.y + 0.1f, spawnPoint.z + 0.5f);
 
@@ -143,7 +155,7 @@ public class	World : MonoBehaviour
 				LoadOrUnload(targetChunk);
 			else
 			{
-				if (!IsChunkInTooFar(targetChunk.chunkPos, 2f))
+				if (!IsChunkInTooFar(targetChunk.chunkPos, WorldData.ChunkTooFarFactor))
 				{
 					targetChunk.Generate();
 
@@ -204,14 +216,14 @@ public class	World : MonoBehaviour
 		return (false);
 	}
 
-	int	GetTerrainHeight(Coords worldPos)
+	private int	GetTerrainHeight(Coords worldPos)
 	{
 		float	height;
 
 		if (WorldData.UseSimpleGen)
-			height = Noise.Get2DNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale);
+			height = Noise.Get2DNoise(worldPos.ToVector2(), randomOffset, biome.terrainScale);
 		else
-			height = Noise.Get2DRecursiveNoise(new Vector2(worldPos.x, worldPos.z), 0, biome.terrainScale, 2f, 3);
+			height = Noise.Get2DRecursiveNoise(worldPos.ToVector2(), randomOffset, biome.terrainScale, 2f, 3);
 
 		height *= biome.maxElevation;
 		height += biome.baseElevation;
@@ -219,43 +231,105 @@ public class	World : MonoBehaviour
 		return (Mathf.FloorToInt(height));
 	}
 
-	float	Get3DTerrain(Coords worldPos)	//EXPERIMENTAL
+	//returns true if there should be a block at the given worldPos
+	private BlockID	Get3DTerrain(Coords worldPos)
 	{
-		float	value;
+		// x = -( a(y - c)**3 + b(y - c) - d )
+		// a above 0
+		// b and d between 0 and 1
+		// c between -1 and 1
 
-		//if (WorldData.UseSimpleGen)
-			//value = Noise.Get3DNoise(new Vector3(worldPos.x, worldPos.y, worldPos.z), 0, biome.terrainScale);
-		//else
-			value = Noise.Get3DRecursiveNoise(new Vector3(worldPos.x, worldPos.y, worldPos.z), 0, biome.terrainScale, 2f, 3);
+		float	slope = 2.5f;				//a		(3.20)	(2.00)
+		float	strenghtOffset = 0.3f;		//b		(0.10)	(0.25)
+		float	thresholdOffset = 0.60f;	//c		(0.55)	(0.64)
+		float	verticalOffset = 0.36f;		//d		(0.45)	(0.32)
 
-		return (value);
+		float	heightValue = ((float)worldPos.y / WorldData.WorldBlockHeight) - thresholdOffset;
+		float	heightValueCubed =  Mathf.Pow((heightValue), 3);
+
+		float	threshold = -((slope * heightValueCubed) + (strenghtOffset * heightValue) - verticalOffset);
+
+		if (1f < threshold )
+			return (BlockID.STONE);
+		else if (threshold < 0f)
+			return (BlockID.DIRT);
+
+		float	noiseValue;
+
+		if (WorldData.UseSimpleGen)
+			noiseValue = Noise.Get3DNoise(worldPos.ToVector3(), randomOffset, biome.terrainScale);
+		else
+			noiseValue = Noise.Get3DRecursiveNoise(worldPos.ToVector3(), randomOffset, biome.terrainScale, 2f, 3);
+
+		if (noiseValue < threshold)
+			return (BlockID.STONE);
+
+		float soilThreshold = threshold + ((2f - ((float)worldPos.y / WorldData.WorldBlockHeight)) / WorldData.WorldBlockHeight);
+
+		if (noiseValue < soilThreshold)
+			return (BlockID.DIRT);
+		else
+			return (BlockID.AIR);
 	}
 
 	public BlockID GetBlockID(Coords worldPos)		//GetVoxel
 	{
-		int		y = worldPos.y;
+		if (WorldData.Use3DGen)
+			return (GetBlockID3D(worldPos));
+		else
+			return (GetBlockID2D(worldPos));
+	}
+
+	private BlockID GetBlockID3D(Coords worldPos)
+	{
+		BlockID blockID = BlockID.AIR;
+		float	y = worldPos.y;
 
 		/* === ABSOLUTE PASS === */
 		if (!worldPos.IsBlockInWorld())
-			return (BlockID.AIR);
+			return (blockID);
 
 		else if (y == 0)
 			return (BlockID.BEDROCK);
 
+		/* === 3D NOISE PASS === */
+
+		blockID = Get3DTerrain(worldPos);
+
+		/* === ORE PASS === */
+		if (WorldData.UseCaveGen && blockID != BlockID.AIR)
+		{
+			foreach (Vein vein in biome.veins)
+			{
+				if (y >= vein.height - vein.spread && y <= vein.height + vein.spread)
+					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(worldPos.ToVector3(), randomOffset, vein))
+						blockID = vein.blockID;
+			}
+		}
+
 		/* === BASIC TERRAIN PASS === */
-
-		float	center = 0.5f;
-		float	slope = 4f;
-		float	noiseValue = 1f; //Get3DTerrain(worldPos);
-		float	heightFactor = 0.5f; //(y / WorldData.WorldBlockHeight);
-		float	threshold = (slope * Mathf.Pow((heightFactor - center), 3) + heightFactor);
-
-		if (threshold < noiseValue)
-			return (BlockID.STONE);
-		return (BlockID.AIR);
+		if (blockID == BlockID.STONE)
+		{
+			if (y < WorldData.SeaLevel)
+				blockID = BlockID.ROCK;
+			else if (y > WorldData.SnowLevel)
+				blockID = BlockID.MARBLE;
+			else
+				blockID = BlockID.STONE;
+		}
+		else if (blockID == BlockID.DIRT)
+		{
+			if (y < WorldData.SeaLevel - 2)
+				blockID = BlockID.GRAVEL;
+			else if  (y < WorldData.SeaLevel + 2)
+				blockID = BlockID.SAND;
+			else if (y > WorldData.SnowLevel)
+				blockID = BlockID.SNOW;
+		}
+		return (blockID);
 	}
 
-	public BlockID GetBlockID_Old(Coords worldPos)		//GetVoxel
+	private BlockID GetBlockID2D(Coords worldPos)
 	{
 		int	y = worldPos.y;
 		BlockID blockID = BlockID.AIR;
@@ -288,16 +362,16 @@ public class	World : MonoBehaviour
 		else
 			blockID = BlockID.STONE;
 
-		/* === ORE TERRAIN PASS === *//*
-		if (blockID == BlockID.STONE || blockID == BlockID.DIRT || blockID == BlockID.GRASS)
+		/* === ORE PASS === */
+		if (WorldData.UseCaveGen && (blockID == BlockID.STONE || blockID == BlockID.DIRT || blockID == BlockID.GRASS))
 		{
 			foreach (Vein vein in biome.veins)
 			{
 				if (y >= vein.height - vein.spread && y <= vein.height + vein.spread)	//TEMP
-					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(worldPos.ToVector3(), vein))
+					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(worldPos.ToVector3(), randomOffset, vein))
 						blockID = (BlockID)vein.blockID;
 			}
-		}*/
+		}
 
 		/* === FINAL PASS === */
 		if (y < WorldData.RockLevel && blockID == BlockID.STONE)

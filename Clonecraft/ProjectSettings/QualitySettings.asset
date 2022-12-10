@@ -188,8 +188,8 @@ QualitySettings:
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Ultra
-    pixelLightCount: 4
-    shadows: 2
+    pixelLightCount: 1
+    shadows: 0
     shadowResolution: 3
     shadowProjection: 1
     shadowCascades: 4
@@ -205,7 +205,7 @@ QualitySettings:
     softParticles: 0
     softVegetation: 1
     realtimeReflectionProbes: 0
-    billboardsFaceCameraPosition: 1
+    billboardsFaceCameraPosition: 0
     vSyncCount: 1
     lodBias: 2
     maximumLODLevel: 0

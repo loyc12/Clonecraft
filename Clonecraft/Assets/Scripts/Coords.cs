@@ -197,11 +197,9 @@ public class Coords
 		return (new Vector3(this.x, this.y, this.z));
 	}
 
-	/*
 	public Vector2	ToVector2()
 	{
 		return (new Vector2(this.x, this.z));
 	}
-	*/
 }
 

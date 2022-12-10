@@ -18,11 +18,10 @@ public class BiomeAttributes : ScriptableObject
 [System.Serializable]
 public class	Vein				//for ore gen (and cave??)
 {
-	public string	nodeName;
-	public byte		blockID;
-	public int		height;
-	public int		spread;
-	public float	scale;
-	public float	threshold;
-	public float	offset;
+	public string		nodeName;
+	public BlockID		blockID;
+	public int			height;
+	public int			spread;
+	public float		scale;
+	public float		threshold;
 }

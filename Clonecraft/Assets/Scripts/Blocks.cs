@@ -12,7 +12,8 @@ public enum BlockID : byte
 	BEDROCK	= 5,
 	MARBLE	= 6,
 	SAND	= 7,
-	GRAVEL	= 8
+	GRAVEL	= 8,
+	SNOW	= 9
 }
 
 [System.Serializable]
