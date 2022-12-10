@@ -257,16 +257,16 @@ public class	World : MonoBehaviour
 		float	noiseValue;
 
 		if (WorldData.UseSimpleGen)
-			noiseValue = Noise.Get3DNoise(worldPos.ToVector3(), randomOffset, biome.terrainScale);
+			noiseValue = Noise.Get3DNoise(worldPos.ToVector3(), randomOffset, biome.terrainScale, biome.mountainScale);
 		else
-			noiseValue = Noise.Get3DRecursiveNoise(worldPos.ToVector3(), randomOffset, biome.terrainScale, 2f, 3);
+			noiseValue = Noise.Get3DRecursiveNoise(worldPos.ToVector3(), randomOffset, biome.terrainScale, biome.mountainScale, 1.5f, 4);
 
-		if (noiseValue < threshold)
-			return (BlockID.STONE);
-
-		float soilThreshold = threshold + ((2f - ((float)worldPos.y / WorldData.WorldBlockHeight)) / WorldData.WorldBlockHeight);
+		float soilThreshold = threshold - ((2.5f - ((float)worldPos.y / WorldData.WorldBlockHeight)) / WorldData.WorldBlockHeight);
 
 		if (noiseValue < soilThreshold)
+			return (BlockID.STONE);
+
+		if (noiseValue < threshold)
 			return (BlockID.DIRT);
 		else
 			return (BlockID.AIR);

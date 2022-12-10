@@ -11,10 +11,10 @@ public static class	WorldData
 	public static readonly bool		UseCaveGen = true;
 	public static readonly bool		PreGenSpawn = false;
 
-	public static readonly int		RenderDistance = 12;		//in chunk
+	public static readonly int		RenderDistance = 6;		//in chunk
 	public static readonly float	ChunkTooFarFactor = 1.2f;	//of renderDist
 
-	public static readonly int		WorldChunkSize = 16;		//in chunk
+	public static readonly int		WorldChunkSize = 64;		//in chunk
 	public static int				WorldBlockSize				//in Block
 	{ get { return WorldChunkSize * ChunkSize; }}
 

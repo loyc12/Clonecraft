@@ -1125,7 +1125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6ba2587c4d1c540a6f3716183ba15b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  randomOffset: 0
+  seed: 120956
   biome: {fileID: 11400000, guid: 48a3fd37212083b428cb417841dd3b49, type: 2}
   player: {fileID: 2078865657}
   material: {fileID: 2100000, guid: f3080fbdc5b2f0a489a03834293df144, type: 2}

@@ -29,13 +29,14 @@ public static class	Noise
 	}
 
 	//generalized 3D perlin noise (INVERTED SCALE FACTOR)
-	public static float	Get3DNoise(Vector3 pos, Coords offset, float scale)
+	public static float	Get3DNoise(Vector3 pos, Coords offset, float horizontalScale, float verticalScale)
 	{
-		float	mainScale = WorldData.ChunkSize * scale * WorldData.noiseScale;
+		float	xzScale = WorldData.ChunkSize * horizontalScale * WorldData.noiseScale;
+		float	yScale = WorldData.ChunkSize * verticalScale * WorldData.noiseScale;
 
-		float	x = (pos.x + 0.192837465f + (float)((offset.x - 1) * offsetFactor)) / mainScale;
-		float	y = (pos.y + 0.192837465f + (float)((offset.y    ) * offsetFactor)) / mainScale;
-		float	z = (pos.z + 0.192837465f + (float)((offset.z + 1) * offsetFactor)) / mainScale;
+		float	x = (pos.x + 0.192837465f + (float)((offset.x - 1) * offsetFactor)) / xzScale;
+		float	y = (pos.y + 0.192837465f + (float)((offset.y    ) * offsetFactor)) / yScale;
+		float	z = (pos.z + 0.192837465f + (float)((offset.z + 1) * offsetFactor)) / xzScale;
 
 		float	XZ = Mathf.PerlinNoise(x, z);
 		float	ZX = Mathf.PerlinNoise(z, x);
@@ -50,23 +51,27 @@ public static class	Noise
 	}
 
 	//terrain recursive 3D perlin noise (INVERTED SCALE FACTOR)
-	public static float	Get3DRecursiveNoise(Vector3 pos, Coords offset, float scale, float factor, int n)
+	public static float	Get3DRecursiveNoise(Vector3 pos, Coords offset, float horizontalScale, float verticalScale, float factor, int n)
 	{
 		Coords	nOffset = new Coords(n, n, n);
-		float	noise = Get3DNoise(pos, offset.AddPos(nOffset), scale * (n + 1));
+		float	noise = Get3DNoise(pos, offset.AddPos(nOffset), horizontalScale * (n + 1), verticalScale * (n + 1));
 
 		if (n > 0)
-			noise += (0.5f - Get3DRecursiveNoise(pos, offset, scale / factor, factor, n - 1)) * (1f / factor);
+			noise += (0.5f - Get3DRecursiveNoise(pos, offset, horizontalScale / factor, verticalScale / factor, factor, n - 1)) * (1f / factor);
 		return (noise);
 	}
 
 	//for ore and cave noise (INVERTED SCALE FACTOR)
 	public static bool	Get3DVeinNoise(Vector3 pos, Coords offset, Vein vein)
 	{
-		float	noise = Get3DRecursiveNoise(pos, offset, vein.scale, 1.5f, 2);
-
+		float	noise;
 		float	factor = (Mathf.Abs(pos.y - vein.height) / vein.spread);
-		float	strenght = 1 - Mathf.Pow(factor, 2);
+		float	strenght = 1 - Mathf.Pow(factor, 3);
+
+		if (WorldData.UseSimpleGen)
+			noise = Get3DNoise(pos, offset, vein.horizontalScale, vein.verticalScale);
+		else
+			noise = Get3DRecursiveNoise(pos, offset, vein.horizontalScale, vein.verticalScale, 1.5f, vein.n);
 
 		if (0 < strenght && vein.threshold < noise * strenght)
 			return (true);
