@@ -16,7 +16,7 @@ MonoBehaviour:
   baseElevation: 16
   maxElevation: 144
   terrainScale: 12
-  mountainScale: 12
+  mountainScale: 8
   veins:
   - nodeName: Big Caves
     blockID: 0

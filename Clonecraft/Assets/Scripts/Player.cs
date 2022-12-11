@@ -184,32 +184,30 @@ public class Player : MonoBehaviour
 
 	private void	BlockAction()
 	{
+		Coords	worldBreakPos = new Coords(breakBlock.position);
+		Coords	worldPlacePos = new Coords(placeBlock.position);
+
 		if (Input.GetMouseButtonDown(0) || (Input.GetMouseButton(0) && Input.GetButton("Alt")))	//break block
 		{
-			Coords worldPos = new Coords(breakBlock.position);
-			Coords chunkPos = worldPos.WorldToChunkPos();
+
+			Coords	chunkPos = worldBreakPos.WorldToChunkPos();
 			Chunk	targetChunk = world.FindChunk(chunkPos);
 
-			if (worldPos.IsBlockInWorld() && targetChunk.isLoaded)
-				targetChunk.SetBlockID(worldPos, BlockID.AIR);
+			if (worldBreakPos.IsBlockInWorld() && targetChunk.isLoaded)
+				targetChunk.SetBlockID(worldBreakPos, BlockID.AIR);
 		}
 		if (Input.GetMouseButtonDown(1) || (Input.GetMouseButton(1) && Input.GetButton("Alt")))	//place block
 		{
-			Coords worldPos = new Coords(placeBlock.position);
-			Coords chunkPos = worldPos.WorldToChunkPos();
+			Coords	chunkPos = worldPlacePos.WorldToChunkPos();
 			Chunk	targetChunk = world.FindChunk(chunkPos);
 
-			if (worldPos.IsBlockInWorld() && targetChunk.isLoaded)
-				targetChunk.SetBlockID(worldPos, selectedBlockID);
+			if (worldPlacePos.IsBlockInWorld() && targetChunk.isLoaded)
+				targetChunk.SetBlockID(worldPlacePos, selectedBlockID);
 		}
 		if (Input.GetMouseButtonDown(2))	//copy block
 		{
-			Coords worldPos = new Coords(breakBlock.position);
-			Coords chunkPos = worldPos.WorldToChunkPos();
+			Coords	chunkPos = worldBreakPos.WorldToChunkPos();
 			Chunk	targetChunk = world.FindChunk(chunkPos);
-
-			if (worldPos.IsBlockInWorld() && targetChunk.isLoaded)
-				UpdatedSelectedBlockID(targetChunk.FindBlockID(worldPos));
 		}
 	}
 

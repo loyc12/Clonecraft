@@ -35,6 +35,11 @@ public class DebugScreen : MonoBehaviour
 		debugText += "\n Y " + world.player.transform.position.y;
 		debugText += "\n Z " + world.player.transform.position.z;
 
+		debugText += "\n\n" + "Relative Coords";
+		debugText += "\n X " + (world.player.transform.position.x / WorldData.WorldBlockSize);
+		debugText += "\n Y " + (world.player.transform.position.y / WorldData.WorldBlockHeight);
+		debugText += "\n Z " + (world.player.transform.position.z / WorldData.WorldBlockSize);
+
 		debugText += "\n\n" + "Chunk Coords";
 		debugText += "\n X " + world.playerChunk.x;
 		debugText += "\n Y " + world.playerChunk.y;

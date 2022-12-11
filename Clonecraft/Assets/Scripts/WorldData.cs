@@ -8,30 +8,31 @@ public static class	WorldData
 
 	public static readonly bool		Use3DGen = true;
 	public static readonly bool		UseSimpleGen = false;
-	public static readonly bool		UseCaveGen = true;
+	public static readonly bool		UseCaveGen = false;
 	public static readonly bool		PreGenSpawn = false;
 
-	public static readonly int		RenderDistance = 6;		//in chunk
-	public static readonly float	ChunkTooFarFactor = 1.2f;	//of renderDist
+	public static readonly int		RenderDistance = 10;		//in chunks
+	public static readonly float	RenderLimit = 12;			//in chunks
 
-	public static readonly int		WorldChunkSize = 64;		//in chunk
-	public static int				WorldBlockSize				//in Block
+	public static readonly int		WorldChunkSize = 64;		//in chunks
+	public static int				WorldBlockSize				//in blocks
 	{ get { return WorldChunkSize * ChunkSize; }}
 
-	public static readonly int		WorldChunkHeight = 12;		//in chunk
-	public static int				WorldBlockHeight			//in Block
+	public static readonly int		WorldChunkHeight = 12;		//in chunks
+	public static int				WorldBlockHeight			//in blocks
 	{ get { return WorldChunkHeight * ChunkSize; }}
 
-	public static readonly int		ChunkSize = 16;				//in Block
-	public static readonly int		TextureAtlasSize = 16;		//in face
+	public static readonly int		ChunkSize = 16;				//in blocks
+	public static readonly int		TextureAtlasSize = 16;		//in textures
 	public static float				NormalizedTextureSize		//over 1
 	{ get {return 1f / (float)TextureAtlasSize;}}
 
-	public static readonly int		RockLevel = 16;				//in Block : max height where rock is generated
-	public static int				SeaLevel 					//in Block
-	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.30f);}}
-	public static int				SnowLevel 					//in Block
-	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.80f);}}
+	public static int				RockLevel 					//in blocks
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.16f);}}
+	public static int				SeaLevel 					//in blocks
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.36f);}}
+	public static int				SnowLevel 					//in blocks
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.76f);}}
 
 	public static float				noiseScale
 	{ get {return 16f / (float)ChunkSize;}}

@@ -24,7 +24,7 @@ public static class	Noise
 		float	noise = Get2DNoise(pos, offset.AddPos(nOffset), scale * (n + 1));
 
 		if (n > 0)
-			noise += (0.5f - Get2DRecursiveNoise(pos, offset, scale / factor, factor, n - 1)) * (1f / factor);
+			noise += (Get2DRecursiveNoise(pos, offset, scale / factor, factor, n - 1) - 0.5f) * (1f / factor);
 		return (noise);
 	}
 
@@ -38,16 +38,21 @@ public static class	Noise
 		float	y = (pos.y + 0.192837465f + (float)((offset.y    ) * offsetFactor)) / yScale;
 		float	z = (pos.z + 0.192837465f + (float)((offset.z + 1) * offsetFactor)) / xzScale;
 
-		float	XZ = Mathf.PerlinNoise(x, z);
-		float	ZX = Mathf.PerlinNoise(z, x);
+		return ((
+			Mathf.PerlinNoise(x, y - z) +
+			Mathf.PerlinNoise(x, y) +
+			Mathf.PerlinNoise(x, z) +
+			Mathf.PerlinNoise(x, z - y) +
 
-		float	YXZ = Mathf.PerlinNoise(y, x + z);
-		float	ZXY = Mathf.PerlinNoise(z + x, y);
+			//Mathf.PerlinNoise(y, x - z) +
+			Mathf.PerlinNoise(y, x) +
+			Mathf.PerlinNoise(y, z) +
+			//Mathf.PerlinNoise(y, z - x) +
 
-		float	WXZ = Mathf.PerlinNoise(y, x - z);
-		float	ZXW = Mathf.PerlinNoise(z - x, y);
-
-		return ((XZ + ZX + YXZ + ZXY + WXZ + ZXW) / 6f);
+			Mathf.PerlinNoise(z, x - y) +
+			Mathf.PerlinNoise(z, x) +
+			Mathf.PerlinNoise(z, y) +
+			Mathf.PerlinNoise(z, y - x)) / 10f);
 	}
 
 	//terrain recursive 3D perlin noise (INVERTED SCALE FACTOR)
@@ -57,7 +62,7 @@ public static class	Noise
 		float	noise = Get3DNoise(pos, offset.AddPos(nOffset), horizontalScale * (n + 1), verticalScale * (n + 1));
 
 		if (n > 0)
-			noise += (0.5f - Get3DRecursiveNoise(pos, offset, horizontalScale / factor, verticalScale / factor, factor, n - 1)) * (1f / factor);
+			noise += (Get3DRecursiveNoise(pos, offset, horizontalScale / factor, verticalScale / factor, factor, n - 1) - 0.5f) * (1f / factor);
 		return (noise);
 	}
 
@@ -71,7 +76,7 @@ public static class	Noise
 		if (WorldData.UseSimpleGen)
 			noise = Get3DNoise(pos, offset, vein.horizontalScale, vein.verticalScale);
 		else
-			noise = Get3DRecursiveNoise(pos, offset, vein.horizontalScale, vein.verticalScale, 1.5f, vein.n);
+			noise = Get3DRecursiveNoise(pos, offset, vein.horizontalScale, vein.verticalScale, 2f, vein.n);
 
 		if (0 < strenght && vein.threshold < noise * strenght)
 			return (true);

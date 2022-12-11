@@ -42,7 +42,7 @@ public class	World : MonoBehaviour
 		if (!playerChunk.SamePosAs(playerLastChunk))
 			ApplyRenderDistance();
 
-		if (queuedChunks.Count > 0 && !isLoadingChunks)
+		if (0 < queuedChunks.Count && !isLoadingChunks)
 			StartCoroutine("LoadChunks");
 
 		if (Input.GetButtonDown("F3"))
@@ -95,8 +95,7 @@ public class	World : MonoBehaviour
 			if (chunkPos.IsChunkInWorld() && !IsChunkInRenderDistance(chunkPos))
 				FindChunk(chunkPos).Unload();
 		}
-
-		for (int y = 0; y < WorldData.WorldChunkHeight; y++)
+		for (int y = playerChunk.y + WorldData.RenderDistance; y >= playerChunk.y - WorldData.RenderDistance ; y--)
 		{
 			for (int x = playerChunk.x - WorldData.RenderDistance; x <= playerChunk.x + WorldData.RenderDistance; x++)
 			{
@@ -145,23 +144,33 @@ public class	World : MonoBehaviour
 	{
 		isLoadingChunks = true;
 
-		while (0 < queuedChunks.Count)
+		for (int r = 1; r < WorldData.RenderLimit; r++)
 		{
-			Chunk	targetChunk = FindChunk(queuedChunks[0]);
-
-			queuedChunks.RemoveAt(0);
-
-			if (targetChunk.isGenerated)
-				LoadOrUnload(targetChunk);
-			else
+			int	i = 0;
+			while (0 < queuedChunks.Count && i < queuedChunks.Count)
 			{
-				if (!IsChunkInTooFar(targetChunk.chunkPos, WorldData.ChunkTooFarFactor))
+				Chunk	targetChunk = FindChunk(queuedChunks[i]);
+
+				if (targetChunk.isGenerated)
 				{
-					targetChunk.Generate();
-
 					LoadOrUnload(targetChunk);
+					queuedChunks.RemoveAt(i);
+				}
+				else
+				{
+					if (IsChunkTooFar(targetChunk.chunkPos, WorldData.RenderLimit))
+						queuedChunks.RemoveAt(i);
+					else if (!IsChunkTooFar(targetChunk.chunkPos, r))
+					{
+						queuedChunks.RemoveAt(i);
+						targetChunk.Generate();
+						LoadOrUnload(targetChunk);
 
-					yield return (null);
+						r = 1;
+						yield return (null);
+					}
+					else
+						i++;
 				}
 			}
 		}
@@ -198,7 +207,7 @@ public class	World : MonoBehaviour
 	//returns true if the given pos is inside the player's render distance (sphere)
 	bool	IsChunkInRenderDistance(Coords chunkPos)
 	{
-		if (!chunkPos.IsChunkInWorld() || IsChunkInTooFar(chunkPos, 1f))
+		if (!chunkPos.IsChunkInWorld() || IsChunkTooFar(chunkPos, WorldData.RenderDistance))
 			return (false);
 
 		if (WorldData.RenderDistance < playerChunk.SphereDistance(chunkPos))
@@ -207,10 +216,10 @@ public class	World : MonoBehaviour
 		return (true);
 	}
 
-	//returns true if the given pos further than factor * render distance (cube)
-	bool	IsChunkInTooFar(Coords chunkPos, float factor)
+	//returns true if the given pos further than render limit (cube)
+	bool	IsChunkTooFar(Coords chunkPos, float chunkDistance)
 	{
-		if (!chunkPos.IsChunkInWorld() || factor * WorldData.RenderDistance < playerChunk.CubeDistance(chunkPos))
+		if (!chunkPos.IsChunkInWorld() || chunkDistance < playerChunk.CubeDistance(chunkPos))
 			return (true);
 
 		return (false);
@@ -223,7 +232,7 @@ public class	World : MonoBehaviour
 		if (WorldData.UseSimpleGen)
 			height = Noise.Get2DNoise(worldPos.ToVector2(), randomOffset, biome.terrainScale);
 		else
-			height = Noise.Get2DRecursiveNoise(worldPos.ToVector2(), randomOffset, biome.terrainScale, 2f, 3);
+			height = Noise.Get2DRecursiveNoise(worldPos.ToVector2(), randomOffset, biome.terrainScale, 2f, 4);
 
 		height *= biome.maxElevation;
 		height += biome.baseElevation;
@@ -234,39 +243,33 @@ public class	World : MonoBehaviour
 	//returns true if there should be a block at the given worldPos
 	private BlockID	Get3DTerrain(Coords worldPos)
 	{
-		// x = -( a(y - c)**3 + b(y - c) - d )
+		// threshold = 0.5 * ( a(y - c)**3 + b(y - c) - d )
 		// a above 0
-		// b and d between 0 and 1
-		// c between -1 and 1
+		// b between -1 and 2
 
-		float	slope = 2.5f;				//a		(3.20)	(2.00)
-		float	strenghtOffset = 0.3f;		//b		(0.10)	(0.25)
-		float	thresholdOffset = 0.60f;	//c		(0.55)	(0.64)
-		float	verticalOffset = 0.36f;		//d		(0.45)	(0.32)
+		float	slope = 16f;				//a		(3.20)	(2.00)	(2.50)	(0.6)	(8.0)
+		float	strenghtOffset = 0.32f;		//b		(0.10)	(0.25)	(0.30)	(0.6)	(1.4)
+		float	thresholdOffset = 0.62f;	//c		(0.55)	(0.64)	(0.60)	(0.6)	(0.75)
+		float	verticalOffset = 1.02f;		//d		(0.45)	(0.32)	(0.36)	(0.3)	(1.4)
 
 		float	heightValue = ((float)worldPos.y / WorldData.WorldBlockHeight) - thresholdOffset;
 		float	heightValueCubed =  Mathf.Pow((heightValue), 3);
-
-		float	threshold = -((slope * heightValueCubed) + (strenghtOffset * heightValue) - verticalOffset);
-
-		if (1f < threshold )
-			return (BlockID.STONE);
-		else if (threshold < 0f)
-			return (BlockID.DIRT);
 
 		float	noiseValue;
 
 		if (WorldData.UseSimpleGen)
 			noiseValue = Noise.Get3DNoise(worldPos.ToVector3(), randomOffset, biome.terrainScale, biome.mountainScale);
 		else
-			noiseValue = Noise.Get3DRecursiveNoise(worldPos.ToVector3(), randomOffset, biome.terrainScale, biome.mountainScale, 1.5f, 4);
+			noiseValue = Noise.Get3DRecursiveNoise(worldPos.ToVector3(), randomOffset, biome.terrainScale, biome.mountainScale, 1.618f, 4);
 
-		float soilThreshold = threshold - ((2.5f - ((float)worldPos.y / WorldData.WorldBlockHeight)) / WorldData.WorldBlockHeight);
+		float	soilDepth = 4f;
+		float	threshold = 0.5f * ((slope * heightValueCubed) + (strenghtOffset * heightValue) + verticalOffset);
+		float	soilThreshold = threshold + ((soilDepth - ((float)worldPos.y / WorldData.WorldBlockHeight)) / WorldData.WorldBlockHeight);
 
-		if (noiseValue < soilThreshold)
+		//noise needs to have a value ABOVE the threshold
+		if (soilThreshold < noiseValue)
 			return (BlockID.STONE);
-
-		if (noiseValue < threshold)
+		if (threshold < noiseValue)
 			return (BlockID.DIRT);
 		else
 			return (BlockID.AIR);
