@@ -8,7 +8,7 @@ public static class	WorldData
 
 	public static readonly bool		Use3DGen = true;
 	public static readonly bool		UseSimpleGen = false;
-	public static readonly bool		UseCaveGen = false;
+	public static readonly bool		UseCaveGen = true;
 	public static readonly bool		PreGenSpawn = false;
 
 	public static readonly int		RenderDistance = 10;		//in chunks

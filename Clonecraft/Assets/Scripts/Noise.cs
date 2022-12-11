@@ -55,7 +55,7 @@ public static class	Noise
 			Mathf.PerlinNoise(z, y - x)) / 10f);
 	}
 
-	//terrain recursive 3D perlin noise (INVERTED SCALE FACTOR)
+	//terrain recursive 3D perlin noise (INVERTED SCALE FACTOR)	//have noise be consitent trough different starting n values
 	public static float	Get3DRecursiveNoise(Vector3 pos, Coords offset, float horizontalScale, float verticalScale, float factor, int n)
 	{
 		Coords	nOffset = new Coords(n, n, n);
@@ -71,7 +71,7 @@ public static class	Noise
 	{
 		float	noise;
 		float	factor = (Mathf.Abs(pos.y - vein.height) / vein.spread);
-		float	strenght = 1 - Mathf.Pow(factor, 3);
+		float	strenght = 1 - Mathf.Pow(factor, 2);	//^2 or ^3?
 
 		if (WorldData.UseSimpleGen)
 			noise = Get3DNoise(pos, offset, vein.horizontalScale, vein.verticalScale);

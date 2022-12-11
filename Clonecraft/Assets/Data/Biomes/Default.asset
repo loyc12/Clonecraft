@@ -19,26 +19,29 @@ MonoBehaviour:
   mountainScale: 8
   veins:
   - nodeName: Big Caves
+    isUsed: 1
     blockID: 0
     height: 20
     spread: 30
     horizontalScale: 4
     verticalScale: 2
-    threshold: 0.6
+    threshold: 0.5
     n: 2
   - nodeName: Medium Caves
+    isUsed: 0
     blockID: 0
     height: 80
     spread: 60
     horizontalScale: 2
     verticalScale: 4
-    threshold: 0.6
+    threshold: 0.5
     n: 2
   - nodeName: Small Caves
+    isUsed: 0
     blockID: 0
     height: 80
     spread: 120
     horizontalScale: 2
     verticalScale: 2
-    threshold: 0.6
+    threshold: 0.5
     n: 1

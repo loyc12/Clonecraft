@@ -20,6 +20,7 @@ public class BiomeAttributes : ScriptableObject
 public class	Vein				//for ore gen (and cave??)
 {
 	public string		nodeName;
+	public bool			isUsed;
 	public BlockID		blockID;
 	public int			height;
 	public int			spread;

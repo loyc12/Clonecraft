@@ -304,7 +304,7 @@ public class	World : MonoBehaviour
 		{
 			foreach (Vein vein in biome.veins)
 			{
-				if (y >= vein.height - vein.spread && y <= vein.height + vein.spread)
+				if (vein.isUsed && y >= vein.height - vein.spread && y <= vein.height + vein.spread)
 					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(worldPos.ToVector3(), randomOffset, vein))
 						blockID = vein.blockID;
 			}
@@ -382,7 +382,7 @@ public class	World : MonoBehaviour
 		{
 			foreach (Vein vein in biome.veins)
 			{
-				if (y >= vein.height - vein.spread && y <= vein.height + vein.spread)	//TEMP
+				if (vein.isUsed && y >= vein.height - vein.spread && y <= vein.height + vein.spread)	//TEMP
 					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(worldPos.ToVector3(), randomOffset, vein))
 						blockID = (BlockID)vein.blockID;
 			}
