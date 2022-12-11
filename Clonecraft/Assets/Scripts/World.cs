@@ -313,7 +313,7 @@ public class	World : MonoBehaviour
 		/* === BASIC TERRAIN PASS === */
 		if (blockID == BlockID.STONE)
 		{
-			if (y < WorldData.SeaLevel)
+			if (y < WorldData.RockLevel)
 				blockID = BlockID.ROCK;
 			else if (y > WorldData.SnowLevel)
 				blockID = BlockID.MARBLE;
@@ -326,10 +326,22 @@ public class	World : MonoBehaviour
 				blockID = BlockID.GRAVEL;
 			else if  (y < WorldData.SeaLevel + 2)
 				blockID = BlockID.SAND;
-			else if (y > WorldData.SnowLevel)
+			else if (y < WorldData.SnowLevel)
+				blockID = GetSoilBlockID(worldPos);
+			else
 				blockID = BlockID.SNOW;
 		}
 		return (blockID);
+	}
+
+	private BlockID	GetSoilBlockID(Coords worldPos)		//find a better way to do this
+	{
+		if (FindBlockID(worldPos.AddPos(new Coords(0, 1, 0))) == BlockID.AIR)
+			return (BlockID.GRASS);
+		//else if (FindBlockID(worldPos.AddPos(new Coords(0, 1, 0))) == BlockID.GRASS)
+			//return (BlockID.DIRT);
+		else
+			return (BlockID.STONE);
 	}
 
 	private BlockID GetBlockID2D(Coords worldPos)
@@ -386,13 +398,15 @@ public class	World : MonoBehaviour
 	//returns the block ID of the specified location
 	public BlockID	FindBlockID(Coords worldPos)				//CheckForVoxel
 	{
-		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));
 
+		//if block is outside world, return air
 		if (!worldPos.IsBlockInWorld())
 			return (BlockID.AIR);
 
+		Coords	chunkPos = new Coords(worldPos.DivPos(WorldData.ChunkSize));
 		Chunk	targetChunk = FindChunk(chunkPos);
 
+		//is block's chunk exist, go get block
 		if (targetChunk != null)
 		{
 			if (targetChunk.isPopulated && targetChunk.isEmpty)
@@ -403,13 +417,16 @@ public class	World : MonoBehaviour
 			if (targetChunk.isPopulated)
 				return (chunkMap[chunkPos.x, chunkPos.y, chunkPos.z].blockMap[blockPos.x, blockPos.y, blockPos.z]);
 		}
-
+		//else get new block
 		return (GetBlockID(worldPos));
 	}
 
 	public Chunk	FindChunk(Coords chunkPos)
 	{
-		return (chunkMap[chunkPos.x, chunkPos.y, chunkPos.z]);
+		if (chunkPos.IsChunkInWorld())
+			return (chunkMap[chunkPos.x, chunkPos.y, chunkPos.z]);
+
+		return (null);
 	}
 
 	public bool	IsBlockSolid(Coords blockPos)

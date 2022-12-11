@@ -72,7 +72,7 @@ public class	Chunk
 	//pregenerate the chunk's voxel map for use in mesh loading
 	void	PopulateBlockMap()
 	{
-		for (int y = 0; y < WorldData.ChunkSize; y++)
+		for (int y = WorldData.ChunkSize - 1; y >= 0; y--)
 		{
 			for (int x = 0; x < WorldData.ChunkSize; x++)
 			{
@@ -115,10 +115,12 @@ public class	Chunk
 	{
 		Coords blockPos = worldPos.WorldToBlockPos();
 
-		if (!blockPos.IsBlockInChunk())
-			return (world.GetBlockID(worldPos));					//NORMALLY IS SUPPOSED TO TAKE THE DATA FROM ANOTHER CHUNK
+		//is block is in chunk, get it
+		if (blockPos.IsBlockInChunk())
+			return (blockMap[blockPos.x, blockPos.y, blockPos.z]);
 
-		return blockMap[blockPos.x, blockPos.y, blockPos.z];
+		//else, go look in world
+		return (world.FindBlockID(worldPos));
 	}
 
 	public void	SetBlockID(Coords worldPos, BlockID value)	//EditVoxel
