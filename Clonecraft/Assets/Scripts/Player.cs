@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
 	private bool		isFlying;
 	private bool		isGhosting;
 
+	private bool		getNextBlock;
+
 	private Transform	playerCam;				//cam
 
 	private float		mouseHorizontal;
@@ -97,6 +99,9 @@ public class Player : MonoBehaviour
 		if (Input.GetButtonDown("Ghost"))
 			isGhosting = !isGhosting;
 
+		if (Input.GetButtonDown("F"))
+			getNextBlock = !getNextBlock;
+
 		if (Input.GetButtonDown("Fly"))
 			isFlying = !isFlying;
 
@@ -113,37 +118,62 @@ public class Player : MonoBehaviour
 
 	private void	FindTargetedBlocks()	//doesn't entirely prevent placing a block that clips
 	{
-		Vector3	firstPos = new Vector3();
-		Vector3	secondPos = new Vector3();
-		//Vector3	thirdPos = new Vector3();
+		Vector3	lastPos = new Vector3();
+		Vector3	currentPos = new Vector3();
+		Vector3	nextPos = new Vector3();
 
 		float	step = 0;
 
-		firstPos = playerCam.position;
+		//lastPos = playerCam.position;		//redundant
+		currentPos = playerCam.position;
+		nextPos = playerCam.position;
+
+		Coords	camPos = new Coords(playerCam.position);
 
 		while (step <= PlayerData.reach)
 		{
-			secondPos = firstPos;
-			firstPos = playerCam.position + (playerCam.forward * step);
+			lastPos = currentPos;
+			currentPos = nextPos;
+			nextPos = playerCam.position + (playerCam.forward * step);
 
-			if (BlockID.AIR < world.FindBlockID(new Coords(firstPos)))					//optimize me
+			Coords	lPos = new Coords(lastPos);
+			Coords	cPos = new Coords(currentPos);
+			Coords	nPos = new Coords(nextPos);
+
+			if (BlockID.AIR < world.FindBlockID(cPos))					//optimize me
 			{
 				breakBlock.position = new Vector3(
-					Mathf.FloorToInt(firstPos.x),
-					Mathf.FloorToInt(firstPos.y),
-					Mathf.FloorToInt(firstPos.z));
+					Mathf.FloorToInt(currentPos.x),
+					Mathf.FloorToInt(currentPos.y),
+					Mathf.FloorToInt(currentPos.z));
 
 				breakBlock.gameObject.SetActive(true);
 
-				Coords	rPos = new Coords(secondPos);
-				Coords	camPos = new Coords(playerCam.position);
+				if (getNextBlock)
+				{
+					while (step <= PlayerData.reach && (nPos.SamePosAs(cPos)))
+					{
+						step += PlayerData.reachIncrement;
+						nextPos = playerCam.position + (playerCam.forward * step);
+						nPos = new Coords(nextPos);
+					}
 
-				if ((rPos.y != camPos.y && rPos.y != (camPos.y - 1)) || rPos.x != camPos.x || rPos.z != camPos.z)
+					if (BlockID.AIR == world.FindBlockID(nPos))
+					{
+						placeBlock.position = new Vector3(
+							Mathf.FloorToInt(nextPos.x),
+							Mathf.FloorToInt(nextPos.y),
+							Mathf.FloorToInt(nextPos.z));
+
+						placeBlock.gameObject.SetActive(true);
+					}
+				}
+				else if (lPos.x != camPos.x || lPos.z != camPos.z || (lPos.y != camPos.y && lPos.y != camPos.y - 1))
 				{
 					placeBlock.position = new Vector3(
-						Mathf.FloorToInt(secondPos.x),
-						Mathf.FloorToInt(secondPos.y),
-						Mathf.FloorToInt(secondPos.z));
+						Mathf.FloorToInt(lastPos.x),
+						Mathf.FloorToInt(lastPos.y),
+						Mathf.FloorToInt(lastPos.z));
 
 					placeBlock.gameObject.SetActive(true);
 				}
@@ -182,32 +212,47 @@ public class Player : MonoBehaviour
 
 	}
 
-	private void	BlockAction()
+	private void	BlockAction()			//do action again if key held and player moved(?)
 	{
 		Coords	worldBreakPos = new Coords(breakBlock.position);
 		Coords	worldPlacePos = new Coords(placeBlock.position);
 
 		if (Input.GetMouseButtonDown(0) || (Input.GetMouseButton(0) && Input.GetButton("Alt")))	//break block
 		{
+			if (breakBlock.gameObject.activeSelf)
+			{
+				Coords	chunkPos = worldBreakPos.WorldToChunkPos();
+				Chunk	targetChunk = world.FindChunk(chunkPos);
 
+				if (worldBreakPos.IsBlockInWorld() && targetChunk.isLoaded)
+					targetChunk.SetBlockID(worldBreakPos, BlockID.AIR);
+			}
+		}
+		if (Input.GetMouseButtonDown(1) || (Input.GetMouseButton(1) && Input.GetButton("Alt")))	//place block
+		{
+			if (placeBlock.gameObject.activeSelf)
+			{
+				Coords	chunkPos = worldPlacePos.WorldToChunkPos();
+				Chunk	targetChunk = world.FindChunk(chunkPos);
+
+				if (worldPlacePos.IsBlockInWorld() && targetChunk.isLoaded)
+					targetChunk.SetBlockID(worldPlacePos, selectedBlockID);
+			}
+		}
+		if (Input.GetMouseButtonDown(2) && breakBlock.gameObject.activeSelf)	//copy block
+		{
 			Coords	chunkPos = worldBreakPos.WorldToChunkPos();
 			Chunk	targetChunk = world.FindChunk(chunkPos);
 
 			if (worldBreakPos.IsBlockInWorld() && targetChunk.isLoaded)
-				targetChunk.SetBlockID(worldBreakPos, BlockID.AIR);
-		}
-		if (Input.GetMouseButtonDown(1) || (Input.GetMouseButton(1) && Input.GetButton("Alt")))	//place block
-		{
-			Coords	chunkPos = worldPlacePos.WorldToChunkPos();
-			Chunk	targetChunk = world.FindChunk(chunkPos);
+			{
+				BlockID blockID = targetChunk.FindBlockID(worldBreakPos);
 
-			if (worldPlacePos.IsBlockInWorld() && targetChunk.isLoaded)
-				targetChunk.SetBlockID(worldPlacePos, selectedBlockID);
-		}
-		if (Input.GetMouseButtonDown(2))	//copy block
-		{
-			Coords	chunkPos = worldBreakPos.WorldToChunkPos();
-			Chunk	targetChunk = world.FindChunk(chunkPos);
+				if (BlockID.AIR < blockID)
+				{
+					UpdatedSelectedBlockID(blockID);
+				}
+			}
 		}
 	}
 

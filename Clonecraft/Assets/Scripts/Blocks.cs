@@ -23,7 +23,7 @@ public class	BlockType
 	public bool				isOpaque;				//isSolid
 	public bool				isSolid;				//isColidable
 	public bool				isMonofaced;
-	public static BlockID	maxID = (BlockID)9;		//DE-HARDCODE ME
+	public static BlockID	maxID = (BlockID)10;		// Max Index + 1 --- DE-HARDCODE ME
 
 	[Header("Texture Values")]
 	public int	frontFaceTexture;
