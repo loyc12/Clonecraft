@@ -24,10 +24,10 @@ public class	Chunk
 
 	World				world;
 
-	private bool	_isLoaded = false;
-	public bool		isGenerated = false;
-	public bool		isPopulated = false;
-	public bool		isEmpty = true;
+	private bool		_isLoaded = false;
+	public bool			isGenerated = false;
+	public bool			isPopulated = false;
+	public bool			isEmpty = true;
 
 	//chunk fabricator
 	public	Chunk (Coords _chunkPos, World _world, bool forceLoad)
@@ -79,7 +79,7 @@ public class	Chunk
 				for (int z = 0; z < WorldData.ChunkSize; z++)
 				{
 					Coords blockPos = new Coords(x, y, z);
-					blockMap[x, y, z] = world.GetBlockID(blockPos.AddPos(chunkWorldPos));
+					blockMap[x, y, z] = world.defaultTerrain.GetBlockID(blockPos.AddPos(chunkWorldPos));
 					if (blockMap[x, y, z] != BlockID.AIR)
 						isEmpty = false;
 				}
