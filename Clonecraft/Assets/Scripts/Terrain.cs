@@ -34,19 +34,30 @@ public class	Terrain
 			return (blockID);
 
 		else if (y == 0)
-			return (BlockID.BEDROCK);
+			return (BlockID.SLATE);
 
 		/* === 3D NOISE PASS === */
 		blockID = Get3DTerrain(worldPos);
 
+		/* === SEA PASS === */
+		if (blockID == BlockID.AIR)
+			if (y < WorldData.SeaLevel)
+				blockID = BlockID.WATER;
+
 		/* === ORE PASS === */
 		blockID = SpawnVein(worldPos, blockID);
 
+		/* === SEA PASS === */
+		if (blockID == BlockID.AIR)
+			if (y < WorldData.MagmaLevel)
+				blockID = BlockID.LAVA;
 
 		/* === BASIC TERRAIN PASS === */
 		if (blockID == BlockID.STONE)
 		{
-			if (y < WorldData.RockLevel)
+			if (y < WorldData.SlateLevel)
+				blockID = BlockID.SLATE;
+			else if (y < WorldData.RockLevel)
 				blockID = BlockID.ROCK;
 			else if (y > WorldData.SnowLevel)
 				blockID = BlockID.MARBLE;
@@ -59,10 +70,11 @@ public class	Terrain
 				blockID = BlockID.GRAVEL;
 			else if  (y < WorldData.SeaLevel + 3)
 				blockID = BlockID.SAND;
-			else if (y < WorldData.SnowLevel)
-				blockID = BlockID.DIRT; //GetSoilBlockID(worldPos);
-			else
+			else if (y > WorldData.SnowLevel)
 				blockID = BlockID.SNOW;
+			//else
+				//blockID = GetSoilBlockID(worldPos);
+
 		}
 		return (blockID);
 	}
@@ -125,7 +137,7 @@ public class	Terrain
 			return (BlockID.AIR);
 
 		else if (y == 0)
-			return (BlockID.BEDROCK);
+			return (BlockID.SLATE);
 
 
 		/* === BASIC TERRAIN PASS === */
@@ -152,7 +164,9 @@ public class	Terrain
 		blockID = SpawnVein(worldPos, blockID);
 
 		/* === FINAL PASS === */
-		if (y < WorldData.RockLevel && blockID == BlockID.STONE)
+		if (y < WorldData.SlateLevel && blockID == BlockID.STONE)
+			blockID = BlockID.SLATE;
+		else if (y < WorldData.RockLevel && blockID == BlockID.STONE)
 			blockID = BlockID.ROCK;
 
 		return (blockID);

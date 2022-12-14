@@ -173,14 +173,16 @@ public class	Chunk
 	//adds the triangels and textures of a single block to the chunk mesh
 	void	AddBlockDataToChunk(Coords blockPos)
 	{
-		BlockID blockID = blockMap[blockPos.x, blockPos.y, blockPos.z];
+		BlockID	blockID = blockMap[blockPos.x, blockPos.y, blockPos.z];
 
 		if (blockID > BlockID.AIR)
 		{
 			isEmpty = false;
 			for (int faceIndex = 0; faceIndex < 6; faceIndex++)
 			{
-				if (!CheckBlockOpacity(blockPos.GetNeighbor(faceIndex)))
+				Coords	neighborPos = blockPos.GetNeighbor(faceIndex);
+
+				if (!CheckBlockOpacity(neighborPos)) // && blockID != FindBlockID(neighborPos.BlockToWorldPos(chunkPos))) USE ME!
 				{
 					Vector3 vPos = blockPos.ToVector3();
 					AddQuad (

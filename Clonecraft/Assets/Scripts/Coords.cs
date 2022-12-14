@@ -159,6 +159,11 @@ public class Coords
 		return (this.SubPos(this.WorldToChunkPos().MulPos(WorldData.ChunkSize)));
 	}
 
+	public Coords	BlockToWorldPos(Coords chunkPos)		//USE ME!!!
+	{
+		return (this.AddPos(chunkPos.ChunkToWorldPos()));
+	}
+
 	public bool 	IsBlockInWorld()	//for worldPos
 	{
 		if (this.x < 0 || WorldData.WorldBlockSize <= this.x)

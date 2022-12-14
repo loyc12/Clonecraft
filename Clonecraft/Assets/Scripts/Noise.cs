@@ -39,6 +39,16 @@ public static class	Noise
 		float	z = (pos.z + 0.192837465f + (float)((offset.z + 1) * offsetFactor)) / xzScale;
 
 		return ((
+			Mathf.PerlinNoise(x, y + z) +
+			Mathf.PerlinNoise(x, y - z) +
+
+			Mathf.PerlinNoise(z, y + x) +
+			Mathf.PerlinNoise(z, y - x) +
+
+			Mathf.PerlinNoise(y, x + z) +
+			Mathf.PerlinNoise(y, x - z)) / 6f);
+
+		/*return ((
 			Mathf.PerlinNoise(x, y - z) +
 			Mathf.PerlinNoise(x, y) +
 			Mathf.PerlinNoise(x, z) +
@@ -52,7 +62,7 @@ public static class	Noise
 			Mathf.PerlinNoise(z, x - y) +
 			Mathf.PerlinNoise(z, x) +
 			Mathf.PerlinNoise(z, y) +
-			Mathf.PerlinNoise(z, y - x)) / 10f);
+			Mathf.PerlinNoise(z, y - x)) / 10f);*/
 	}
 
 	//terrain recursive 3D perlin noise (INVERTED SCALE FACTOR)	//have noise be consitent trough different starting n values

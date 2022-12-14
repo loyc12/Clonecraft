@@ -9,11 +9,14 @@ public enum BlockID : byte
 	DIRT	= 2,
 	STONE	= 3,
 	ROCK	= 4,
-	BEDROCK	= 5,
+	SLATE	= 5,
 	MARBLE	= 6,
 	SAND	= 7,
 	GRAVEL	= 8,
-	SNOW	= 9
+	SNOW	= 9,
+	WATER	= 10,
+	LAVA	= 11,
+	ACID	= 12
 }
 
 [System.Serializable]
@@ -23,7 +26,7 @@ public class	BlockType
 	public bool				isOpaque;				//isSolid
 	public bool				isSolid;				//isColidable
 	public bool				isMonofaced;
-	public static BlockID	maxID = (BlockID)10;		// Max Index + 1 --- DE-HARDCODE ME
+	public static BlockID	maxID = (BlockID)13;		// Max Index + 1 --- DE-HARDCODE ME
 
 	[Header("Texture Values")]
 	public int	frontFaceTexture;

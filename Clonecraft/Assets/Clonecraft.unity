@@ -1180,7 +1180,7 @@ MonoBehaviour:
     bottomFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
-  - blockName: Bedrock
+  - blockName: Slate
     isOpaque: 1
     isSolid: 1
     isMonofaced: 1
@@ -1225,6 +1225,36 @@ MonoBehaviour:
     isSolid: 1
     isMonofaced: 1
     frontFaceTexture: 100
+    backFaceTexture: 0
+    topFaceTexture: 0
+    bottomFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+  - blockName: Water
+    isOpaque: 1
+    isSolid: 0
+    isMonofaced: 1
+    frontFaceTexture: 5
+    backFaceTexture: 0
+    topFaceTexture: 0
+    bottomFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+  - blockName: Lava
+    isOpaque: 1
+    isSolid: 0
+    isMonofaced: 1
+    frontFaceTexture: 6
+    backFaceTexture: 0
+    topFaceTexture: 0
+    bottomFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+  - blockName: Acid
+    isOpaque: 1
+    isSolid: 0
+    isMonofaced: 1
+    frontFaceTexture: 7
     backFaceTexture: 0
     topFaceTexture: 0
     bottomFaceTexture: 0

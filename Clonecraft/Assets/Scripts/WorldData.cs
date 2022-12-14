@@ -18,7 +18,7 @@ public static class	WorldData
 	public static int				WorldBlockSize				//in blocks
 	{ get { return WorldChunkSize * ChunkSize; }}
 
-	public static readonly int		WorldChunkHeight = 12;		//in chunks
+	public static readonly int		WorldChunkHeight = 16;		//in chunks
 	public static int				WorldBlockHeight			//in blocks
 	{ get { return WorldChunkHeight * ChunkSize; }}
 
@@ -27,12 +27,16 @@ public static class	WorldData
 	public static float				NormalizedTextureSize		//over 1
 	{ get {return 1f / (float)TextureAtlasSize;}}
 
+	public static int				MagmaLevel 					//in blocks
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.08f);}}
+	public static int				SlateLevel 					//in blocks
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.15f);}}
 	public static int				RockLevel 					//in blocks
-	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.16f);}}
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.25f);}}
 	public static int				SeaLevel 					//in blocks
-	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.36f);}}
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.35f);}}
 	public static int				SnowLevel 					//in blocks
-	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.76f);}}
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.75f);}}
 
 	public static float				noiseScale
 	{ get {return 16f / (float)ChunkSize;}}

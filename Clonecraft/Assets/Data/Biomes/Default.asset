@@ -16,26 +16,26 @@ MonoBehaviour:
   baseElevation: 16
   maxElevation: 144
   terrainScale: 12
-  mountainScale: 8
+  mountainScale: 12
   veins:
   - nodeName: Big Caves
     isUsed: 1
     blockID: 0
-    height: 20
-    spread: 30
-    horizontalScale: 4
-    verticalScale: 2
-    threshold: 0.5
+    height: 32
+    spread: 64
+    horizontalScale: 5
+    verticalScale: 3
+    threshold: 0.52
     n: 2
   - nodeName: Medium Caves
-    isUsed: 0
+    isUsed: 1
     blockID: 0
-    height: 80
-    spread: 60
+    height: 40
+    spread: 80
     horizontalScale: 2
-    verticalScale: 4
-    threshold: 0.5
-    n: 2
+    verticalScale: 5
+    threshold: 0.54
+    n: 1
   - nodeName: Small Caves
     isUsed: 0
     blockID: 0
