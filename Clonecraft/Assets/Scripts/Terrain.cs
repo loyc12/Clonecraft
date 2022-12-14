@@ -66,14 +66,14 @@ public class	Terrain
 		}
 		else if (blockID == BlockID.DIRT)
 		{
-			if (y < WorldData.SeaLevel - 3)
+			if (y < WorldData.SeaLevel - WorldData.BeachHeight)
 				blockID = BlockID.GRAVEL;
-			else if  (y < WorldData.SeaLevel + 3)
+			else if  (y < WorldData.SeaLevel + WorldData.BeachHeight)
 				blockID = BlockID.SAND;
 			else if (y > WorldData.SnowLevel)
 				blockID = BlockID.SNOW;
-			//else
-				//blockID = GetSoilBlockID(worldPos);
+			else if (WorldData.ProcessSoil)
+				blockID = GetSoilBlockID(worldPos);
 
 		}
 		return (blockID);

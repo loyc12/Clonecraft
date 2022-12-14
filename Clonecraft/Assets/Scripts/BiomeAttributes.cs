@@ -8,8 +8,8 @@ public class BiomeAttributes : ScriptableObject
 
 	public string	biomeName;
 
-	public int		baseElevation;	//elevation above world's rockLevel
-	public int		maxElevation;	//elevation above biome's baseElevation
+	public int		baseElevation;	//elevation above world's rockLevel			(only in 2D Gen)
+	public int		maxElevation;	//elevation above biome's baseElevation		(only in 2D Gen)
 	public float	terrainScale;
 	public float	mountainScale;
 

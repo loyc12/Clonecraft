@@ -15,8 +15,8 @@ MonoBehaviour:
   biomeName: Default
   baseElevation: 16
   maxElevation: 144
-  terrainScale: 12
-  mountainScale: 12
+  terrainScale: 11
+  mountainScale: 11
   veins:
   - nodeName: Big Caves
     isUsed: 1
