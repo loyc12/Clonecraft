@@ -18,7 +18,7 @@ public class	Terrain
 
 	public BlockID GetBlockID(Coords worldPos)		//GetVoxel
 	{
-		if (WorldData.Use3DGen)
+		if (world.Use3DGen)
 			return (GetBlockID3D(worldPos));
 		else
 			return (GetBlockID2D(worldPos));
@@ -72,7 +72,7 @@ public class	Terrain
 				blockID = BlockID.SAND;
 			else if (y > WorldData.SnowLevel)
 				blockID = BlockID.SNOW;
-			else if (WorldData.ProcessSoil)
+			else if (world.ProcessSoil)
 				blockID = GetSoilBlockID(worldPos);
 		}
 		return (blockID);
@@ -87,17 +87,17 @@ public class	Terrain
 		// c between 0 and 2
 		// d between 0 and 2
 
-		float	slope = 16f;				//a		(3.20)	(2.00)	(2.50)	(0.6)	(8.0)
-		float	strenghtOffset = 0.32f;		//b		(0.10)	(0.25)	(0.30)	(0.6)	(1.4)
-		float	thresholdOffset = 0.62f;	//c		(0.55)	(0.64)	(0.60)	(0.6)	(0.75)
-		float	verticalOffset = 1.02f;		//d		(0.45)	(0.32)	(0.36)	(0.3)	(1.4)
+		float	slope = 16f;				//a		(3.20)	(2.00)	(2.50)	(0.60)	(8.00)
+		float	strenghtOffset = 0.32f;		//b		(0.10)	(0.25)	(0.30)	(0.60)	(1.40)
+		float	thresholdOffset = 0.62f;	//c		(0.55)	(0.64)	(0.60)	(0.60)	(0.75)
+		float	verticalOffset = 1.02f;		//d		(0.45)	(0.32)	(0.36)	(0.30)	(1.40)
 
 		float	heightValue = ((float)worldPos.y / WorldData.WorldBlockHeight) - thresholdOffset;
 		float	heightValueCubed =  Mathf.Pow((heightValue), 3);
 
 		float	noiseValue;
 
-		if (WorldData.UseSimpleGen)
+		if (world.UseSimpleGen)
 			noiseValue = Noise.Get3DNoise(worldPos.ToVector3(), world.randomOffset, biome.terrainScale, biome.mountainScale);
 		else
 			noiseValue = Noise.Get3DRecursiveNoise(worldPos.ToVector3(), world.randomOffset, biome.terrainScale, biome.mountainScale,  biome.recursivityFactor, biome.recursivityAmount);
@@ -105,7 +105,6 @@ public class	Terrain
 		float	threshold = 0.5f * ((slope * heightValueCubed) + (strenghtOffset * heightValue) + verticalOffset);
 		float	soilDepthOffset = 2f * Mathf.Abs(threshold - 0.5f);
 		float	soilThreshold = threshold + ((soilDepth + (soilDepthFactor * soilDepthOffset)) / WorldData.WorldBlockHeight);
-		//float	soilThreshold = threshold + ((soilDepth - ((float)worldPos.y / WorldData.WorldBlockHeight)) / WorldData.WorldBlockHeight);
 
 		//noise needs to have a value ABOVE the threshold
 		if (soilThreshold < noiseValue)
@@ -179,37 +178,10 @@ public class	Terrain
 				blockID = BlockID.SAND;
 			else if (y > WorldData.SnowLevel)
 				blockID = BlockID.SNOW;
-			else if (WorldData.ProcessSoil)
+			else if (world.ProcessSoil)
 				if (y == height)
 					blockID = BlockID.GRASS;
 		}
-		/*
-		if (y > height)
-			return (blockID);
-		else if (y > WorldData.SnowLevel)
-			blockID = BlockID.STONE;
-		else if (y > height - 3 && height < WorldData.SeaLevel - 2)
-			blockID = BlockID.GRAVEL;
-		else if (y > height - 3 && height < WorldData.SeaLevel + 2)
-			blockID = BlockID.SAND;
-		else if (y == height)
-			blockID = BlockID.GRASS;
-		else if (y > height - 3)
-			blockID = BlockID.DIRT;
-		else if (height < WorldData.SeaLevel + 2 && y > height - 6)
-			blockID = BlockID.MARBLE;
-		else
-			blockID = BlockID.STONE;
-
-
-		blockID = SpawnVein(worldPos, blockID);
-
-
-		if (y < WorldData.SlateLevel && blockID == BlockID.STONE)
-			blockID = BlockID.SLATE;
-		else if (y < WorldData.RockLevel && blockID == BlockID.STONE)
-			blockID = BlockID.ROCK;
-		*/
 		return (blockID);
 	}
 
@@ -217,7 +189,7 @@ public class	Terrain
 	{
 		float	height;
 
-		if (WorldData.UseSimpleGen)
+		if (world.UseSimpleGen)
 			height = Noise.Get2DNoise(worldPos.ToVector2(), world.randomOffset, biome.terrainScale);
 		else
 			height = Noise.Get2DRecursiveNoise(worldPos.ToVector2(), world.randomOffset, biome.terrainScale, biome.recursivityFactor, biome.recursivityAmount);
@@ -232,12 +204,12 @@ public class	Terrain
 	{
 		float	y = worldPos.y;
 
-		if (WorldData.UseCaveGen && world.blocktypes[(int)blockID].isOpaque)
+		if (world.UseCaveGen && world.blocktypes[(int)blockID].isOpaque)
 		{
 			foreach (Vein vein in biome.veins)
 			{
 				if (vein.isUsed && y >= vein.height - vein.spread && y <= vein.height + vein.spread)
-					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(worldPos.ToVector3(), world.randomOffset, vein))
+					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(world, worldPos.ToVector3(), world.randomOffset, vein))
 						blockID = vein.blockID;
 			}
 		}

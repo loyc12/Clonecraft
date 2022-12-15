@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class	World : MonoBehaviour
 {
+
+	public bool				UseSimpleGen;
+	public bool				Use3DGen;
+	public bool				ProcessSoil;
+	public bool				UseCaveGen;
+	public bool				SpawnAtCenter;
+	public bool				PreGenSpawn;
+
 	public int				seed;
 	public Coords			randomOffset;
 
@@ -34,7 +42,7 @@ public class	World : MonoBehaviour
 		defaultTerrain = new Terrain(this, biome);
 
 		SpawnPlayer();
-		if (WorldData.PreGenSpawn)
+		if (PreGenSpawn)
 			GenerateSpawn();
 		else
 			ApplyRenderDistance();
@@ -136,12 +144,12 @@ public class	World : MonoBehaviour
 	//puts the player at the spawnpoint
 	void	SpawnPlayer()
 	{
-		if (WorldData.SpawnAtCenter)
+		if (SpawnAtCenter)
 			spawnPoint = new Coords(Mathf.FloorToInt(WorldData.WorldBlockSize / 2f), WorldData.WorldBlockHeight, Mathf.FloorToInt(WorldData.WorldBlockSize / 2f));
 		else
 			spawnPoint = new Coords(8, WorldData.WorldBlockHeight, 8);
 
-		if (!WorldData.Use3DGen)
+		if (!Use3DGen)
 			spawnPoint.y = (1 + defaultTerrain.GetTerrainHeight(spawnPoint));
 
 		player.position = new Vector3(spawnPoint.x + 0.5f, spawnPoint.y + 0.1f, spawnPoint.z + 0.5f);

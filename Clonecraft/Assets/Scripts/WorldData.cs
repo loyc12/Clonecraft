@@ -4,17 +4,10 @@ using UnityEngine;
 
 public static class	WorldData
 {
-	public static readonly int		RandomRange = 1024;
-
-	public static readonly bool		Use3DGen = false;
-	public static readonly bool		UseSimpleGen = false;
-	public static readonly bool		UseCaveGen = true;
-	public static readonly bool		PreGenSpawn = false;
-	public static readonly bool		ProcessSoil = true;
-	public static readonly bool		SpawnAtCenter = false;
+	public static readonly int		RandomRange = 1024;			//in blocks
 
 	public static readonly int		RenderDistance = 8;			//in chunks
-	public static readonly float	RenderLimit = 12;			//in chunks
+	public static readonly float	RenderLimit = 10;			//in chunks
 
 	public static readonly int		WorldChunkSize = 128;		//in chunks
 	public static int				WorldBlockSize				//in blocks

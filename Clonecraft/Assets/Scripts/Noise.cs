@@ -83,13 +83,13 @@ public static class	Noise
 	}
 
 	//for ore and cave noise
-	public static bool	Get3DVeinNoise(Vector3 pos, Coords offset, Vein vein)
+	public static bool	Get3DVeinNoise(World world, Vector3 pos, Coords offset, Vein vein)
 	{
 		float	noise;
 		float	factor = Mathf.Abs(pos.y - vein.height) / vein.spread;
 		float	strenght = 1 - Mathf.Pow(factor, 3);	//^2 or ^3?
 
-		if (WorldData.UseSimpleGen)
+		if (world.UseSimpleGen)
 			noise = Get3DNoise(pos, offset, vein.horizontalScale, vein.verticalScale);
 		else
 			noise = Get3DRecursiveNoise(pos, offset, vein.horizontalScale, vein.verticalScale, 1.618f, vein.n);

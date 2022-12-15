@@ -356,15 +356,14 @@ public class Player : MonoBehaviour
 
 	private void	TurnCamera()
 	{
-		mouseHorizontal *= PlayerData.cameraSpeed;
-		yRotation += mouseHorizontal;
+		yRotation += mouseHorizontal * PlayerData.cameraSpeed;
+		xRotation += mouseVertical * PlayerData.cameraSpeed;
 
-		mouseVertical *= PlayerData.cameraSpeed;
-		xRotation -= mouseVertical;
+		yRotation %= 360f;
 		xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-		playerCam.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);		//moves the head around
-		transform.rotation = Quaternion.Euler(0f, yRotation, 0f);						//turns the body left/right
+		playerCam.transform.localRotation = Quaternion.AngleAxis(xRotation, Vector3.left);		//moves the head around
+		transform.localRotation = Quaternion.AngleAxis(yRotation, Vector3.up);					//turns the body left/right
 	}
 
 	private void	Jump()
