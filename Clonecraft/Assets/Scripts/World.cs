@@ -36,6 +36,8 @@ public class	World : MonoBehaviour
 		SpawnPlayer();
 		if (WorldData.PreGenSpawn)
 			GenerateSpawn();
+		else
+			ApplyRenderDistance();
 	}
 
 	private void	Update()
@@ -134,8 +136,13 @@ public class	World : MonoBehaviour
 	//puts the player at the spawnpoint
 	void	SpawnPlayer()
 	{
-		spawnPoint = new Coords(Mathf.FloorToInt(WorldData.WorldBlockSize / 2f), WorldData.WorldBlockHeight, Mathf.FloorToInt(WorldData.WorldBlockSize / 2f));
-		//spawnPoint.y = (1 + GetTerrainHeight(spawnPoint));
+		if (WorldData.SpawnAtCenter)
+			spawnPoint = new Coords(Mathf.FloorToInt(WorldData.WorldBlockSize / 2f), WorldData.WorldBlockHeight, Mathf.FloorToInt(WorldData.WorldBlockSize / 2f));
+		else
+			spawnPoint = new Coords(8, WorldData.WorldBlockHeight, 8);
+
+		if (!WorldData.Use3DGen)
+			spawnPoint.y = (1 + defaultTerrain.GetTerrainHeight(spawnPoint));
 
 		player.position = new Vector3(spawnPoint.x + 0.5f, spawnPoint.y + 0.1f, spawnPoint.z + 0.5f);
 
@@ -262,13 +269,13 @@ public class	World : MonoBehaviour
 		return (null);
 	}
 
-	public bool	IsBlockSolid(Coords blockPos)
+	public bool	IsBlockSolid(Coords worldPos)
 	{
-		return (blocktypes[(int)FindBlockID(blockPos)].isSolid);
+		return (blocktypes[(int)FindBlockID(worldPos)].isSolid);
 	}
 
-	public bool IsBlockOpaque(Coords blockPos)
+	public bool IsBlockOpaque(Coords worldPos)
 	{
-		return (blocktypes[(int)FindBlockID(blockPos)].isOpaque);
+		return (blocktypes[(int)FindBlockID(worldPos)].isOpaque);
 	}
 }

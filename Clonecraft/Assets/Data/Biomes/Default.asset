@@ -13,35 +13,37 @@ MonoBehaviour:
   m_Name: Default
   m_EditorClassIdentifier: 
   biomeName: Default
-  baseElevation: 16
-  maxElevation: 144
-  terrainScale: 11
-  mountainScale: 11
+  baseElevation: 64
+  maxElevation: 128
+  terrainScale: 24
+  mountainScale: 16
+  recursivityFactor: 2
+  recursivityAmount: 4
   veins:
   - nodeName: Big Caves
     isUsed: 1
     blockID: 0
     height: 32
-    spread: 64
-    horizontalScale: 5
+    spread: 72
+    horizontalScale: 7
     verticalScale: 3
-    threshold: 0.52
-    n: 2
+    threshold: 0.53
+    n: 3
   - nodeName: Medium Caves
     isUsed: 1
     blockID: 0
-    height: 40
-    spread: 80
-    horizontalScale: 2
-    verticalScale: 5
+    height: 48
+    spread: 48
+    horizontalScale: 3
+    verticalScale: 3
     threshold: 0.54
-    n: 1
+    n: 2
   - nodeName: Small Caves
     isUsed: 0
     blockID: 0
-    height: 80
-    spread: 120
+    height: 192
+    spread: 96
     horizontalScale: 2
     verticalScale: 2
-    threshold: 0.5
+    threshold: 0.55
     n: 1

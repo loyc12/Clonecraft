@@ -4,7 +4,7 @@ using UnityEngine;
 
 /*	IDEAS
 
-	add chunk collumns
+
 
 */
 
@@ -92,34 +92,43 @@ public class	Chunk
 	//returns true of the given voxel is solid
 	bool	CheckBlockSolidity (Coords blockPos)		//CheckVoxel
 	{
-		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
-
 		if (!blockPos.IsBlockInChunk())
-			return (world.IsBlockSolid(worldPos));
+			return (world.blocktypes [(int)FindBlockID(blockPos)].isSolid);
 
-		return (world.blocktypes [(int)FindBlockID(worldPos)].isSolid);
+		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
+		return (world.IsBlockSolid(worldPos));
 	}
 
 	//returns true of the given voxel is opaque
 	bool	CheckBlockOpacity (Coords blockPos)	//CheckVoxel
 	{
+		if (blockPos.IsBlockInChunk())
+			return (world.blocktypes [(int)FindBlockID(blockPos)].isOpaque);
+
 		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
-
-		if (!blockPos.IsBlockInChunk())
-			return (world.IsBlockOpaque(worldPos));
-
-		return (world.blocktypes [(int)FindBlockID(worldPos)].isOpaque);
+		return (world.IsBlockOpaque(worldPos));
 	}
 
-	public BlockID FindBlockID(Coords worldPos)	//GetVoxelFromGlobalVector3
+	//compares the BlockID of two given blockPos
+	bool	SameBlockID(Coords firstBlockPos, Coords secondBlockPos)
 	{
-		Coords blockPos = worldPos.WorldToBlockPos();
+		BlockID	firstBlockID = FindBlockID(firstBlockPos);
+		BlockID	secondBlockID = FindBlockID(secondBlockPos);
+
+		if (firstBlockID == secondBlockID)
+			return (true);
+		return (false);
+	}
+
+	public BlockID FindBlockID(Coords blockPos)	//GetVoxelFromGlobalVector3
+	{
 
 		//is block is in chunk, get it
 		if (blockPos.IsBlockInChunk())
 			return (blockMap[blockPos.x, blockPos.y, blockPos.z]);
 
 		//else, go look in world
+		Coords worldPos = blockPos.BlockToWorldPos(chunkPos);
 		return (world.FindBlockID(worldPos));
 	}
 
@@ -162,7 +171,7 @@ public class	Chunk
 			{
 				for (int z = 0; z < WorldData.ChunkSize; z++)
 				{
-					AddBlockDataToChunk(new Coords(x, y, z));
+					AddBlockDataToChunk(new Coords(x, y, z));	//put non opaque blocks in a different mesh?
 				}
 			}
 		}
@@ -182,7 +191,7 @@ public class	Chunk
 			{
 				Coords	neighborPos = blockPos.GetNeighbor(faceIndex);
 
-				if (!CheckBlockOpacity(neighborPos)) // && blockID != FindBlockID(neighborPos.BlockToWorldPos(chunkPos))) USE ME!
+				if (!CheckBlockOpacity(neighborPos) && !SameBlockID(blockPos, neighborPos))
 				{
 					Vector3 vPos = blockPos.ToVector3();
 					AddQuad (

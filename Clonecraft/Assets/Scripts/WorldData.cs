@@ -6,11 +6,12 @@ public static class	WorldData
 {
 	public static readonly int		RandomRange = 1024;
 
-	public static readonly bool		Use3DGen = true;
+	public static readonly bool		Use3DGen = false;
 	public static readonly bool		UseSimpleGen = false;
 	public static readonly bool		UseCaveGen = true;
 	public static readonly bool		PreGenSpawn = false;
 	public static readonly bool		ProcessSoil = true;
+	public static readonly bool		SpawnAtCenter = false;
 
 	public static readonly int		RenderDistance = 8;			//in chunks
 	public static readonly float	RenderLimit = 12;			//in chunks
@@ -29,7 +30,7 @@ public static class	WorldData
 	{ get {return 1f / (float)TextureAtlasSize;}}
 
 	public static int				MagmaLevel 					//in blocks
-	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.08f);}}
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.06f);}}
 	public static int				SlateLevel 					//in blocks
 	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.16f);}}
 	public static int				RockLevel 					//in blocks
@@ -37,7 +38,7 @@ public static class	WorldData
 	public static int				SeaLevel 					//in blocks
 	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.36f);}}
 	public static int				SnowLevel 					//in blocks
-	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.72f);}}
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.80f);}}
 
 	public static float				noiseScale
 	{ get {return 16f / (float)ChunkSize;}}

@@ -7,7 +7,7 @@ public class	Terrain
 	World			world;
 	BiomeAttributes	biome;
 
-	float			soilDepth = 2f;
+	float			soilDepth = 3f;
 	float			soilDepthFactor = 8f;
 
 	public	Terrain (World _world, BiomeAttributes _biome)
@@ -39,7 +39,7 @@ public class	Terrain
 		/* === 3D NOISE PASS === */
 		blockID = Get3DTerrain(worldPos);
 
-		/* === SEA PASS === */
+		/* === WATER PASS === */
 		if (blockID == BlockID.AIR)
 			if (y < WorldData.SeaLevel)
 				blockID = BlockID.WATER;
@@ -47,7 +47,7 @@ public class	Terrain
 		/* === ORE PASS === */
 		blockID = SpawnVein(worldPos, blockID);
 
-		/* === SEA PASS === */
+		/* === LAVA PASS === */
 		if (blockID == BlockID.AIR)
 			if (y < WorldData.MagmaLevel)
 				blockID = BlockID.LAVA;
@@ -74,7 +74,6 @@ public class	Terrain
 				blockID = BlockID.SNOW;
 			else if (WorldData.ProcessSoil)
 				blockID = GetSoilBlockID(worldPos);
-
 		}
 		return (blockID);
 	}
@@ -101,7 +100,7 @@ public class	Terrain
 		if (WorldData.UseSimpleGen)
 			noiseValue = Noise.Get3DNoise(worldPos.ToVector3(), world.randomOffset, biome.terrainScale, biome.mountainScale);
 		else
-			noiseValue = Noise.Get3DRecursiveNoise(worldPos.ToVector3(), world.randomOffset, biome.terrainScale, biome.mountainScale, 1.618f, 4);
+			noiseValue = Noise.Get3DRecursiveNoise(worldPos.ToVector3(), world.randomOffset, biome.terrainScale, biome.mountainScale,  biome.recursivityFactor, biome.recursivityAmount);
 
 		float	threshold = 0.5f * ((slope * heightValueCubed) + (strenghtOffset * heightValue) + verticalOffset);
 		float	soilDepthOffset = 2f * Mathf.Abs(threshold - 0.5f);
@@ -134,15 +133,57 @@ public class	Terrain
 
 		/* === ABSOLUTE PASS === */
 		if (!worldPos.IsBlockInWorld())
-			return (BlockID.AIR);
+			return (blockID);
 
 		else if (y == 0)
 			return (BlockID.SLATE);
 
-
-		/* === BASIC TERRAIN PASS === */
+		/* === 2D NOISE PASS === */
 		int	height = GetTerrainHeight(worldPos);
 
+		if (y < height - soilDepth)
+			blockID = BlockID.STONE;
+		else if (y <= height)
+			blockID = BlockID.DIRT;
+
+		/* === WATER PASS === */
+		if (blockID == BlockID.AIR)
+			if (y < WorldData.SeaLevel)
+				blockID = BlockID.WATER;
+
+		/* === ORE PASS === */
+		blockID = SpawnVein(worldPos, blockID);
+
+		/* === LAVA PASS === */
+		if (blockID == BlockID.AIR)
+			if (y < WorldData.MagmaLevel)
+				blockID = BlockID.LAVA;
+
+		/* === BASIC TERRAIN PASS === */
+		if (blockID == BlockID.STONE)
+		{
+			if (y < WorldData.SlateLevel)
+				blockID = BlockID.SLATE;
+			else if (y < WorldData.RockLevel)
+				blockID = BlockID.ROCK;
+			else if (y > WorldData.SnowLevel)
+				blockID = BlockID.MARBLE;
+			else
+				blockID = BlockID.STONE;
+		}
+		else if (blockID == BlockID.DIRT)
+		{
+			if (y < WorldData.SeaLevel - WorldData.BeachHeight)
+				blockID = BlockID.GRAVEL;
+			else if  (y < WorldData.SeaLevel + WorldData.BeachHeight)
+				blockID = BlockID.SAND;
+			else if (y > WorldData.SnowLevel)
+				blockID = BlockID.SNOW;
+			else if (WorldData.ProcessSoil)
+				if (y == height)
+					blockID = BlockID.GRASS;
+		}
+		/*
 		if (y > height)
 			return (blockID);
 		else if (y > WorldData.SnowLevel)
@@ -160,26 +201,26 @@ public class	Terrain
 		else
 			blockID = BlockID.STONE;
 
-		/* === ORE PASS === */
+
 		blockID = SpawnVein(worldPos, blockID);
 
-		/* === FINAL PASS === */
+
 		if (y < WorldData.SlateLevel && blockID == BlockID.STONE)
 			blockID = BlockID.SLATE;
 		else if (y < WorldData.RockLevel && blockID == BlockID.STONE)
 			blockID = BlockID.ROCK;
-
+		*/
 		return (blockID);
 	}
 
-	private int	GetTerrainHeight(Coords worldPos)
+	public int	GetTerrainHeight(Coords worldPos)
 	{
 		float	height;
 
 		if (WorldData.UseSimpleGen)
 			height = Noise.Get2DNoise(worldPos.ToVector2(), world.randomOffset, biome.terrainScale);
 		else
-			height = Noise.Get2DRecursiveNoise(worldPos.ToVector2(), world.randomOffset, biome.terrainScale, 2f, 4);
+			height = Noise.Get2DRecursiveNoise(worldPos.ToVector2(), world.randomOffset, biome.terrainScale, biome.recursivityFactor, biome.recursivityAmount);
 
 		height *= biome.maxElevation;
 		height += biome.baseElevation;
@@ -191,7 +232,7 @@ public class	Terrain
 	{
 		float	y = worldPos.y;
 
-		if (WorldData.UseCaveGen && blockID != BlockID.AIR)
+		if (WorldData.UseCaveGen && world.blocktypes[(int)blockID].isOpaque)
 		{
 			foreach (Vein vein in biome.veins)
 			{

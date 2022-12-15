@@ -12,6 +12,8 @@ public class BiomeAttributes : ScriptableObject
 	public int		maxElevation;	//elevation above biome's baseElevation		(only in 2D Gen)
 	public float	terrainScale;
 	public float	mountainScale;
+	public float	recursivityFactor;
+	public int		recursivityAmount;
 
 	public Vein[]	veins;			//all ores
 }
