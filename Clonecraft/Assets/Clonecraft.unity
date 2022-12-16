@@ -1453,6 +1453,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e797fa1ecfc0bf541813e648c3003ca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  yRotation: 0
+  xRotation: 0
   placeBlock: {fileID: 2053212673}
   breakBlock: {fileID: 527485286}
   selectedBlockText: {fileID: 405045153}

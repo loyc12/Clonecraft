@@ -74,13 +74,11 @@ public class	World : MonoBehaviour
 	//generate the chunks inside the initial render distance (square) (at spawn)
 	void	GenerateSpawn()
 	{
-		int	center = Mathf.FloorToInt(WorldData.WorldChunkSize / 2f);
-
-		for (int y = 0; y < WorldData.WorldChunkHeight; y++)
+		for (int y = playerChunk.y - WorldData.GenerationDistance; y < playerChunk.y + WorldData.GenerationDistance; y++)
 		{
-			for (int x = center - WorldData.RenderDistance; x < center + WorldData.RenderDistance; x++)
+			for (int x = playerChunk.x -WorldData.GenerationDistance; x < playerChunk.x + WorldData.GenerationDistance; x++)
 			{
-				for (int z = center - WorldData.RenderDistance; z < center + WorldData.RenderDistance; z++)
+				for (int z = playerChunk.z - WorldData.GenerationDistance; z < playerChunk.z + WorldData.GenerationDistance; z++)
 				{
 					Coords	chunkPos = new Coords(x, y, z);
 

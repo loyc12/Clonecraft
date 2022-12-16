@@ -23,9 +23,12 @@ public enum BlockID : byte
 public class	BlockType
 {
 	public string 			blockName;
+	public Sprite			icon;
+
 	public bool				isOpaque;				//isSolid
-	public bool				isSolid;				//isColidable
+	public bool				isSolid;				//isColidable(?)
 	public bool				isMonofaced;
+
 	public static BlockID	maxID = (BlockID)13;		// Max Index + 1 --- DE-HARDCODE ME
 
 	[Header("Texture Values")]

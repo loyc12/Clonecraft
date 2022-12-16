@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
 	public Transform	placeBlock;
 	public Transform	breakBlock;				//highlightBlock
 
-	public Text			selectedBlockText;
+	//public Text			selectedBlockText;
 	public BlockID		selectedBlockID;
 
 	private World		world;
@@ -211,6 +211,7 @@ public class Player : MonoBehaviour
 
 	private void	ChangeSelectedBlock(BlockID value)
 	{
+		/*
 		if (value == BlockID.AIR)
 		{
 			if (mouseScroll > 0)
@@ -228,6 +229,7 @@ public class Player : MonoBehaviour
 		}
 		else
 			UpdatedSelectedBlockID(value);
+			*/
 
 	}
 
@@ -277,7 +279,7 @@ public class Player : MonoBehaviour
 	private void	UpdatedSelectedBlockID(BlockID value)
 	{
 		selectedBlockID = value;
-		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
+		//selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
 	}
 
 	private void	CalculateVelocity()
