@@ -5,15 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "BiomeAttributes", menuName = "CloneCraft/Biome")]
 public class BiomeAttributes : ScriptableObject
 {
-
 	public string	biomeName;
 
-	public int		baseElevation;	//elevation above world's rockLevel			(only in 2D Gen)
-	public int		maxElevation;	//elevation above biome's baseElevation		(only in 2D Gen)
-	public float	terrainScale;
-	public float	mountainScale;
-	public float	recursivityFactor;
-	public int		recursivityAmount;
+	public int		baseElevation;		//elevation above world's rockLevel			(only in 2D Gen)
+	public int		maxElevation;		//elevation above biome's baseElevation		(only in 2D Gen)
+	public float	terrainScale;		//horizontal scale of the terrain
+	public float	mountainScale;		//vertical scale of the terrain details
+	public int		recursivityAmount;	//how many recursive call of the noise functions should be done
+	public float	recursivityFactor;	//how much smaller should each successive recursive call be from the previous one
 
 	public Vein[]	veins;			//all ores
 }

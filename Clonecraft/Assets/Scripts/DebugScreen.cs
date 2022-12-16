@@ -13,6 +13,7 @@ using UnityEngine.UI;
 public class DebugScreen : MonoBehaviour
 {
 	World	world;
+	Player	player;
 	Text	debugScreenText;
 
 	float	frameRate;
@@ -21,6 +22,7 @@ public class DebugScreen : MonoBehaviour
     void Start()
     {
 		world = GameObject.Find("World").GetComponent<World>();
+		player = GameObject.Find("Player").GetComponent<Player>();
 		debugScreenText = GetComponent<Text>();
     }
 
@@ -31,20 +33,23 @@ public class DebugScreen : MonoBehaviour
 		debugText += "\n" + frameRate + " fps";
 
 		debugText += "\n\n" + "Block Coords";
-		debugText += "\n X " + world.player.transform.position.x;
-		debugText += "\n Y " + world.player.transform.position.y;
-		debugText += "\n Z " + world.player.transform.position.z;
+		debugText += "\n X " + player.transform.position.x;
+		debugText += "\n Y " + player.transform.position.y;
+		debugText += "\n Z " + player.transform.position.z;
 
 		debugText += "\n\n" + "Relative Coords";
-		debugText += "\n X " + (world.player.transform.position.x / WorldData.WorldBlockSize);
-		debugText += "\n Y " + (world.player.transform.position.y / WorldData.WorldBlockHeight);
-		debugText += "\n Z " + (world.player.transform.position.z / WorldData.WorldBlockSize);
+		debugText += "\n X " + (player.transform.position.x / WorldData.WorldBlockSize);
+		debugText += "\n Y " + (player.transform.position.y / WorldData.WorldBlockHeight);
+		debugText += "\n Z " + (player.transform.position.z / WorldData.WorldBlockSize);
 
 		debugText += "\n\n" + "Chunk Coords";
 		debugText += "\n X " + world.playerChunk.x;
 		debugText += "\n Y " + world.playerChunk.y;
 		debugText += "\n Z " + world.playerChunk.z;
 
+		debugText += "\n\n" + "Camera Rotation";
+		debugText += "\n H " + player.yRotation;
+		debugText += "\n V " + player.xRotation;
 
 		if (updateTimer > 1f)
 		{

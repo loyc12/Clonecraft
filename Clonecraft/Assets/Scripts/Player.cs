@@ -17,16 +17,19 @@ public class Player : MonoBehaviour
 	private bool		isJumping;	//jumpRequest
 	private bool		isFlying;
 	private bool		isGhosting;
+	private bool		hasMoved;
 
 	private bool		getNextBlock;
+	private bool		autoPlaceBlock;
 
 	private Transform	playerCam;				//cam
+	private Transform	playerFeet;				//body
 
 	private float		mouseHorizontal;
-	private float		yRotation;
+	public float		yRotation;
 
 	private float		mouseVertical;
-	private float		xRotation;
+	public float		xRotation;
 
 	private float		mouseScroll;			//Scroll
 
@@ -35,6 +38,10 @@ public class Player : MonoBehaviour
 
 	private float		horizontal;				//(w s)
 	private float		vertical;				//(a d)
+
+	public Coords		playerPos;
+	public Coords		playerLastPos;
+	public Coords		playerChunkPos;
 
 	public Transform	placeBlock;
 	public Transform	breakBlock;				//highlightBlock
@@ -48,8 +55,12 @@ public class Player : MonoBehaviour
 
 	private void	Start()
 	{
+		playerFeet = GameObject.Find("Player").transform;
 		playerCam = GameObject.Find("Camera").transform;
 		world = GameObject.Find("World").GetComponent<World>();
+
+		playerPos = new Coords(playerFeet.position);
+		playerLastPos = playerPos;
 
 		Cursor.lockState = CursorLockMode.Locked;
 
@@ -58,6 +69,7 @@ public class Player : MonoBehaviour
 
 	private void	FixedUpdate()
 	{
+		CalculatePosition();
 		CalculateVelocity();
 
 		if (isJumping)
@@ -101,6 +113,9 @@ public class Player : MonoBehaviour
 
 		if (Input.GetButtonDown("F"))
 			getNextBlock = !getNextBlock;
+
+		if (Input.GetButtonDown("Alt"))
+			autoPlaceBlock = !autoPlaceBlock;
 
 		if (Input.GetButtonDown("Fly"))
 			isFlying = !isFlying;
@@ -166,9 +181,13 @@ public class Player : MonoBehaviour
 							Mathf.FloorToInt(nextPos.z));
 
 						placeBlock.gameObject.SetActive(true);
+
+						return ;
 					}
+					else
+						placeBlock.gameObject.SetActive(false);
 				}
-				else if (lPos.x != camPos.x || lPos.z != camPos.z || (lPos.y != camPos.y && lPos.y != camPos.y - 1))
+				if (lPos.x != camPos.x || lPos.z != camPos.z || (lPos.y != camPos.y && lPos.y != camPos.y - 1))
 				{
 					placeBlock.position = new Vector3(
 						Mathf.FloorToInt(lastPos.x),
@@ -217,7 +236,7 @@ public class Player : MonoBehaviour
 		Coords	worldBreakPos = new Coords(breakBlock.position);
 		Coords	worldPlacePos = new Coords(placeBlock.position);
 
-		if (Input.GetMouseButtonDown(0) || (Input.GetMouseButton(0) && Input.GetButton("Alt")))	//break block
+		if (Input.GetMouseButtonDown(0) || (Input.GetMouseButton(0) && hasMoved && autoPlaceBlock))	//break block
 		{
 			if (breakBlock.gameObject.activeSelf)
 			{
@@ -228,7 +247,7 @@ public class Player : MonoBehaviour
 					targetChunk.SetBlockID(worldBreakPos, BlockID.AIR);
 			}
 		}
-		if (Input.GetMouseButtonDown(1) || (Input.GetMouseButton(1) && Input.GetButton("Alt")))	//place block
+		if (Input.GetMouseButtonDown(1) || (Input.GetMouseButton(1) && hasMoved && autoPlaceBlock))	//place block
 		{
 			if (placeBlock.gameObject.activeSelf)
 			{
@@ -246,14 +265,13 @@ public class Player : MonoBehaviour
 
 			if (worldBreakPos.IsBlockInWorld() && targetChunk.isLoaded)
 			{
-				BlockID blockID = targetChunk.FindBlockID(worldBreakPos);
+				BlockID blockID = targetChunk.FindBlockID(worldBreakPos.WorldToBlockPos());
 
 				if (BlockID.AIR < blockID)
-				{
 					UpdatedSelectedBlockID(blockID);
-				}
 			}
 		}
+		hasMoved = false;
 	}
 
 	private void	UpdatedSelectedBlockID(BlockID value)
@@ -311,6 +329,21 @@ public class Player : MonoBehaviour
 		velocity.y *= Time.fixedDeltaTime;
 
 		velocity = CheckVerticalSpeed(velocity);
+	}
+
+	private void	CalculatePosition()
+	{
+		Coords playerCurrentPos = new Coords(playerFeet.position);
+
+		if (playerPos.y != playerCurrentPos.y || playerPos.x != playerCurrentPos.x || playerPos.z != playerCurrentPos.z)
+		{
+			playerChunkPos = playerCurrentPos.WorldToChunkPos();
+
+			playerLastPos = playerPos;
+			playerPos = playerCurrentPos;
+
+			hasMoved = true;
+		}
 	}
 
 	private Vector3	CheckHorizontalSpeed(Vector3 velocity)	//TODO : calculate where the player should end up after colision
