@@ -27,5 +27,5 @@ public static class PlayerData
 
 	public static readonly float	cameraSpeed = 3f;
 
-	public static readonly BlockID	defaultBlock = BlockID.GRASS;
+	public static readonly BlockID	defaultBlock = BlockID.GRASS;	//un hardcode me
 }

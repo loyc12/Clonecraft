@@ -23,21 +23,21 @@ public enum BlockID : byte
 public class	BlockType
 {
 	public string 			blockName;
-	public Sprite			icon;
 
 	public bool				isOpaque;				//isSolid
 	public bool				isSolid;				//isColidable(?)
 	public bool				isMonofaced;
 
-	public static BlockID	maxID = (BlockID)13;		// Max Index + 1 --- DE-HARDCODE ME
+	public static BlockID	maxID = (BlockID)12;		// Max Index --- DE-HARDCODE ME
 
-	[Header("Texture Values")]
-	public int	frontFaceTexture;
-	public int	backFaceTexture;
-	public int	topFaceTexture;
-	public int	bottomFaceTexture;
-	public int	leftFaceTexture;
-	public int	rightFaceTexture;
+	[Header("Textures")]
+	public Sprite	icon;
+	public int		frontFaceTexture;
+	public int		backFaceTexture;
+	public int		topFaceTexture;
+	public int		bottomFaceTexture;
+	public int		leftFaceTexture;
+	public int		rightFaceTexture;
 
 	public int		GetTextureId(int faceIndex)
 	{

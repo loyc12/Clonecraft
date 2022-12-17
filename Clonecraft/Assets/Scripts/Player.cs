@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
 	public Transform	placeBlock;
 	public Transform	breakBlock;				//highlightBlock
 
-	//public Text			selectedBlockText;
+	public Text			selectedBlockText;
 	public BlockID		selectedBlockID;
 
 	private World		world;
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
 
 		Cursor.lockState = CursorLockMode.Locked;
 
-		UpdatedSelectedBlockID(PlayerData.defaultBlock);
+		UpdateSelectedBlockID(PlayerData.defaultBlock);
 	}
 
 	private void	FixedUpdate()
@@ -124,8 +124,8 @@ public class Player : MonoBehaviour
 			transform.Translate((Vector3.up * WorldData.ChunkSize), Space.World);
 
 		mouseScroll = Input.GetAxis("Mouse ScrollWheel");
-		if (mouseScroll != 0)
-			ChangeSelectedBlock(BlockID.AIR);
+		//if (mouseScroll != 0)
+			//ChangeSelectedBlock(BlockID.AIR);
 
 		if (breakBlock.gameObject.activeSelf)
 			BlockAction();
@@ -208,10 +208,9 @@ public class Player : MonoBehaviour
 		breakBlock.gameObject.SetActive(false);
 		placeBlock.gameObject.SetActive(false);
 	}
-
+/*
 	private void	ChangeSelectedBlock(BlockID value)
 	{
-		/*
 		if (value == BlockID.AIR)
 		{
 			if (mouseScroll > 0)
@@ -228,11 +227,9 @@ public class Player : MonoBehaviour
 			selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
 		}
 		else
-			UpdatedSelectedBlockID(value);
-			*/
-
+			UpdateSelectedBlockID(value);
 	}
-
+*/
 	private void	BlockAction()			//do action again if key held and player moved(?)
 	{
 		Coords	worldBreakPos = new Coords(breakBlock.position);
@@ -270,16 +267,16 @@ public class Player : MonoBehaviour
 				BlockID blockID = targetChunk.FindBlockID(worldBreakPos.WorldToBlockPos());
 
 				if (BlockID.AIR < blockID)
-					UpdatedSelectedBlockID(blockID);
+					UpdateSelectedBlockID(blockID);
 			}
 		}
 		hasMoved = false;
 	}
 
-	private void	UpdatedSelectedBlockID(BlockID value)
+	public void	UpdateSelectedBlockID(BlockID value)
 	{
 		selectedBlockID = value;
-		//selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " block selected";
+		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " selected";
 	}
 
 	private void	CalculateVelocity()

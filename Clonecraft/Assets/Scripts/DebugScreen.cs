@@ -6,7 +6,6 @@ using UnityEngine.UI;
 /*	IDEA
 
 	add recent max coord values
-	add camera rotation
 
 */
 
