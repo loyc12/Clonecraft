@@ -15,10 +15,10 @@ MonoBehaviour:
   biomeName: Default
   baseElevation: 64
   maxElevation: 128
-  terrainScale: 24
-  mountainScale: 16
-  recursivityFactor: 2
+  terrainScale: 16
+  mountainScale: 12
   recursivityAmount: 4
+  recursivityFactor: 2
   veins:
   - nodeName: Big Caves
     isUsed: 1

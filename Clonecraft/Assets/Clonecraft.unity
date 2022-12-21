@@ -1079,7 +1079,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 2}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 258, y: 34}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1014394061
@@ -1713,7 +1713,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7739999616911130952, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
@@ -2211,9 +2211,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UseSimpleGen: 0
   Use3DGen: 1
-  ProcessSoil: 1
-  UseCaveGen: 1
-  SpawnAtCenter: 0
+  ProcessSoil: 0
+  UseCaveGen: 0
+  SpawnAtCenter: 1
   PreGenSpawn: 0
   seed: 120956
   biome: {fileID: 11400000, guid: 48a3fd37212083b428cb417841dd3b49, type: 2}
