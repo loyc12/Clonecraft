@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
 
 		Cursor.lockState = CursorLockMode.Locked;
 
-		UpdateSelectedBlockID(PlayerData.defaultBlock);
+		UpdateSelectedBlockID(0);			//hardcoded: move me to hotbar
 	}
 
 	private void	FixedUpdate()
@@ -276,7 +276,7 @@ public class Player : MonoBehaviour
 	public void	UpdateSelectedBlockID(BlockID value)
 	{
 		selectedBlockID = value;
-		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName + " selected";
+		selectedBlockText.text = world.blocktypes[(int)selectedBlockID].blockName;
 	}
 
 	private void	CalculateVelocity()

@@ -7,7 +7,7 @@ TextureImporter:
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
-    sRGBTexture: 1
+    sRGBTexture: 0
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
@@ -3434,6 +3434,279 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Plain Glass
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a83776d33ef522f459886911cb64e3ea
+      internalID: 1769526948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Broken Glass
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c17aeb9c82a2fde4bb6e722d523f59ad
+      internalID: -158680282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tiled Glass
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a03d1e8258d28044caec690b7488211c
+      internalID: -154956852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Contour Glass
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 714bd429f71881f4fb744b52a74f7e92
+      internalID: 1903488965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mesh Glass
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 243bc661caf96b8499922d96780bc76b
+      internalID: 870161596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fancy Glass
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a0e58c95ef63bb4680536ec695ed477
+      internalID: 1632446791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlockAtlas_13
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 192
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 54ca09fe4a1dea441b9792246ff4d780
+      internalID: -152436762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlockAtlas_55
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 192
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 35ccb43c8bc980c43bab97abcb5caee9
+      internalID: -1179830132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlockAtlas_56
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 192
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ca016e08cb2c8e45b5924f06ebcf83e
+      internalID: 203042487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlockAtlas_57
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 192
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00bd411affbe14649a8990448cfa4614
+      internalID: 100070106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlockAtlas_58
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 192
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9efe0ad9c0d9c284e87d92d7a6fc60ac
+      internalID: -387512091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlockAtlas_59
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 192
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4262d257d923f5f47bc4db52e894f781
+      internalID: -1843556332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BlockAtlas_60
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 192
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3188cffaf5604f54f83ebdcd861df8a8
+      internalID: -2002923981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -3446,77 +3719,119 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       BlockAtlas_102: 1639045289
-      Pergelisol: 125054349
+      Plain Glass: 1769526948
       BlockAtlas_54: -516781598
       Gray_Wool_4: 1616580504
-      BlockAtlas_19: -63023900
-      Water_1: 617256484
-      BlockAtlas_3: 1342621900
-      BlockAtlas_26: 2038845683
-      Oak_Log_Side: -889810384
-      Light_Purple_Wool: 1876944627
+      BlockAtlas_56: 203042487
       Moss: -424915738
       Blue_Wool: 1356538955
-      Slate_Tiles: 1539690032
-      Pink_Wool: 1094171005
+      Light_Purple_Wool: 1876944627
+      Oak_Log_Side: -889810384
       BlockAtlas_35: 835093424
       BlockAtlas_29: -1730928891
-      Branches: 536688998
       Dead_Leaves: -43458960
-      Black_Wool: 333051226
       BlockAtlas_45: 1541094436
-      Marble_Bricks: -1241331354
       BlockAtlas_37: 1086019395
-      BlockAtlas_121: -1978318266
-      BlockAtlas_105: 1272712414
-      Gray_Wool_6: 1817198322
-      Gray_Wool_5: 72523792
       BlockAtlas_91: 2101736494
+      BlockAtlas_58: -387512091
       BlockAtlas_88: -1290742986
-      BlockAtlas_20: 1157231263
-      BlockAtlas_36: 667058596
       BlockAtlas_1: 1058847920
       BlockAtlas_73: 309167419
-      BlockAtlas_90: 1699701171
       Stone_Bricks: 1666694817
-      BlockAtlas_156: -1870035218
+      BlockAtlas_13: -152436762
       BlockAtlas_46: 1020692809
-      Acid_1: 1950748470
-      BlockAtlas_33: -390583427
-      Acid_0: 1063394014
       White_Wool: -395497931
-      BlockAtlas_4: -1358550387
-      BlockAtlas_123: 320876428
       Stone: 204226635
       Clay_Bricks: 644948138
-      BlockAtlas_142: 275506693
-      BlockAtlas_21: 1356349317
-      BlockAtlas_132: -301346345
-      Dirty_Stone: 1337063507
-      Pine_Log_Side: 1022577004
       Teal_Wool: 635429719
+      Fancy Glass: 1632446791
+      Pine_Log_Side: 1022577004
+      Dirty_Stone: 1337063507
       BlockAtlas_112: 506146260
       Driftwood_Planks: -2084878658
       BlockAtlas_6: 1241927072
       BlockAtlas_30: 1776585214
-      Gravel: -2059945841
       BlockAtlas_18: 559984596
+      Oak_Planks: -1761861506
+      BlockAtlas_86: -913910183
+      Snow: -615509873
+      Moss_Side: 17769216
+      Pine_Leaves: -1596927802
+      Mesh Glass: 870161596
+      Ice: 336446000
+      Oak_Log_Top: -1907388846
+      BlockAtlas_11: -1837721964
+      BlockAtlas_12: -1915514993
+      BlockAtlas_108: -1717576211
+      BlockAtlas_27: 557142264
+      Driftwood_Log_Top: -710698949
+      Marble: 1474900454
+      BlockAtlas_117: 1156538537
+      BlockAtlas_49: -1320375301
+      Debug_Image: -1412224628
+      Terracotta: -1326977787
+      BlockAtlas_114: 1727463175
+      BlockAtlas_42: 1673491516
+      BlockAtlas_31: -262769903
+      BlockAtlas_57: 100070106
+      BlockAtlas_15: 312390968
+      Yellow_Wool: 1581715911
+      Gray_Wool_0: 212322988
+      BlockAtlas_28: 1094891894
+      BlockAtlas_8: -279294135
+      BlockAtlas_34: 268910398
+      BlockAtlas_44: -1011039442
+      Pine_Log_Top: 750181747
+      Cla: -982234210
+      BlockAtlas_5: 1754847361
+      BlockAtlas_96: -1535732499
+      BlockAtlas_48: -672967135
+      BlockAtlas_103: -1508384376
+      Silt: 978733561
+      Pine_Planks: 495766633
+      Driftwood_Log_Side: -465059189
+      BlockAtlas_84: -1575991799
+      BlockAtlas_32: 1420764990
+      Dirt: -1097816306
+      Pergelisol: 125054349
+      BlockAtlas_19: -63023900
+      Water_1: 617256484
+      BlockAtlas_3: 1342621900
+      BlockAtlas_26: 2038845683
+      Black_Wool: 333051226
+      Gray_Wool_6: 1817198322
+      Gray_Wool_5: 72523792
+      Slate_Tiles: 1539690032
+      Pink_Wool: 1094171005
+      Branches: 536688998
+      Marble_Bricks: -1241331354
+      BlockAtlas_105: 1272712414
+      BlockAtlas_121: -1978318266
+      BlockAtlas_20: 1157231263
+      BlockAtlas_36: 667058596
+      BlockAtlas_90: 1699701171
+      BlockAtlas_156: -1870035218
+      Acid_1: 1950748470
+      Broken Glass: -158680282
+      BlockAtlas_33: -390583427
+      Acid_0: 1063394014
+      BlockAtlas_4: -1358550387
+      BlockAtlas_123: 320876428
+      BlockAtlas_142: 275506693
+      BlockAtlas_21: 1356349317
+      BlockAtlas_132: -301346345
+      Gravel: -2059945841
       Birch_Log_Top: 363001646
       BlockAtlas_43: 1905894158
       Pebbles: -246737958
       BlockAtlas_17: -1812460070
       Gray_Wool_3: 1363429519
-      Oak_Planks: -1761861506
       Birch_Planks: -2129510790
       Snow_Side: 448298957
-      BlockAtlas_86: -913910183
       BlockAtlas_38: 234241116
-      Snow: -615509873
-      Moss_Side: 17769216
-      Pine_Leaves: -1596927802
-      Ice: 336446000
-      Oak_Log_Top: -1907388846
+      Tiled Glass: -154956852
       BlockAtlas_47: -1001312728
+      BlockAtlas_55: -1179830132
       Purple_Wool: 238278741
       Deadwood_Log_Side: 468798125
       BlockAtlas_93: 1416094607
@@ -3526,35 +3841,25 @@ TextureImporter:
       BlockAtlas_101: -352471779
       BlockAtlas_144: 1254553127
       Grass_Side: -1124939460
-      BlockAtlas_11: -1837721964
-      BlockAtlas_12: -1915514993
+      BlockAtlas_100: -2116155033
       BlockAtlas_39: 1268718101
+      Contour Glass: 1903488965
       Cyan_Wool: -918403056
-      BlockAtlas_108: -1717576211
-      BlockAtlas_27: 557142264
+      BlockAtlas_119: -107250165
       Slate: -1894019910
+      Orange_Wool: -2117922447
       BlockAtlas_98: -1431040234
       BlockAtlas_40: 257718564
-      BlockAtlas_100: -2116155033
       Lava_0: -1375090222
       BlockAtlas_7: -951587990
-      Marble: 1474900454
       Red_Wool: -1593502913
-      BlockAtlas_119: -107250165
-      Driftwood_Log_Top: -710698949
+      BlockAtlas_59: -1843556332
+      Gray_Wool_2: 1418015098
       Gray_Wool_1: -2011040112
       BlockAtlas_10: -1002139122
-      BlockAtlas_49: -1320375301
-      Gray_Wool_2: 1418015098
-      Orange_Wool: -2117922447
-      Debug_Image: -1412224628
-      BlockAtlas_117: 1156538537
-      Terracotta: -1326977787
       Green_Wool: -206525414
-      BlockAtlas_114: 1727463175
       BlockAtlas_0: 596829022
       BlockAtlas_41: -2123450972
-      BlockAtlas_42: 1673491516
       BlockAtlas_53: -2012106610
       Sand: 599237792
       BlockAtlas_154: 1396953960
@@ -3563,43 +3868,24 @@ TextureImporter:
       BlockAtlas_79: -405760674
       BlockAtlas_22: 180981940
       Oak_Leaves: -2076563971
-      BlockAtlas_31: -262769903
       Ice_Side: -547638253
-      BlockAtlas_15: 312390968
       BlockAtlas_110: 1265927596
-      Yellow_Wool: 1581715911
-      Gray_Wool_0: 212322988
       Rock_Bricks: -629069241
       BlockAtlas_81: -963895162
-      BlockAtlas_28: 1094891894
-      BlockAtlas_8: -279294135
-      BlockAtlas_34: 268910398
-      BlockAtlas_44: -1011039442
       Water_0: 1848647195
       Grass: -1718869763
-      Cla: -982234210
-      Pine_Log_Top: 750181747
+      BlockAtlas_60: -693210507
       Rock: -1454851673
-      BlockAtlas_5: 1754847361
-      BlockAtlas_96: -1535732499
-      BlockAtlas_48: -672967135
+      Deadwood_Log_Top: 659716457
       BlockAtlas_52: 222940671
       Birch_Leaves: 116643537
-      Deadwood_Log_Top: 659716457
       BlockAtlas_51: 2134860986
-      BlockAtlas_103: -1508384376
-      BlockAtlas_24: -1481047899
-      Silt: 978733561
-      Mud: 1443370389
       Deadwood_Planks: -1771261688
+      BlockAtlas_24: -1481047899
+      Mud: 1443370389
       BlockAtlas_25: -140527405
-      Pine_Planks: 495766633
-      Driftwood_Log_Side: -465059189
-      BlockAtlas_84: -1575991799
       Birch_Log_Side: -1955904308
-      BlockAtlas_32: 1420764990
       BlockAtlas_9: 1523330737
-      Dirt: -1097816306
       Lava_1: 2015292719
       BlockAtlas_2: 173872813
       BlockAtlas_50: -122536103

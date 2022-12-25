@@ -16,7 +16,8 @@ public enum BlockID : byte
 	SNOW	= 9,
 	WATER	= 10,
 	LAVA	= 11,
-	ACID	= 12
+	ACID	= 12,
+	GLASS	= 13
 }
 
 [System.Serializable]
@@ -24,11 +25,11 @@ public class	BlockType
 {
 	public string 			blockName;
 
-	public bool				isOpaque;				//isSolid
-	public bool				isSolid;				//isColidable(?)
+	public bool				isSolid;
+	public bool				isOpaque;				//!isTransparent
 	public bool				isMonofaced;
 
-	public static BlockID	maxID = (BlockID)12;		// Max Index --- DE-HARDCODE ME
+	public static BlockID	maxID = (BlockID)13;		// Max Index --- DE-HARDCODE ME
 
 	[Header("Textures")]
 	public Sprite	icon;

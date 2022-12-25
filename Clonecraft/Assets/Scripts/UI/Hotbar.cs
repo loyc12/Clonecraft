@@ -29,7 +29,7 @@ public class	Hotbar : MonoBehaviour
 			slot.icon.sprite = world.blocktypes[(int)slot.itemID].icon;
 			slot.icon.enabled = true;										//doesn't work, enabled them by default
 		}
-		//UpdateSelectedItemID(0);											//hardcoded with PlayerData.defaultBlock because broken
+		//SetSelectedSlot(0);											//hardcoded in player because broken
 	}
 
 	private void	Update()
@@ -48,11 +48,11 @@ public class	Hotbar : MonoBehaviour
 			if (slotID > 7)	//slotMap.Lenght - 1)
 				slotID = 0;
 
-			UpdateSelectedItemID(slotID);
+			SetSelectedSlot(slotID);
 		}
 	}
 
-	private void	UpdateSelectedItemID(int value)
+	private void	SetSelectedSlot(int value)
 	{
 		slotID = value;
 		highlight.position = slotMap[slotID].icon.transform.position;

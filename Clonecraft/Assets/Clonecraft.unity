@@ -520,7 +520,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 660444106}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -903,10 +903,10 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1014394060}
   - {fileID: 1645643553}
   - {fileID: 1209610936}
   - {fileID: 405045152}
-  - {fileID: 1014394060}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1075,11 +1075,11 @@ RectTransform:
   - {fileID: 1573106845}
   - {fileID: 1713578734}
   m_Father: {fileID: 660444106}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 2}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 258, y: 34}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1014394061
@@ -1149,7 +1149,7 @@ MonoBehaviour:
     icon: {fileID: 996767738}
   - itemID: 4
     icon: {fileID: 1500089321}
-  - itemID: 5
+  - itemID: 13
     icon: {fileID: 1780798472}
 --- !u!224 &1035560140 stripped
 RectTransform:
@@ -1361,7 +1361,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 660444106}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1432,6 +1432,10 @@ PrefabInstance:
     - target: {fileID: 7739999616144868578, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
       propertyPath: m_Name
       value: SlotIcon (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7739999616144868578, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7739999616144868579, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
       propertyPath: m_Pivot.x
@@ -1516,6 +1520,14 @@ PrefabInstance:
     - target: {fileID: 7739999616144868579, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7739999616144868580, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1436001781, guid: 322e3e9acc3cb31439d522dcfc68202e, type: 3}
+    - target: {fileID: 7739999616911130952, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
@@ -1627,6 +1639,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SlotIcon (0)
       objectReference: {fileID: 0}
+    - target: {fileID: 7739999616144868578, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7739999616144868579, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1713,7 +1729,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7739999616911130952, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
@@ -1967,7 +1995,7 @@ RectTransform:
   - {fileID: 349253169}
   - {fileID: 1148219977}
   m_Father: {fileID: 660444106}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2218,11 +2246,12 @@ MonoBehaviour:
   seed: 120956
   biome: {fileID: 11400000, guid: 48a3fd37212083b428cb417841dd3b49, type: 2}
   player: {fileID: 2078865657}
-  material: {fileID: 2100000, guid: f3080fbdc5b2f0a489a03834293df144, type: 2}
+  blockAtlas: {fileID: 2100000, guid: f3080fbdc5b2f0a489a03834293df144, type: 2}
+  transparentAtlas: {fileID: 2100000, guid: 07f20ebe59f3f7e4d941a025064cf2ef, type: 2}
   blocktypes:
   - blockName: Air
-    isOpaque: 0
     isSolid: 0
+    isOpaque: 0
     isMonofaced: 0
     icon: {fileID: 0}
     frontFaceTexture: 0
@@ -2232,8 +2261,8 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Grass
-    isOpaque: 1
     isSolid: 1
+    isOpaque: 1
     isMonofaced: 0
     icon: {fileID: -1124939460, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 50
@@ -2243,8 +2272,8 @@ MonoBehaviour:
     leftFaceTexture: 50
     rightFaceTexture: 50
   - blockName: Dirt
-    isOpaque: 1
     isSolid: 1
+    isOpaque: 1
     isMonofaced: 1
     icon: {fileID: -1097816306, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 48
@@ -2254,8 +2283,8 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Stone
-    isOpaque: 1
     isSolid: 1
+    isOpaque: 1
     isMonofaced: 1
     icon: {fileID: 204226635, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 2
@@ -2265,8 +2294,8 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Rock
-    isOpaque: 1
     isSolid: 1
+    isOpaque: 1
     isMonofaced: 1
     icon: {fileID: -1454851673, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 1
@@ -2276,8 +2305,8 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Slate
-    isOpaque: 1
     isSolid: 1
+    isOpaque: 1
     isMonofaced: 1
     icon: {fileID: -1894019910, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 0
@@ -2287,8 +2316,8 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Marble
-    isOpaque: 1
     isSolid: 1
+    isOpaque: 1
     isMonofaced: 1
     icon: {fileID: 1474900454, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 3
@@ -2298,8 +2327,8 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Sand
-    isOpaque: 1
     isSolid: 1
+    isOpaque: 1
     isMonofaced: 1
     icon: {fileID: 599237792, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 32
@@ -2309,8 +2338,8 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Gravel
-    isOpaque: 1
     isSolid: 1
+    isOpaque: 1
     isMonofaced: 1
     icon: {fileID: -2059945841, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 33
@@ -2320,8 +2349,8 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Snow
-    isOpaque: 1
     isSolid: 1
+    isOpaque: 1
     isMonofaced: 1
     icon: {fileID: -615509873, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 68
@@ -2331,8 +2360,8 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Water
-    isOpaque: 0
     isSolid: 0
+    isOpaque: 0
     isMonofaced: 1
     icon: {fileID: 617256484, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 21
@@ -2342,8 +2371,8 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Lava
-    isOpaque: 0
     isSolid: 0
+    isOpaque: 0
     isMonofaced: 1
     icon: {fileID: 2015292719, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 22
@@ -2353,11 +2382,22 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Acid
-    isOpaque: 0
     isSolid: 0
+    isOpaque: 0
     isMonofaced: 1
     icon: {fileID: 1950748470, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     frontFaceTexture: 23
+    backFaceTexture: 0
+    topFaceTexture: 0
+    bottomFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+  - blockName: Glass
+    isSolid: 1
+    isOpaque: 0
+    isMonofaced: 1
+    icon: {fileID: 1769526948, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    frontFaceTexture: 116
     backFaceTexture: 0
     topFaceTexture: 0
     bottomFaceTexture: 0

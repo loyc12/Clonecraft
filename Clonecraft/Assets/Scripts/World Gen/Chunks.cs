@@ -18,6 +18,8 @@ public class	Chunk
 
 	List<Vector3> 		vertices = new List<Vector3>();
 	List<int> 			triangles = new List<int>();
+	List<int> 			transparentTriangles = new List<int>();
+	Material[]			atlasMap = new Material[2];
 	List<Vector2>		uvs = new List<Vector2>();
 
 	public BlockID[,,]	blockMap = new BlockID[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
@@ -45,7 +47,10 @@ public class	Chunk
 		meshFilter = chunkObject.AddComponent<MeshFilter>();
 		meshRenderer = chunkObject.AddComponent<MeshRenderer>();
 
-		meshRenderer.material = world.material;
+		atlasMap[0] = world.blockAtlas;
+		atlasMap[1] = world.transparentAtlas;
+		meshRenderer.materials = atlasMap;
+
 		chunkObject.transform.SetParent(world.transform);
 		chunkObject.transform.position = new Vector3(chunkPos.x * WorldData.ChunkSize, chunkPos.y * WorldData.ChunkSize, chunkPos.z * WorldData.ChunkSize);
 		chunkObject.name = "Chunk " + chunkPos.x + ":" + chunkPos.y + ":" + chunkPos.z;
@@ -53,7 +58,7 @@ public class	Chunk
 		PopulateBlockMap();
 
 		if (isPopulated && !isEmpty)
-			UpdateChunkMesh();
+			BuildChunkMesh();
 
 		isGenerated = true;
 
@@ -141,7 +146,7 @@ public class	Chunk
 
 		blockMap[blockPos.x, blockPos.y, blockPos.z] = value;
 
-		UpdateChunkMesh();
+		BuildChunkMesh();
 
 		UpdateNeighboringChunk(blockPos);
 	}
@@ -156,12 +161,12 @@ public class	Chunk
 			Coords worldPos = chunkPos.ChunkToWorldPos().AddPos(updateBlock);
 
 			if (!updateBlock.IsBlockInChunk() && worldPos.IsBlockInWorld())
-				world.FindChunk(chunkPos.GetNeighbor(faceIndex)).UpdateChunkMesh();
+				world.FindChunk(chunkPos.GetNeighbor(faceIndex)).BuildChunkMesh();
 		}
 	}
 
 	//(re)loads the chunk's mesh
-	void	UpdateChunkMesh()	//UpdateChunk
+	void	BuildChunkMesh()	//UpdateChunk
 	{
 		ClearChunkMesh();
 
@@ -176,7 +181,7 @@ public class	Chunk
 			}
 		}
 
-		BuildChunkMesh();
+		CreateChunkMesh();
 	}
 
 	//adds the triangels and textures of a single block to the chunk mesh
@@ -194,13 +199,27 @@ public class	Chunk
 				if (!CheckBlockOpacity(neighborPos) && !SameBlockID(blockPos, neighborPos))
 				{
 					Vector3 vPos = blockPos.ToVector3();
-					AddQuad (
-						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 0]],
-						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 1]],
-						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 2]],
-						vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 3]]
-					);
+
+					if (CheckBlockOpacity(blockPos))
+					{
+						AddQuad (
+							vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 0]],
+							vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 1]],
+							vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 2]],
+							vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 3]]
+						);
+					}
+					else
+					{
+						AddTransparentQuad (
+							vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 0]],
+							vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 1]],
+							vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 2]],
+							vPos + VoxelData.voxelVerts [VoxelData.voxelQuads [faceIndex, 3]]
+						);
+					}
 					AddTexture(world.blocktypes[(int)blockID].GetTextureId(faceIndex));
+
 				}
 			}
 		}
@@ -215,16 +234,21 @@ public class	Chunk
 
 		vertices.Clear();
 		triangles.Clear();
+		transparentTriangles.Clear();
 		uvs.Clear();
 	}
 
-	//builds the chunk's mesh
-	void	BuildChunkMesh()	//CreateMesh
+	//initiates the chunk's mesh
+	void	CreateChunkMesh()	//CreateMesh
 	{
 		Mesh	mesh = new Mesh();
 
 		mesh.vertices = vertices.ToArray();
-		mesh.triangles = triangles.ToArray();
+		//mesh.triangles = triangles.ToArray();
+
+		mesh.subMeshCount = 2;
+		mesh.SetTriangles(triangles.ToArray(), 0);
+		mesh.SetTriangles(transparentTriangles.ToArray(), 1);
 		mesh.uv = uvs.ToArray();
 
 		mesh.RecalculateNormals();
@@ -281,6 +305,38 @@ public class	Chunk
 		triangles.Add(vertexIndex + 2);
 		triangles.Add(vertexIndex + 3);
 		triangles.Add(vertexIndex);
+	}
+	//draws a square with two triangles
+	void	AddTransparentQuad (Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+	{
+		int vertexIndex = vertices.Count;
+
+		vertices.Add(v0);
+		vertices.Add(v1);
+		vertices.Add(v2);
+		vertices.Add(v3);
+
+		transparentTriangles.Add(vertexIndex);
+		transparentTriangles.Add(vertexIndex + 1);
+		transparentTriangles.Add(vertexIndex + 2);
+
+		transparentTriangles.Add(vertexIndex + 2);
+		transparentTriangles.Add(vertexIndex + 3);
+		transparentTriangles.Add(vertexIndex);
+	}
+
+	//draws a single triangle
+	void	AddTransparentTriangle (Vector3 v0, Vector3 v1, Vector3 v2)
+    {
+		int vertexIndex = vertices.Count;
+
+		vertices.Add(v0);
+		vertices.Add(v1);
+		vertices.Add(v2);
+
+		transparentTriangles.Add(vertexIndex);
+		transparentTriangles.Add(vertexIndex + 1);
+		transparentTriangles.Add(vertexIndex + 2);
 	}
 	//draws a single triangle
 	void	AddTriangle (Vector3 v0, Vector3 v1, Vector3 v2)

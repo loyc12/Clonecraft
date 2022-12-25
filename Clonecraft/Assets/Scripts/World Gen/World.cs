@@ -21,7 +21,8 @@ public class	World : MonoBehaviour
 	public Transform		player;
 	public Coords 			spawnPoint;
 
-	public Material			material;
+	public Material			blockAtlas;
+	public Material			transparentAtlas;
 	public BlockType[]		blocktypes;
 
 	Chunk[,,]				chunkMap = new Chunk[WorldData.WorldChunkSize, WorldData.WorldChunkHeight, WorldData.WorldChunkSize];	//Chunks
