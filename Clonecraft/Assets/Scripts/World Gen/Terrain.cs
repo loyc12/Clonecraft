@@ -7,13 +7,58 @@ public class	Terrain
 	World			world;
 	BiomeAttributes	biome;
 
-	float			soilDepth = 3f;
-	float			soilDepthFactor = 8f;
+	float			soilDepth = 4f;
+	float			soilDepthFactor = 4f;
+	float[]			heightThresholdMap = new float[WorldData.WorldBlockHeight];
 
 	public	Terrain (World _world, BiomeAttributes _biome)
 	{
 		world = _world;
 		biome = _biome;
+
+		InitializeThreshold();
+	}
+
+	private void	InitializeThreshold()
+	{
+		for (int y = 0; y < WorldData.WorldBlockHeight; y++)
+		{
+			heightThresholdMap[y] = GetHeightThreshold(y);
+		}
+	}
+
+	private float	GetHeightThreshold(int y)
+	{
+
+		// threshold = a(c - y)**3 - b(c - y) + d
+		// a above 0
+		// b c d between 0 and 2
+
+		float	a = -7.0f;	//a		(-0.4)	(-5.0)
+		float	b = 0.64f;	//b		(0.64)	(0.68)
+		float	c = 0.66f;	//c		(0.64)	(0.68)
+		float	d = 0.68f;	//d		(0.64)	(0.68)
+
+		float	h = c - ((float)y / WorldData.WorldBlockHeight);
+		float	hc =  Mathf.Pow((h), 3);
+
+		return (a * hc) - (b * h) + d;
+/*
+		// threshold = (a(y - c)**3 + d)**3 + b(y - c) + e
+		// a above 0
+		// b c d e between 0 and 2
+
+		float	a = 12.0f;	//a
+		float	b = 0.62f;	//b
+		float	c = 0.62f;	//b
+		float	d = 0.00f;	//d
+		float	e = 0.54f;	//e
+
+		float	heightFactor = ((float)y / WorldData.WorldBlockHeight) - c;
+		float	heightFactorCubed =  Mathf.Pow((heightFactor), 3f);
+
+		return	(Mathf.Pow(((a * heightFactorCubed) + d), 3f) + (b * heightFactor) + e);
+		*/
 	}
 
 	public BlockID GetBlockID(Coords worldPos)		//GetVoxel
@@ -81,19 +126,6 @@ public class	Terrain
 	//returns true if there should be a block at the given worldPos
 	private BlockID	Get3DTerrain(Coords worldPos)
 	{
-		// threshold = 0.5 * ( a(y - c)**3 + b(y - c) - d )
-		// a above 0
-		// b between 0 and 2
-		// c between 0 and 2
-		// d between 0 and 2
-
-		float	slope = 16f;				//a		(3.20)	(2.00)	(2.50)	(0.60)	(8.00)
-		float	strenghtOffset = 0.32f;		//b		(0.10)	(0.25)	(0.30)	(0.60)	(1.40)
-		float	thresholdOffset = 0.62f;	//c		(0.55)	(0.64)	(0.60)	(0.60)	(0.75)
-		float	verticalOffset = 1.02f;		//d		(0.45)	(0.32)	(0.36)	(0.30)	(1.40)
-
-		float	heightValue = ((float)worldPos.y / WorldData.WorldBlockHeight) - thresholdOffset;
-		float	heightValueCubed =  Mathf.Pow((heightValue), 3);
 
 		float	noiseValue;
 
@@ -102,7 +134,7 @@ public class	Terrain
 		else
 			noiseValue = Noise.Get3DRecursiveNoise(worldPos.ToVector3(), world.randomOffset, biome.terrainScale, biome.mountainScale,  biome.recursivityFactor, biome.recursivityAmount);
 
-		float	threshold = 0.5f * ((slope * heightValueCubed) + (strenghtOffset * heightValue) + verticalOffset);
+		float	threshold = heightThresholdMap[worldPos.y];
 		float	soilDepthOffset = 2f * Mathf.Abs(threshold - 0.5f);
 		float	soilThreshold = threshold + ((soilDepth + (soilDepthFactor * soilDepthOffset)) / WorldData.WorldBlockHeight);
 

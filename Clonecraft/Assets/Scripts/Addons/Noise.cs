@@ -6,18 +6,27 @@ public static class	Noise
 {
 	public static readonly int	offsetFactor = 256;
 
-	//generalized 2D perlin noise
+	private static	float GetNoise(float a, float b)
+	{
+		float	c = 0.192837465f;
+
+		return Mathf.PerlinNoise(a + c, b + c);
+	}
+
+	// ===== 2D noise =====
+
+	//generalized noise
 	public static float	Get2DNoise(Vector2 pos, Coords offset, float scale)
 	{
 		float	mainScale = WorldData.ChunkSize * scale * WorldData.noiseScale;
 
-		return (Mathf.PerlinNoise(
-			(pos.x + 0.192837465f + ((float)(offset.x - 1) * offsetFactor)) / mainScale,
-			(pos.y + 0.192837465f + ((float)(offset.y + 1) * offsetFactor)) / mainScale
+		return (GetNoise(
+			(pos.x + ((float)(offset.x - 1) * offsetFactor)) / mainScale,
+			(pos.y + ((float)(offset.y + 1) * offsetFactor)) / mainScale
 			));
 	}
 
-	//terrain recursive 2D perlin noise (additive)
+	//recursive noise (additive)
 	public static float	Get2DRecursiveNoise(Vector2 pos, Coords offset, float scale, float factor, int n)
 	{
 		Coords	nOffset = new Coords(n, n, n);
@@ -28,7 +37,7 @@ public static class	Noise
 		return (noise);
 	}
 
-	//terrain compounded 2D perlin noise (multiplicative)
+	//compounded noise (multiplicative)
 	public static float	Get2DCompoundedNoise(Vector2 pos, Coords offset, float scale, float factor, int n)
 	{
 		Coords	nOffset = new Coords(n, n, n);
@@ -39,28 +48,29 @@ public static class	Noise
 		return (noise);
 	}
 
-	//generalized 3D perlin noise
+	// ===== 3D noise =====
+
+	//generalized noise
 	public static float	Get3DNoise(Vector3 pos, Coords offset, float horizontalScale, float verticalScale)
 	{
 		float	xzScale = WorldData.ChunkSize * horizontalScale * WorldData.noiseScale;
 		float	yScale = WorldData.ChunkSize * verticalScale * WorldData.noiseScale;
 
-		float	x = (pos.x + 0.192837465f + (float)((offset.x - 1) * offsetFactor)) / xzScale;
-		float	y = (pos.y + 0.192837465f + (float)((offset.y    ) * offsetFactor)) / yScale;
-		float	z = (pos.z + 0.192837465f + (float)((offset.z + 1) * offsetFactor)) / xzScale;
+		float	x = (pos.x + (float)((offset.x - 1) * offsetFactor)) / xzScale;
+		float	y = (pos.y + (float)((offset.y    ) * offsetFactor)) / yScale;
+		float	z = (pos.z + (float)((offset.z + 1) * offsetFactor)) / xzScale;
 
 		return ((
-			Mathf.PerlinNoise(x, y + z) +
-			Mathf.PerlinNoise(x, y - z) +
+			GetNoise(x, z + y) +
+			GetNoise(x, z - y) +
 
-			Mathf.PerlinNoise(z, y + x) +
-			Mathf.PerlinNoise(z, y - x) +
+			GetNoise(z, x + y) +
+			GetNoise(z, x - y)/* +
 
-			Mathf.PerlinNoise(y, x + z) +
-			Mathf.PerlinNoise(y, x - z)) / 6f);
+			GetNoise(y, y)*/) / 4f);	//removing y viable
 	}
 
-	//terrain recursive 3D perlin noise (additive)
+	//recursive noise (additive)
 	public static float	Get3DRecursiveNoise(Vector3 pos, Coords offset, float horizontalScale, float verticalScale, float factor, int n)
 	{
 		Coords	nOffset = new Coords(n, n, n);
@@ -71,7 +81,7 @@ public static class	Noise
 		return (noise);
 	}
 
-	//terrain compounded 3D perlin noise (multiplicative)
+	//compounded noise (multiplicative)
 	public static float	Get3DCompoundedNoise(Vector3 pos, Coords offset, float horizontalScale, float verticalScale, float factor, int n)
 	{
 		Coords	nOffset = new Coords(n, n, n);
@@ -82,7 +92,9 @@ public static class	Noise
 		return (noise);
 	}
 
-	//for ore and cave noise
+	// ===== applied noise =====
+
+	//cheese noise (for caves and blobs)
 	public static bool	Get3DVeinNoise(World world, Vector3 pos, Coords offset, Vein vein)
 	{
 		float	noise;
@@ -98,5 +110,9 @@ public static class	Noise
 			return (true);
 		return (false);
 	}
+
+	//implement spagetti noise (true when close to threshold value) for caves, veins and rivers
+
+	//implement biome (humidity/temperature/elevation/awe) noise
 }
 

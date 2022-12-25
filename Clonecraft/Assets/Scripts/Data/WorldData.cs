@@ -4,10 +4,10 @@ using UnityEngine;
 
 public static class	WorldData
 {
-	public static readonly int		RandomRange = 1024;			//in blocks
+	public static readonly int		RandomRange = 2048;			//in blocks
 
-	public static readonly int		RenderDistance = 8;			//in chunks
-	public static readonly int		RenderLimit = 10;			//in chunks
+	public static readonly int		RenderDistance = 10;			//in chunks
+	public static readonly int		RenderLimit = 12;			//in chunks
 	public static readonly int		GenerationDistance = 4;		//in chunks
 
 	public static readonly int		WorldChunkSize = 128;		//in chunks
@@ -30,7 +30,7 @@ public static class	WorldData
 	public static int				RockLevel 					//in blocks
 	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.32f);}}
 	public static int				SeaLevel 					//in blocks
-	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.36f);}}
+	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.4f);}}
 	public static int				SnowLevel 					//in blocks
 	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.80f);}}
 

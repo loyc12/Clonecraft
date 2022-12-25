@@ -61,7 +61,6 @@ public class	Chunk
 			BuildChunkMesh();
 
 		isGenerated = true;
-
 	}
 
 	public void Load()
@@ -258,7 +257,7 @@ public class	Chunk
 
 	public Coords chunkWorldPos	//position
 	{
-		get { return (chunkPos.MulPos(WorldData.ChunkSize)); }
+		get { return (chunkPos.ChunkToWorldPos()); }
 	}
 
 	//wheter the chunk is loaded or not
