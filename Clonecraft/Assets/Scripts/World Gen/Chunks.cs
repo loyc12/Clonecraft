@@ -157,9 +157,7 @@ public class	Chunk
 		{
 			Coords updateBlock = blockPos.GetNeighbor(faceIndex);
 
-			Coords worldPos = chunkPos.ChunkToWorldPos().AddPos(updateBlock);
-
-			if (!updateBlock.IsBlockInChunk() && worldPos.IsBlockInWorld())
+			if (!updateBlock.IsBlockInChunk() && chunkPos.IsChunkInWorld())
 				world.FindChunk(chunkPos.GetNeighbor(faceIndex)).BuildChunkMesh();
 		}
 	}

@@ -322,8 +322,10 @@ public class Player : MonoBehaviour
 
 		if (!isGhosting)	//TODO : divide speed a few time before terminating checks instead???
 		{
-			velocity = CheckVerticalSpeed(velocity);	//MAKE ALL CHECKS RELATIVE TO NEW POTENTIAL POS
-			velocity = CheckHorizontalSpeed(velocity);
+			//velocity = CheckVerticalSpeed(velocity);	//MAKE ALL CHECKS RELATIVE TO NEW POTENTIAL POS
+			//velocity = CheckHorizontalSpeed(velocity);
+
+			velocity = CheckCollisions(velocity);
 		}
 	}
 
@@ -340,6 +342,77 @@ public class Player : MonoBehaviour
 
 			hasMoved = true;
 		}
+	}
+
+	private Vector3 CheckCollisions(Vector3 velocity)
+	{
+
+		Vector3	nextPos = transform.position + velocity;
+		Coords	pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
+		Coords	pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
+
+		//checking bottom
+		if (velocity.y < 0 && WillCollide((
+				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos1.y, pos2.z)))))
+		{
+			velocity.y = 0;
+			isGrounded = true;
+		}
+		else
+			isGrounded = false;
+
+		//checking top
+		if (velocity.y > 0 && WillCollide((
+				new Coords(pos1.x, pos2.y, pos1.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos2.y, pos2.z)))))
+			velocity.y = 0;
+
+		nextPos = transform.position + velocity;
+		pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
+		pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
+
+		//checking left - right
+		if (velocity.x > 0 && WillCollide((
+				new Coords(pos2.x, pos1.y, pos1.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos2.y, pos2.z))))
+			||
+			velocity.x < 0 && WillCollide((
+				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
+				new Coords(pos1.x, pos2.y, pos2.z)))))
+		{
+			velocity.x = 0;
+			nextPos = transform.position + velocity;
+			pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
+			pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
+		}
+
+
+		//checking front - back
+		if (velocity.z > 0 && WillCollide((
+				new Coords(pos1.x, pos1.y, pos2.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos2.y, pos2.z))))
+			||
+			velocity.z < 0 && WillCollide((
+				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos2.y, pos1.z)))))
+		{
+			velocity.z = 0;
+
+			//nextPos = transform.position + velocity;
+			//pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
+			//pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
+		}
+
+		return (velocity);
+	}
+
+	private bool	WillCollide(Coords[] blockArray)
+	{
+		foreach (Coords blockPos in blockArray)
+			if (world.IsBlockSolid(blockPos))
+				return (true);
+		return (false);
 	}
 
 	private Vector3	CheckHorizontalSpeed(Vector3 velocity)	//TODO : calculate where the player should end up after colision

@@ -197,6 +197,51 @@ public class Coords
 		return (true);
 	}
 
+	public bool		IsInVolume(Coords pos1, Coords pos2)
+	{
+		if ((pos1.x <= pos2.x && pos1.x <= this.x && this.x <= pos2.x) || (pos2.x < pos1.x && pos2.x <= this.x && this.x <= pos1.x))
+			if ((pos1.y <= pos2.y && pos1.y <= this.y && this.y <= pos2.y) || (pos2.y < pos1.y && pos2.y <= this.y && this.y <= pos1.y))
+				if ((pos1.z <= pos2.z && pos1.z <= this.z && this.z <= pos2.y) || (pos2.z < pos1.z && pos2.z <= this.z && this.z <= pos1.z))
+					return (true);
+		return (false);
+	}
+
+	public Coords[]	ListCoordsInVolume(Coords that)
+	{
+		int	minX;
+		int	maxX;
+		int	minY;
+		int	maxY;
+		int	minZ;
+		int	maxZ;
+
+		if (this.y <= that.y)
+			{minY = this.y;	maxY = that.y;}
+		else
+			{minY = that.y;	maxY = this.y;}
+
+		if (this.x <= that.x)
+			{minX = this.x;	maxX = that.x;}
+		else
+			{minX = that.x;	maxX = this.x;}
+
+		if (this.z <= that.z)
+			{minZ = this.z;	maxZ = that.z;}
+		else
+			{minZ = that.z;	maxZ = this.z;}
+
+		int			size = (1 + maxX - minX) * (1 + maxY - minY) * (1 + maxZ - minZ);
+		Coords[]	array = new Coords[size];
+
+		int	i = 0;
+		for (int y = minY; y <= maxY; y++)
+			for (int x = minX; x <= maxX; x++)
+				for (int z = minZ; z <= maxZ; z++)
+					array[i++] = new Coords(x, y, z);
+
+		return (array);
+	}
+
 	public Vector3	ToVector3()
 	{
 		return (new Vector3(this.x, this.y, this.z));
