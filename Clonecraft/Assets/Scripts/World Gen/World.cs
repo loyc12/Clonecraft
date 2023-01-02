@@ -14,6 +14,7 @@ public class	World : MonoBehaviour
 
 	public int				seed;
 	public Coords			randomOffset;
+	public NoiseTest.OpenSimplexNoise	SimplexNoise;				//testing
 
 	public BiomeAttributes	biome;
 	public Terrain			defaultTerrain;
@@ -65,6 +66,8 @@ public class	World : MonoBehaviour
 
 	private void	InitializeRandomness()
 	{
+		SimplexNoise = new NoiseTest.OpenSimplexNoise((long)seed);
+
 		Random.InitState(seed);
 		randomOffset = new Coords(
 			Random.Range(-WorldData.RandomRange, WorldData.RandomRange),

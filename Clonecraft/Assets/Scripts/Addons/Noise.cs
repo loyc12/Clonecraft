@@ -13,10 +13,20 @@ public static class	Noise
 		return Mathf.PerlinNoise(a + c, b + c);
 	}
 
+	private static	float Get2DSimplexNoise(World world, float a, float b)
+	{
+		return ((float)world.SimplexNoise.Evaluate(a, b));
+	}
+
+	private static	float Get3DSimplexNoise(World world, float a, float b, float c)
+	{
+		return ((float)world.SimplexNoise.Evaluate(a, b, c));
+	}
+
 	// ===== 2D noise =====
 
 	//generalized noise
-	public static float	Get2DNoise(Vector2 pos, Coords offset, float scale)
+	public static float	Get2DNoise(World world, Vector2 pos, Coords offset, float scale)
 	{
 		float	mainScale = WorldData.ChunkSize * scale * WorldData.noiseScale;
 
@@ -27,31 +37,31 @@ public static class	Noise
 	}
 
 	//recursive noise (additive)
-	public static float	Get2DRecursiveNoise(Vector2 pos, Coords offset, float scale, float factor, int n)
+	public static float	Get2DRecursiveNoise(World world, Vector2 pos, Coords offset, float scale, float factor, int n)
 	{
 		Coords	nOffset = new Coords(n, n, n);
-		float	noise = Get2DNoise(pos, offset.AddPos(nOffset), scale);
+		float	noise = Get2DNoise(world, pos, offset.AddPos(nOffset), scale);
 
 		if (n > 0)
-			noise += (Get2DRecursiveNoise(pos, offset, scale / factor, factor, n - 1) - 0.5f) * (1f / factor);
+			noise += (Get2DRecursiveNoise(world, pos, offset, scale / factor, factor, n - 1) - 0.5f) * (1f / factor);
 		return (noise);
 	}
 
 	//compounded noise (multiplicative)
-	public static float	Get2DCompoundedNoise(Vector2 pos, Coords offset, float scale, float factor, int n)
+	public static float	Get2DCompoundedNoise(World world, Vector2 pos, Coords offset, float scale, float factor, int n)
 	{
 		Coords	nOffset = new Coords(n, n, n);
-		float	noise = Get2DNoise(pos, offset.AddPos(nOffset), scale);
+		float	noise = Get2DNoise(world, pos, offset.AddPos(nOffset), scale);
 
 		if (n > 0)
-			noise *= Get2DCompoundedNoise(pos, offset, scale / factor, factor, n - 1);
+			noise *= Get2DCompoundedNoise(world, pos, offset, scale / factor, factor, n - 1);
 		return (noise);
 	}
 
 	// ===== 3D noise =====
 
 	//generalized noise
-	public static float	Get3DNoise(Vector3 pos, Coords offset, float horizontalScale, float verticalScale)
+	public static float	Get3DNoise(World world, Vector3 pos, Coords offset, float horizontalScale, float verticalScale)
 	{
 		float	xzScale = WorldData.ChunkSize * horizontalScale * WorldData.noiseScale;
 		float	yScale = WorldData.ChunkSize * verticalScale * WorldData.noiseScale;
@@ -71,24 +81,24 @@ public static class	Noise
 	}
 
 	//recursive noise (additive)
-	public static float	Get3DRecursiveNoise(Vector3 pos, Coords offset, float horizontalScale, float verticalScale, float factor, int n)
+	public static float	Get3DRecursiveNoise(World world, Vector3 pos, Coords offset, float horizontalScale, float verticalScale, float factor, int n)
 	{
 		Coords	nOffset = new Coords(n, n, n);
-		float	noise = Get3DNoise(pos, offset.AddPos(nOffset), horizontalScale, verticalScale);
+		float	noise = Get3DNoise(world, pos, offset.AddPos(nOffset), horizontalScale, verticalScale);
 
 		if (n > 0)
-			noise += (Get3DRecursiveNoise(pos, offset, horizontalScale / factor, verticalScale / factor, factor, n - 1) - 0.5f) * (1f / factor);
+			noise += (Get3DRecursiveNoise(world, pos, offset, horizontalScale / factor, verticalScale / factor, factor, n - 1) - 0.5f) * (1f / factor);
 		return (noise);
 	}
 
 	//compounded noise (multiplicative)
-	public static float	Get3DCompoundedNoise(Vector3 pos, Coords offset, float horizontalScale, float verticalScale, float factor, int n)
+	public static float	Get3DCompoundedNoise(World world, Vector3 pos, Coords offset, float horizontalScale, float verticalScale, float factor, int n)
 	{
 		Coords	nOffset = new Coords(n, n, n);
-		float	noise = Get3DNoise(pos, offset.AddPos(nOffset), horizontalScale, verticalScale);
+		float	noise = Get3DNoise(world, pos, offset.AddPos(nOffset), horizontalScale, verticalScale);
 
 		if (n > 0)
-			noise *= Get3DCompoundedNoise(pos, offset, horizontalScale / factor, verticalScale / factor, factor, n - 1);
+			noise *= Get3DCompoundedNoise(world, pos, offset, horizontalScale / factor, verticalScale / factor, factor, n - 1);
 		return (noise);
 	}
 
@@ -102,9 +112,9 @@ public static class	Noise
 		float	strenght = 1 - Mathf.Pow(factor, 3);	//^2 or ^3?
 
 		if (world.UseSimpleGen)
-			noise = Get3DNoise(pos, offset, vein.horizontalScale, vein.verticalScale);
+			noise = Get3DNoise(world, pos, offset, vein.horizontalScale, vein.verticalScale);
 		else
-			noise = Get3DRecursiveNoise(pos, offset, vein.horizontalScale, vein.verticalScale, 1.618f, vein.n);
+			noise = Get3DRecursiveNoise(world, pos, offset, vein.horizontalScale, vein.verticalScale, 1.618f, vein.n);
 
 		if (0 < strenght && vein.threshold < noise * strenght)
 			return (true);

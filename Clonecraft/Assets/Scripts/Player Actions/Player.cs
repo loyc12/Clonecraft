@@ -41,8 +41,10 @@ public class Player : MonoBehaviour
 	private float		vertical;				//(a d)
 
 	public Coords		playerPos;
-	public Coords		playerLastPos;
 	public Coords		playerChunkPos;
+
+	public Coords		hitBoxCorner1;
+	public Coords		hitBoxCorner2;
 
 	public Transform	placeBlock;
 	public Transform	breakBlock;				//highlightBlock
@@ -61,7 +63,6 @@ public class Player : MonoBehaviour
 		world = GameObject.Find("World").GetComponent<World>();
 
 		playerPos = new Coords(playerFeet.position);
-		playerLastPos = playerPos;
 
 		Cursor.lockState = CursorLockMode.Locked;
 
@@ -70,8 +71,8 @@ public class Player : MonoBehaviour
 
 	private void	FixedUpdate()
 	{
-		CalculatePosition();
 		JumpCheck();
+		UpdatePosition();
 		CalculateVelocity();
 
 		transform.Translate(velocity, Space.World);
@@ -186,7 +187,7 @@ public class Player : MonoBehaviour
 					else
 						placeBlock.gameObject.SetActive(false);
 				}
-				if (lPos.x != camPos.x || lPos.z != camPos.z || (lPos.y != camPos.y && lPos.y != camPos.y - 1))
+				if (!(lPos.IsInVolume(hitBoxCorner1, hitBoxCorner2)))
 				{
 					placeBlock.position = new Vector3(
 						Mathf.FloorToInt(lastPos.x),
@@ -323,15 +324,23 @@ public class Player : MonoBehaviour
 		}
 	}
 
-	private void	CalculatePosition()
+	private void	UpdatePosition()
 	{
+		hitBoxCorner1 = new Coords(
+			playerFeet.position.x - PlayerData.playerWidht,
+			playerFeet.position.y,
+			playerFeet.position.z - PlayerData.playerWidht);
+		hitBoxCorner2 = new Coords(
+			playerFeet.position.x + PlayerData.playerWidht,
+			playerFeet.position.y + PlayerData.playerHeight,
+			playerFeet.position.z + PlayerData.playerWidht);
+
 		Coords playerCurrentPos = new Coords(playerFeet.position);
 
 		if (playerPos.y != playerCurrentPos.y || playerPos.x != playerCurrentPos.x || playerPos.z != playerCurrentPos.z)
 		{
 			playerChunkPos = playerCurrentPos.WorldToChunkPos();
 
-			playerLastPos = playerPos;
 			playerPos = playerCurrentPos;
 
 			hasMoved = true;

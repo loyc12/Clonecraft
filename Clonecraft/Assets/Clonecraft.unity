@@ -2254,10 +2254,10 @@ MonoBehaviour:
     isOpaque: 0
     isMonofaced: 0
     icon: {fileID: 0}
-    frontFaceTexture: 0
-    backFaceTexture: 0
     topFaceTexture: 0
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Grass
@@ -2265,10 +2265,10 @@ MonoBehaviour:
     isOpaque: 1
     isMonofaced: 0
     icon: {fileID: -1124939460, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 50
-    backFaceTexture: 50
     topFaceTexture: 52
     bottomFaceTexture: 48
+    frontFaceTexture: 50
+    backFaceTexture: 50
     leftFaceTexture: 50
     rightFaceTexture: 50
   - blockName: Dirt
@@ -2276,10 +2276,10 @@ MonoBehaviour:
     isOpaque: 1
     isMonofaced: 1
     icon: {fileID: -1097816306, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 48
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 48
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Stone
@@ -2287,10 +2287,10 @@ MonoBehaviour:
     isOpaque: 1
     isMonofaced: 1
     icon: {fileID: 204226635, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 2
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 2
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Rock
@@ -2298,10 +2298,10 @@ MonoBehaviour:
     isOpaque: 1
     isMonofaced: 1
     icon: {fileID: -1454851673, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 1
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 1
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Slate
@@ -2309,10 +2309,10 @@ MonoBehaviour:
     isOpaque: 1
     isMonofaced: 1
     icon: {fileID: -1894019910, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 0
-    backFaceTexture: 0
     topFaceTexture: 0
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Marble
@@ -2320,10 +2320,10 @@ MonoBehaviour:
     isOpaque: 1
     isMonofaced: 1
     icon: {fileID: 1474900454, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 3
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 3
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Sand
@@ -2331,10 +2331,10 @@ MonoBehaviour:
     isOpaque: 1
     isMonofaced: 1
     icon: {fileID: 599237792, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 32
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 32
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Gravel
@@ -2342,10 +2342,10 @@ MonoBehaviour:
     isOpaque: 1
     isMonofaced: 1
     icon: {fileID: -2059945841, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 33
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 33
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Snow
@@ -2353,10 +2353,10 @@ MonoBehaviour:
     isOpaque: 1
     isMonofaced: 1
     icon: {fileID: -615509873, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 68
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 68
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Water
@@ -2364,10 +2364,10 @@ MonoBehaviour:
     isOpaque: 0
     isMonofaced: 1
     icon: {fileID: 617256484, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 21
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 21
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Lava
@@ -2375,10 +2375,10 @@ MonoBehaviour:
     isOpaque: 0
     isMonofaced: 1
     icon: {fileID: 2015292719, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 22
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 22
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Acid
@@ -2386,10 +2386,10 @@ MonoBehaviour:
     isOpaque: 0
     isMonofaced: 1
     icon: {fileID: 1950748470, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 23
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 23
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Glass
@@ -2397,10 +2397,10 @@ MonoBehaviour:
     isOpaque: 0
     isMonofaced: 1
     icon: {fileID: 1769526948, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    frontFaceTexture: 116
-    backFaceTexture: 0
-    topFaceTexture: 0
+    topFaceTexture: 116
     bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
   debugScreen: {fileID: 1209610935}

@@ -130,9 +130,9 @@ public class	Terrain
 		float	noiseValue;
 
 		if (world.UseSimpleGen)
-			noiseValue = Noise.Get3DNoise(worldPos.ToVector3(), world.randomOffset, biome.terrainScale, biome.mountainScale);
+			noiseValue = Noise.Get3DNoise(world, worldPos.ToVector3(), world.randomOffset, biome.terrainScale, biome.mountainScale);
 		else
-			noiseValue = Noise.Get3DRecursiveNoise(worldPos.ToVector3(), world.randomOffset, biome.terrainScale, biome.mountainScale,  biome.recursivityFactor, biome.recursivityAmount);
+			noiseValue = Noise.Get3DRecursiveNoise(world, worldPos.ToVector3(), world.randomOffset, biome.terrainScale, biome.mountainScale,  biome.recursivityFactor, biome.recursivityAmount);
 
 		float	threshold = heightThresholdMap[worldPos.y];
 		float	soilDepthOffset = 2f * Mathf.Abs(threshold - 0.5f);
@@ -222,9 +222,9 @@ public class	Terrain
 		float	height;
 
 		if (world.UseSimpleGen)
-			height = Noise.Get2DNoise(worldPos.ToVector2(), world.randomOffset, biome.terrainScale);
+			height = Noise.Get2DNoise(world, worldPos.ToVector2(), world.randomOffset, biome.terrainScale);
 		else
-			height = Noise.Get2DRecursiveNoise(worldPos.ToVector2(), world.randomOffset, biome.terrainScale, biome.recursivityFactor, biome.recursivityAmount);
+			height = Noise.Get2DRecursiveNoise(world, worldPos.ToVector2(), world.randomOffset, biome.terrainScale, biome.recursivityFactor, biome.recursivityAmount);
 
 		height *= biome.maxElevation;
 		height += biome.baseElevation;

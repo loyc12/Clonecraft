@@ -55,20 +55,20 @@ public class Coords
 		Coords pos = new Coords(this.x, this.y, this.z);
 
 		if (faceIndex == 0)
-			pos.z -= 1;
+			pos.y += 1;			//top
 		else if (faceIndex == 1)
-			pos.z += 1;
+			pos.y -= 1;			//bottom
 		else if (faceIndex == 2)
-			pos.y += 1;
+			pos.z -= 1;			//front
 		else if (faceIndex == 3)
-			pos.y -= 1;
+			pos.z += 1;			//back
 		else if (faceIndex == 4)
-			pos.x -= 1;
+			pos.x -= 1;			//left
 		else if (faceIndex == 5)
-			pos.x += 1;
+			pos.x += 1;			//right
 		else
 		{
-			Debug.Log("Error in GetNeighbor : invalid face index given");
+			Debug.Log("Error in Coords.GetNeighbor() : invalid face index given");
 			return (null);
 		}
 		return (pos);
@@ -199,9 +199,31 @@ public class Coords
 
 	public bool		IsInVolume(Coords pos1, Coords pos2)
 	{
-		if ((pos1.x <= pos2.x && pos1.x <= this.x && this.x <= pos2.x) || (pos2.x < pos1.x && pos2.x <= this.x && this.x <= pos1.x))
-			if ((pos1.y <= pos2.y && pos1.y <= this.y && this.y <= pos2.y) || (pos2.y < pos1.y && pos2.y <= this.y && this.y <= pos1.y))
-				if ((pos1.z <= pos2.z && pos1.z <= this.z && this.z <= pos2.y) || (pos2.z < pos1.z && pos2.z <= this.z && this.z <= pos1.z))
+		int	minX;
+		int	maxX;
+		int	minY;
+		int	maxY;
+		int	minZ;
+		int	maxZ;
+
+		if (pos1.y <= pos2.y)
+			{minY = pos1.y;	maxY = pos2.y;}
+		else
+			{minY = pos2.y;	maxY = pos1.y;}
+
+		if (pos1.x <= pos2.x)
+			{minX = pos1.x;	maxX = pos2.x;}
+		else
+			{minX = pos2.x;	maxX = pos1.x;}
+
+		if (pos1.z <= pos2.z)
+			{minZ = pos1.z;	maxZ = pos2.z;}
+		else
+			{minZ = pos2.z;	maxZ = pos1.z;}
+
+		if (minY <= this.y && this.y <= maxY)
+			if (minX <= this.x && this.x <= maxX)
+				if (minZ <= this.z && this.z <= maxZ)
 					return (true);
 		return (false);
 	}

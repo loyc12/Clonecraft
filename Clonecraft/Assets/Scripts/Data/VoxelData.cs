@@ -18,10 +18,10 @@ public static class	VoxelData
 
 	public static readonly int[,]		voxelQuads = new int[6,4]
 	{
-		{0, 3, 2, 1},	//0 : front face
-		{5, 6, 7, 4},	//1 : back face
-		{3, 7, 6, 2},	//2 : top face
-		{1, 5, 4, 0},	//3 : bottom face
+		{3, 7, 6, 2},	//0 : top face
+		{1, 5, 4, 0},	//1 : bottom face
+		{0, 3, 2, 1},	//2 : front face
+		{5, 6, 7, 4},	//3 : back face
 		{4, 7, 3, 0},	//4 : left face
 		{1, 2, 6, 5}	//5 : right face
 	};

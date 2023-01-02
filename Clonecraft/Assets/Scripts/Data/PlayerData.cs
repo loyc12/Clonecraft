@@ -14,7 +14,7 @@ public static class PlayerData
 	public static readonly float	flyAscentFactor = 32f;
 
 	public static readonly float	jumpForce = 18f;
-	public static readonly float	crouchJumpFactor = 1.28f;
+	public static readonly float	crouchJumpFactor = 1.20f;
 
 	public static readonly float	gravityForce = -64f;
 	public static readonly float 	maxFallSpeed = -256f;
