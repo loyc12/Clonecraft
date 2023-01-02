@@ -15,7 +15,7 @@ MonoBehaviour:
   biomeName: Default
   baseElevation: 64
   maxElevation: 128
-  terrainScale: 32
+  terrainScale: 16
   mountainScale: 12
   recursivityAmount: 4
   recursivityFactor: 2
