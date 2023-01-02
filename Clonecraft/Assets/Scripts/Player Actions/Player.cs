@@ -6,7 +6,8 @@ using UnityEngine.UI;
 /*	IDEAS
 
 	make crouch crouchier
-
+	normalize movement speed (cap)
+	autoclimb when only bottom is blocked
 */
 
 public class Player : MonoBehaviour
@@ -283,12 +284,11 @@ public class Player : MonoBehaviour
 		velocity = (transform.forward * vertical) + (transform.right * horizontal);
 
 		//horizontal speed controls
+		velocity *= PlayerData.walkSpeed;
 		if (isCrouching)
-			velocity *= PlayerData.crouchSpeed;
+			velocity *= PlayerData.crouchSpeedFactor;
 		else if (isSprinting)
-			velocity *= PlayerData.sprintSpeed;
-		else
-			velocity *= PlayerData.walkSpeed;
+			velocity *= PlayerData.sprintSpeedFactor;
 
 		//gravity implementation
 		if (isFlying || isGrounded)
@@ -299,20 +299,17 @@ public class Player : MonoBehaviour
 		//vertical speed controls
 		if (isFlying)
 		{
-			if (isSprinting)
-				velocity *= PlayerData.flySpeed;
-			else
-				velocity *= 2f;
+			velocity *= PlayerData.flySpeedFactor;
 
 			if (isJumping && isCrouching)
 				velocity.y = 0;
 			else if (isJumping)
-				velocity.y = PlayerData.ascentSpeed;
+				velocity.y = PlayerData.flyAscentFactor;
 			else if (isCrouching)
-				velocity.y = -PlayerData.ascentSpeed;
+				velocity.y = -PlayerData.flyAscentFactor;
 
 			if (isSprinting)
-				velocity.y *= PlayerData.flyFactor;
+				velocity *= PlayerData.flySprintFactor;
 		}
 		else
 			velocity.y += verticalSpeed;
@@ -322,9 +319,6 @@ public class Player : MonoBehaviour
 
 		if (!isGhosting)	//TODO : divide speed a few time before terminating checks instead???
 		{
-			//velocity = CheckVerticalSpeed(velocity);	//MAKE ALL CHECKS RELATIVE TO NEW POTENTIAL POS
-			//velocity = CheckHorizontalSpeed(velocity);
-
 			velocity = CheckCollisions(velocity);
 		}
 	}
@@ -346,33 +340,52 @@ public class Player : MonoBehaviour
 
 	private Vector3 CheckCollisions(Vector3 velocity)
 	{
+		if (IsYBlocked(velocity))
+			velocity.y = 0;
 
-		Vector3	nextPos = transform.position + velocity;
+		if (IsXBlocked(velocity))
+			velocity.x = 0;
+
+		if (IsZBlocked(velocity))
+			velocity.z = 0;
+
+		return (velocity);
+	}
+
+	//checking top-bottom collisions
+	private bool	IsYBlocked(Vector3 velocity)
+	{
+		Vector3 nextPos = transform.position;
+		nextPos.y += velocity.y;
+
 		Coords	pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
 		Coords	pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
 
-		//checking bottom
-		if (velocity.y < 0 && WillCollide((
+		if (velocity.y > 0 && WillCollide((
+				new Coords(pos1.x, pos2.y, pos1.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos2.y, pos2.z))))
+			||
+			velocity.y < 0 && WillCollide((
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos1.y, pos2.z)))))
 		{
-			velocity.y = 0;
-			isGrounded = true;
+			if (velocity.y < 0)
+				isGrounded = true;
+			return (true);
 		}
-		else
-			isGrounded = false;
+		isGrounded = false;
+		return (false);
+	}
 
-		//checking top
-		if (velocity.y > 0 && WillCollide((
-				new Coords(pos1.x, pos2.y, pos1.z).ListCoordsInVolume(
-				new Coords(pos2.x, pos2.y, pos2.z)))))
-			velocity.y = 0;
+	//checking left-right collisions
+	private bool	IsXBlocked(Vector3 velocity)
+	{
+		Vector3 nextPos = transform.position;
+		nextPos.x += velocity.x;
 
-		nextPos = transform.position + velocity;
-		pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
-		pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
+		Coords	pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
+		Coords	pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
 
-		//checking left - right
 		if (velocity.x > 0 && WillCollide((
 				new Coords(pos2.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y, pos2.z))))
@@ -381,14 +394,20 @@ public class Player : MonoBehaviour
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos1.x, pos2.y, pos2.z)))))
 		{
-			velocity.x = 0;
-			nextPos = transform.position + velocity;
-			pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
-			pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
+			return (true);
 		}
+		return (false);
+	}
 
+	//checking front-back collisions
+	private bool	IsZBlocked(Vector3 velocity)
+	{
+		Vector3 nextPos = transform.position;
+		nextPos.z += velocity.z;
 
-		//checking front - back
+		Coords	pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
+		Coords	pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
+
 		if (velocity.z > 0 && WillCollide((
 				new Coords(pos1.x, pos1.y, pos2.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y, pos2.z))))
@@ -397,14 +416,9 @@ public class Player : MonoBehaviour
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y, pos1.z)))))
 		{
-			velocity.z = 0;
-
-			//nextPos = transform.position + velocity;
-			//pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
-			//pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
+			return (true);
 		}
-
-		return (velocity);
+		return (false);
 	}
 
 	private bool	WillCollide(Coords[] blockArray)
@@ -413,42 +427,6 @@ public class Player : MonoBehaviour
 			if (world.IsBlockSolid(blockPos))
 				return (true);
 		return (false);
-	}
-
-	private Vector3	CheckHorizontalSpeed(Vector3 velocity)	//TODO : calculate where the player should end up after colision
-	{
-		if (velocity.x > 0 && (isFrontRightBlocked || isBackRightBlocked))
-		{
-			velocity.x = 0;
-		}
-		if (velocity.x < 0 && (isFrontLeftBlocked || isBackLeftBlocked))
-		{
-			velocity.x = 0;
-		}
-		if (velocity.z > 0 && (isFrontRightBlocked || isFrontLeftBlocked))
-		{
-			velocity.z = 0;
-		}
-		if (velocity.z < 0 && (isBackRightBlocked || isBackLeftBlocked))
-		{
-			velocity.z = 0;
-		}
-		return (velocity);
-	}
-
-	private Vector3	CheckVerticalSpeed(Vector3 velocity)	//TODO : calculate where the player should end up after colision
-	{
-		if (velocity.y < 0 && isBottomBlocked(velocity.y))
-		{
-			velocity.y = 0;
-			isGrounded = true;
-		}
-		else
-			isGrounded = false;
-
-		if (velocity.y > 0 && isTopBlocked(velocity.y))
-			velocity.y = 0;
-		return (velocity);
 	}
 
 	private void	TurnCamera()
@@ -473,259 +451,4 @@ public class Player : MonoBehaviour
 			isGrounded = false;
 		}
 	}
-
-	private bool	isBottomBlocked (float fallSpeed)	//checkDownSpeed
-	{
-		if (world.IsBlockSolid(new Coords(
-				transform.position.x + PlayerData.playerWidht,
-				transform.position.y + fallSpeed,
-				transform.position.z + PlayerData.playerWidht))
-			||
-			world.IsBlockSolid(new Coords(
-				transform.position.x - PlayerData.playerWidht,
-				transform.position.y + fallSpeed,
-				transform.position.z + PlayerData.playerWidht))
-			||
-			world.IsBlockSolid(new Coords(
-				transform.position.x + PlayerData.playerWidht,
-				transform.position.y + fallSpeed,
-				transform.position.z - PlayerData.playerWidht))
-			||
-			world.IsBlockSolid(new Coords(
-				transform.position.x - PlayerData.playerWidht,
-				transform.position.y + fallSpeed,
-				transform.position.z - PlayerData.playerWidht)))
-		{
-			return (true);
-		}
-		return (false);
-	}
-
-	private bool	isTopBlocked (float jumpSpeed)	//checkUpSpeed
-	{
-		if (world.IsBlockSolid(new Coords(
-				transform.position.x + PlayerData.playerWidht,
-				transform.position.y + PlayerData.playerHeight + jumpSpeed,
-				transform.position.z + PlayerData.playerWidht))
-			||
-			world.IsBlockSolid(new Coords(
-				transform.position.x - PlayerData.playerWidht,
-				transform.position.y + PlayerData.playerHeight + jumpSpeed,
-				transform.position.z + PlayerData.playerWidht))
-			||
-			world.IsBlockSolid(new Coords(
-				transform.position.x + PlayerData.playerWidht,
-				transform.position.y + PlayerData.playerHeight + jumpSpeed,
-				transform.position.z - PlayerData.playerWidht))
-			||
-			world.IsBlockSolid(new Coords(
-				transform.position.x - PlayerData.playerWidht,
-				transform.position.y + PlayerData.playerHeight + jumpSpeed,
-				transform.position.z - PlayerData.playerWidht)))
-		{
-			return (true);
-		}
-		return (false);
-	}
-
-	public bool	isFrontRightBlocked
-	{
-		get
-		{
-			if (world.IsBlockSolid(new Coords(
-					transform.position.x + PlayerData.playerWidht,
-					transform.position.y,
-					transform.position.z + PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x + PlayerData.playerWidht,
-					transform.position.y + (PlayerData.playerHeight / 2f),
-					transform.position.z + PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x + PlayerData.playerWidht,
-					transform.position.y + PlayerData.playerHeight,
-					transform.position.z + PlayerData.playerWidht)))
-			{
-				return (true);
-			}
-			return (false);
-		}
-	}
-
-	public bool	isFrontLeftBlocked
-	{
-		get
-		{
-			if (world.IsBlockSolid(new Coords(
-					transform.position.x - PlayerData.playerWidht,
-					transform.position.y,
-					transform.position.z + PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x - PlayerData.playerWidht,
-					transform.position.y + (PlayerData.playerHeight / 2f),
-					transform.position.z + PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x - PlayerData.playerWidht,
-					transform.position.y + PlayerData.playerHeight,
-					transform.position.z + PlayerData.playerWidht)))
-			{
-				return (true);
-			}
-			return (false);
-		}
-	}
-
-	public bool	isBackRightBlocked
-	{
-		get
-		{
-			if (world.IsBlockSolid(new Coords(
-					transform.position.x + PlayerData.playerWidht,
-					transform.position.y,
-					transform.position.z - PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x + PlayerData.playerWidht,
-					transform.position.y + (PlayerData.playerHeight / 2f),
-					transform.position.z - PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x + PlayerData.playerWidht,
-					transform.position.y + PlayerData.playerHeight,
-					transform.position.z - PlayerData.playerWidht)))
-			{
-				return (true);
-			}
-			return (false);
-		}
-	}
-
-	public bool	isBackLeftBlocked
-	{
-		get
-		{
-			if (world.IsBlockSolid(new Coords(
-					transform.position.x - PlayerData.playerWidht,
-					transform.position.y,
-					transform.position.z - PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x - PlayerData.playerWidht,
-					transform.position.y + (PlayerData.playerHeight / 2f),
-					transform.position.z - PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x - PlayerData.playerWidht,
-					transform.position.y + PlayerData.playerHeight,
-					transform.position.z - PlayerData.playerWidht)))
-			{
-				return (true);
-			}
-			return (false);
-		}
-	}
-	/*
-	public bool	isRightBlocked
-	{
-		get
-		{
-			if (world.IsBlockSolid(new Coords(
-					transform.position.x + PlayerData.playerWidht,
-					transform.position.y,
-					transform.position.z))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x + PlayerData.playerWidht,
-					transform.position.y + (PlayerData.playerHeight / 2f),
-					transform.position.z))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x + PlayerData.playerWidht,
-					transform.position.y + PlayerData.playerHeight,
-					transform.position.z)))
-			{
-				return (true);
-			}
-			return (false);
-		}
-	}
-
-	public bool	isLeftBlocked
-	{
-		get
-		{
-			if (world.IsBlockSolid(new Coords(
-					transform.position.x - PlayerData.playerWidht,
-					transform.position.y,
-					transform.position.z))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x - PlayerData.playerWidht,
-					transform.position.y + (PlayerData.playerHeight / 2f),
-					transform.position.z))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x - PlayerData.playerWidht,
-					transform.position.y + PlayerData.playerHeight,
-					transform.position.z)))
-			{
-				return (true);
-			}
-			return (false);
-		}
-	}
-
-	public bool	isFrontBlocked
-	{
-		get
-		{
-			if (world.IsBlockSolid(new Coords(
-					transform.position.x,
-					transform.position.y,
-					transform.position.z + PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x,
-					transform.position.y + (PlayerData.playerHeight / 2f),
-					transform.position.z + PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x,
-					transform.position.y + PlayerData.playerHeight,
-					transform.position.z + PlayerData.playerWidht)))
-			{
-				return (true);
-			}
-			return (false);
-		}
-	}
-
-	public bool	isBackBlocked
-	{
-		get
-		{
-			if (world.IsBlockSolid(new Coords(
-					transform.position.x,
-					transform.position.y,
-					transform.position.z - PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x,
-					transform.position.y + (PlayerData.playerHeight / 2f),
-					transform.position.z - PlayerData.playerWidht))
-				||
-				world.IsBlockSolid(new Coords(
-					transform.position.x,
-					transform.position.y + PlayerData.playerHeight,
-					transform.position.z - PlayerData.playerWidht)))
-			{
-				return (true);
-			}
-			return (false);
-		}
-	}
-	*/
 }
