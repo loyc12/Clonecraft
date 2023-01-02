@@ -30,7 +30,7 @@ public static class	Noise
 	{
 		float	mainScale = WorldData.ChunkSize * scale * WorldData.noiseScale;
 
-		return (Get2DSimplexNoise(world,
+		return (GetNoise(world,
 			(pos.x + ((float)(offset.x - 1) * offsetFactor)) / mainScale,
 			(pos.y + ((float)(offset.y + 1) * offsetFactor)) / mainScale
 			));
@@ -70,15 +70,16 @@ public static class	Noise
 		float	y = (pos.y + (float)((offset.y    ) * offsetFactor)) / yScale;
 		float	z = (pos.z + (float)((offset.z + 1) * offsetFactor)) / xzScale;
 
-		return (Get3DSimplexNoise(world, x, y, z));
-		/*return ((
-			Get2DSimplexNoise(world, x, z + y) +
-			Get2DSimplexNoise(world, x, z - y) +
+		//return (Get3DSimplexNoise(world, x, y, z));
 
-			Get2DSimplexNoise(world, z, x + y) +
-			Get2DSimplexNoise(world, z, x - y) / 4f) //+
+		return ((
+			GetNoise(world, x, z + y) +
+			GetNoise(world, x, z - y) +
 
-			//Get2DSimplexNoise(world, y, y)) / 5f);	//removing y viable*/
+			GetNoise(world, z, x + y) +
+			GetNoise(world, z, x - y)) / 4f); //+
+
+			//Get2DSimplexNoise(world, y, y)) / 5f);	//removing y viable
 	}
 
 	//recursive noise (additive)
