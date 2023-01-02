@@ -7,8 +7,8 @@ public class	Terrain
 	World			world;
 	BiomeAttributes	biome;
 
-	float			soilDepth = 4f;
-	float			soilDepthFactor = 4f;
+	float			soilDepth = 6f;
+	float			soilDepthFactor = 6f;
 	float[]			heightThresholdMap = new float[WorldData.WorldBlockHeight];
 
 	public	Terrain (World _world, BiomeAttributes _biome)
@@ -115,8 +115,6 @@ public class	Terrain
 				blockID = BlockID.GRAVEL;
 			else if  (y < WorldData.SeaLevel + WorldData.BeachHeight)
 				blockID = BlockID.SAND;
-			else if (y > WorldData.SnowLevel)
-				blockID = BlockID.SNOW;
 			else if (world.ProcessSoil)
 				blockID = GetSoilBlockID(worldPos);
 		}
@@ -150,7 +148,12 @@ public class	Terrain
 	private BlockID	GetSoilBlockID(Coords worldPos)		//find a better way to do this
 	{
 		if (world.FindBlockID(worldPos.AddPos(new Coords(0, 1, 0))) == BlockID.AIR)
-			return (BlockID.GRASS);
+		{
+			if (worldPos.y > WorldData.SnowLevel)
+				return (BlockID.SNOW);
+			else
+				return (BlockID.GRASS);
+		}
 		//else if (world.FindBlockID(worldPos.AddPos(new Coords(0, 1, 0))) == BlockID.GRASS)
 			//return (BlockID.DIRT);
 		else

@@ -15,12 +15,12 @@ public static class	Noise
 
 	private static	float Get2DSimplexNoise(World world, float a, float b)
 	{
-		return ((float)world.SimplexNoise.Evaluate(a, b));
+		return (0.5f + (float)world.SimplexNoise.Evaluate(a, b));
 	}
 
 	private static	float Get3DSimplexNoise(World world, float a, float b, float c)
 	{
-		return ((float)world.SimplexNoise.Evaluate(a, b, c));
+		return (0.5f + (float)world.SimplexNoise.Evaluate(a, b, c));
 	}
 
 	// ===== 2D noise =====
