@@ -2237,9 +2237,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6ba2587c4d1c540a6f3716183ba15b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Flatland: 0
   UseSimpleGen: 0
-  Use3DGen: 1
-  ProcessSoil: 0
+  Use3DGen: 0
+  ProcessSoil: 1
   UseCaveGen: 0
   SpawnAtCenter: 0
   PreGenSpawn: 0

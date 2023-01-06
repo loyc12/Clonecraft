@@ -63,7 +63,9 @@ public class	Terrain
 
 	public BlockID GetBlockID(Coords worldPos)		//GetVoxel
 	{
-		if (world.Use3DGen)
+		if (world.Flatland)
+			return (GetBlockIDFlat(worldPos));
+		else if (world.Use3DGen)
 			return (GetBlockID3D(worldPos));
 		else
 			return (GetBlockID2D(worldPos));
@@ -205,7 +207,7 @@ public class	Terrain
 			else
 				blockID = BlockID.STONE;
 		}
-		else if (blockID == BlockID.DIRT)
+		else if (blockID == BlockID.DIRT && world.ProcessSoil)
 		{
 			if (y < WorldData.SeaLevel - WorldData.BeachHeight)
 				blockID = BlockID.GRAVEL;
@@ -213,9 +215,8 @@ public class	Terrain
 				blockID = BlockID.SAND;
 			else if (y > WorldData.SnowLevel)
 				blockID = BlockID.SNOW;
-			else if (world.ProcessSoil)
-				if (y == height)
-					blockID = BlockID.GRASS;
+			else if (y == height)
+				blockID = BlockID.GRASS;
 		}
 		return (blockID);
 	}
@@ -233,6 +234,60 @@ public class	Terrain
 		height += biome.baseElevation;
 
 		return (Mathf.FloorToInt(height));
+	}
+
+	private BlockID	GetBlockIDFlat(Coords worldPos)
+	{
+		int	y = worldPos.y;
+		BlockID blockID = BlockID.AIR;
+
+		/* === ABSOLUTE PASS === */
+		if (!worldPos.IsBlockInWorld())
+			return (blockID);
+
+		else if (y == 0)
+			return (BlockID.SLATE);
+
+		/* === FLAT WORLD PASS === */
+		int	height = WorldData.WorldBlockHeight / 2;
+
+		if (y < height - soilDepth)
+			blockID = BlockID.STONE;
+		else if (y <= height)
+			blockID = BlockID.DIRT;
+
+		/* === ORE PASS === */
+		blockID = SpawnVein(worldPos, blockID);
+
+		/* === LAVA PASS === */
+		if (blockID == BlockID.AIR)
+			if (y < WorldData.MagmaLevel)
+				blockID = BlockID.LAVA;
+
+		/* === BASIC TERRAIN PASS === */
+		if (blockID == BlockID.STONE)
+		{
+			if (y < WorldData.SlateLevel)
+				blockID = BlockID.SLATE;
+			else if (y < WorldData.RockLevel)
+				blockID = BlockID.ROCK;
+			else if (y > WorldData.SnowLevel)
+				blockID = BlockID.MARBLE;
+			else
+				blockID = BlockID.STONE;
+		}
+		else if (blockID == BlockID.DIRT && world.ProcessSoil)
+		{
+			if (y < WorldData.SeaLevel - WorldData.BeachHeight)
+				blockID = BlockID.GRAVEL;
+			else if  (y < WorldData.SeaLevel + WorldData.BeachHeight)
+				blockID = BlockID.SAND;
+			else if (y > WorldData.SnowLevel)
+				blockID = BlockID.SNOW;
+			else if (y == height)
+				blockID = BlockID.GRASS;
+		}
+		return (blockID);
 	}
 
 	private BlockID	SpawnVein(Coords worldPos, BlockID blockID)

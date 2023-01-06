@@ -5,6 +5,7 @@ using UnityEngine;
 public class	World : MonoBehaviour
 {
 
+	public bool				Flatland;
 	public bool				UseSimpleGen;
 	public bool				Use3DGen;
 	public bool				ProcessSoil;
