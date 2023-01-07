@@ -155,7 +155,7 @@ public class Player : MonoBehaviour
 			Coords	cPos = new Coords(currentPos);
 			Coords	nPos = new Coords(nextPos);
 
-			if (BlockID.AIR < world.FindBlockID(cPos))					//optimize me
+			if (cPos.IsBlockInWorld() && BlockID.AIR < world.FindBlockID(cPos))					//optimize me
 			{
 				breakBlock.position = new Vector3(
 					Mathf.FloorToInt(currentPos.x),
@@ -173,7 +173,7 @@ public class Player : MonoBehaviour
 						nPos = new Coords(nextPos);
 					}
 
-					if (BlockID.AIR == world.FindBlockID(nPos))
+					if (nPos.IsBlockInWorld() && BlockID.AIR == world.FindBlockID(nPos))
 					{
 						placeBlock.position = new Vector3(
 							Mathf.FloorToInt(nextPos.x),
@@ -187,7 +187,7 @@ public class Player : MonoBehaviour
 					else
 						placeBlock.gameObject.SetActive(false);
 				}
-				if (!(lPos.IsInVolume(hitBoxCorner1, hitBoxCorner2)))
+				if (lPos.IsBlockInWorld() && !(lPos.IsInVolume(hitBoxCorner1, hitBoxCorner2)))
 				{
 					placeBlock.position = new Vector3(
 						Mathf.FloorToInt(lastPos.x),
@@ -349,7 +349,12 @@ public class Player : MonoBehaviour
 
 	private Vector3 CheckCollisions(Vector3 velocity)
 	{
-		if (IsYBlocked(velocity))
+		if (isGrounded && IsStepable(velocity))
+		{
+			velocity.y = 0;
+			transform.Translate(new Vector3(0f, 1f, 0f), Space.World);
+		}
+		else if (IsYBlocked(velocity))
 			velocity.y = 0;
 
 		if (IsXBlocked(velocity))
@@ -361,6 +366,32 @@ public class Player : MonoBehaviour
 		return (velocity);
 	}
 
+	//checking if its possible to step up one block
+	private bool	IsStepable(Vector3 velocity)
+	{
+		Vector3 nextPos = transform.position;
+		nextPos.y += 1f;
+		nextPos.x += velocity.x;
+		nextPos.z += velocity.z;
+
+		Coords	pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
+		Coords	pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
+
+		if ((velocity.x != 0 || velocity.z != 0)
+			&&
+			WillCollide((		//step zone
+				new Coords(pos1.x, pos1.y - 1, pos1.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos1.y - 1, pos2.z))))
+			&&
+			!WillCollide((		//pos after step
+				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos2.y, pos2.z)))))
+		{
+			return (true);
+		}
+		return (false);
+	}
+
 	//checking top-bottom collisions
 	private bool	IsYBlocked(Vector3 velocity)
 	{
@@ -370,11 +401,11 @@ public class Player : MonoBehaviour
 		Coords	pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
 		Coords	pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
 
-		if (velocity.y > 0 && WillCollide((
+		if (velocity.y > 0 && WillCollide((		//top
 				new Coords(pos1.x, pos2.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y, pos2.z))))
 			||
-			velocity.y < 0 && WillCollide((
+			velocity.y < 0 && WillCollide((		//bottom
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos1.y, pos2.z)))))
 		{
@@ -395,11 +426,11 @@ public class Player : MonoBehaviour
 		Coords	pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
 		Coords	pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
 
-		if (velocity.x > 0 && WillCollide((
+		if (velocity.x > 0 && WillCollide((		//left
 				new Coords(pos2.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y, pos2.z))))
 			||
-			velocity.x < 0 && WillCollide((
+			velocity.x < 0 && WillCollide((		//right
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos1.x, pos2.y, pos2.z)))))
 		{
@@ -417,11 +448,11 @@ public class Player : MonoBehaviour
 		Coords	pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
 		Coords	pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
 
-		if (velocity.z > 0 && WillCollide((
+		if (velocity.z > 0 && WillCollide((		//front
 				new Coords(pos1.x, pos1.y, pos2.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y, pos2.z))))
 			||
-			velocity.z < 0 && WillCollide((
+			velocity.z < 0 && WillCollide((		//back
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y, pos1.z)))))
 		{
