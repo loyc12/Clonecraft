@@ -349,12 +349,13 @@ public class Player : MonoBehaviour
 
 	private Vector3 CheckCollisions(Vector3 velocity)
 	{
-		if (isGrounded && IsStepable(velocity))
+		/*if (isGrounded && IsSteppable(velocity))		//split and moved to X and Z checks
 		{
 			velocity.y = 0;
 			transform.Translate(new Vector3(0f, 1f, 0f), Space.World);
 		}
-		else if (IsYBlocked(velocity))
+		else*/
+		if (IsYBlocked(velocity))
 			velocity.y = 0;
 
 		if (IsXBlocked(velocity))
@@ -365,9 +366,9 @@ public class Player : MonoBehaviour
 
 		return (velocity);
 	}
-
+/*
 	//checking if its possible to step up one block
-	private bool	IsStepable(Vector3 velocity)
+	private bool	IsSteppable(Vector3 velocity)
 	{
 		Vector3 nextPos = transform.position;
 		nextPos.y += 1f;
@@ -386,6 +387,22 @@ public class Player : MonoBehaviour
 			!WillCollide((		//pos after step
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y, pos2.z)))))
+		{
+			return (true);
+		}
+		return (false);
+	}*/
+
+	//checking if its possible to step up one block
+	private bool	IsSteppable(Coords pos1, Coords pos2)
+	{
+		if (WillCollide((		//step zone
+				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos1.y, pos2.z))))
+			&&
+			!WillCollide((		//pos after step
+				new Coords(pos1.x, pos1.y + 1, pos1.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos2.y + 1, pos2.z)))))
 		{
 			return (true);
 		}
@@ -434,7 +451,12 @@ public class Player : MonoBehaviour
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos1.x, pos2.y, pos2.z)))))
 		{
-			return (true);
+			if (IsSteppable(pos1, pos2))
+			{
+				transform.Translate(new Vector3(0f, 1f, 0f), Space.World);
+			}
+			else
+				return (true);
 		}
 		return (false);
 	}
@@ -456,7 +478,12 @@ public class Player : MonoBehaviour
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y, pos1.z)))))
 		{
-			return (true);
+			if (IsSteppable(pos1, pos2))
+			{
+				transform.Translate(new Vector3(0f, 1f, 0f), Space.World);
+			}
+			else
+				return (true);
 		}
 		return (false);
 	}

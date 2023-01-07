@@ -22,7 +22,7 @@ public static class PlayerData
 	public static readonly float	playerWidht = 0.8f;			//0.32f;		//radius~~
 	public static readonly float	playerHeight = 4.5f;		//1.84f;
 
-	public static readonly float	reachIncrement = 0.04f;		//checkIncrement
+	public static readonly float	reachIncrement = 0.05f;		//checkIncrement
 	public static readonly float	reach = 10f;
 
 	public static readonly float	cameraSpeed = 3f;
