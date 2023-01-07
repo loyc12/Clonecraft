@@ -2239,7 +2239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Flatland: 0
   UseSimpleGen: 0
-  Use3DGen: 0
+  Use3DGen: 1
   ProcessSoil: 1
   UseCaveGen: 0
   SpawnAtCenter: 0

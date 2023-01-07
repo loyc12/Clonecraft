@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*	IDEAS
+
+implement spagetti noise (true when close to threshold value) for caves, veins and rivers
+
+implement biome (humidity/temperature/elevation/weirdness) noise
+
+*/
+
 public static class	Noise
 {
 	public static readonly int	offsetFactor = 256;
@@ -12,7 +20,7 @@ public static class	Noise
 
 		return Mathf.PerlinNoise(a + c, b + c);
 	}
-
+/*
 	private static	float Get2DSimplexNoise(World world, float a, float b)
 	{
 		return (0.5f + (float)world.SimplexNoise.Evaluate(a, b));
@@ -22,7 +30,7 @@ public static class	Noise
 	{
 		return (0.5f + (float)world.SimplexNoise.Evaluate(a, b, c));
 	}
-
+*/
 	// ===== 2D noise =====
 
 	//generalized noise
@@ -69,8 +77,6 @@ public static class	Noise
 		float	x = (pos.x + (float)((offset.x - 1) * offsetFactor)) / xzScale;
 		float	y = (pos.y + (float)((offset.y    ) * offsetFactor)) / yScale;
 		float	z = (pos.z + (float)((offset.z + 1) * offsetFactor)) / xzScale;
-
-		//return (Get3DSimplexNoise(world, x, y, z));
 
 		return ((
 			GetNoise(world, x, z + y) +
@@ -122,9 +128,5 @@ public static class	Noise
 			return (true);
 		return (false);
 	}
-
-	//implement spagetti noise (true when close to threshold value) for caves, veins and rivers
-
-	//implement biome (humidity/temperature/elevation/awe) noise
 }
 

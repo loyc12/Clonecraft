@@ -2,6 +2,8 @@
  * Ported from https://gist.github.com/KdotJPG/b1270127455a94ac5d19
  * and heavily refactored to improve performance. */
 
+ //UNUSED, doesn<t optimize things turns out
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
