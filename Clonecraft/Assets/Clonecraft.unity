@@ -2241,9 +2241,9 @@ MonoBehaviour:
   UseSimpleGen: 0
   Use3DGen: 1
   ProcessSoil: 1
-  UseCaveGen: 0
+  UseCaveGen: 1
   SpawnAtCenter: 1
-  PreGenSpawn: 1
+  PreGenSpawn: 0
   seed: 120956
   biome: {fileID: 11400000, guid: 48a3fd37212083b428cb417841dd3b49, type: 2}
   player: {fileID: 2078865657}

@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: Default
   m_EditorClassIdentifier: 
   biomeName: Default
-  baseElevation: 64
-  maxElevation: 128
-  terrainScale: 32
+  baseElevation: 80
+  maxElevation: 140
+  terrainScale: 24
   mountainScale: 16
   recursivityAmount: 5
   recursivityFactor: 2
+  heightExponent: 2
   veins:
   - nodeName: Big Caves
     isUsed: 1

@@ -13,12 +13,13 @@ public class BiomeAttributes : ScriptableObject
 	public float	mountainScale;		//vertical scale of the terrain details
 	public int		recursivityAmount;	//how many recursive call of the noise functions should be done
 	public float	recursivityFactor;	//how much smaller should each successive recursive call be from the previous one
+	public float	heightExponent;		//how common are lowlands (for 2D terrain)
 
-	public Vein[]	veins;			//all ores
+	public Vein[]	veins;			//all ores and caves
 }
 
 [System.Serializable]
-public class	Vein				//for ore gen (and cave??)
+public class	Vein				//for ore and cave gen
 {
 	public string		nodeName;
 	public bool			isUsed;
