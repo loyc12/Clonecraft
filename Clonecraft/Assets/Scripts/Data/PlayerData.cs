@@ -19,8 +19,8 @@ public static class PlayerData
 	public static readonly float	gravityForce = -64f;
 	public static readonly float 	maxFallSpeed = -256f;
 
-	public static readonly float	playerWidht = 0.8f;			//0.32f;		//radius~~
-	public static readonly float	playerHeight = 4.5f;		//1.84f;
+	public static readonly float	playerWidht = 0.7f;			//0.32f;		//radius~~
+	public static readonly float	playerHeight = 4.4f;		//1.84f;
 
 	public static readonly float	reachIncrement = 0.05f;		//checkIncrement
 	public static readonly float	reach = 10f;

@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 /*	IDEAS
 
-	make crouch crouchier
 	normalize movement speed (cap)
-	autoclimb when only bottom is blocked
+
 */
 
 public class Player : MonoBehaviour
@@ -349,14 +348,11 @@ public class Player : MonoBehaviour
 
 	private Vector3 CheckCollisions(Vector3 velocity)
 	{
-		/*if (isGrounded && IsSteppable(velocity))		//split and moved to X and Z checks
-		{
-			velocity.y = 0;
-			transform.Translate(new Vector3(0f, 1f, 0f), Space.World);
-		}
-		else*/
 		if (IsYBlocked(velocity))
+		{
+			verticalSpeed = 0;
 			velocity.y = 0;
+		}
 
 		if (IsXBlocked(velocity))
 			velocity.x = 0;
@@ -366,34 +362,8 @@ public class Player : MonoBehaviour
 
 		return (velocity);
 	}
-/*
-	//checking if its possible to step up one block
-	private bool	IsSteppable(Vector3 velocity)
-	{
-		Vector3 nextPos = transform.position;
-		nextPos.y += 1f;
-		nextPos.x += velocity.x;
-		nextPos.z += velocity.z;
 
-		Coords	pos1 = new Coords(nextPos.x - PlayerData.playerWidht, nextPos.y, nextPos.z - PlayerData.playerWidht);
-		Coords	pos2 = new Coords(nextPos.x + PlayerData.playerWidht, nextPos.y + PlayerData.playerHeight, nextPos.z + PlayerData.playerWidht);
-
-		if ((velocity.x != 0 || velocity.z != 0)
-			&&
-			WillCollide((		//step zone
-				new Coords(pos1.x, pos1.y - 1, pos1.z).ListCoordsInVolume(
-				new Coords(pos2.x, pos1.y - 1, pos2.z))))
-			&&
-			!WillCollide((		//pos after step
-				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
-				new Coords(pos2.x, pos2.y, pos2.z)))))
-		{
-			return (true);
-		}
-		return (false);
-	}*/
-
-	//checking if its possible to step up one block
+	//checking if its possible to step up to allow movement
 	private bool	IsSteppable(Coords pos1, Coords pos2)
 	{
 		if (WillCollide((		//step zone
@@ -403,6 +373,18 @@ public class Player : MonoBehaviour
 			!WillCollide((		//pos after step
 				new Coords(pos1.x, pos1.y + 1, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y + 1, pos2.z)))))
+		{
+			return (true);
+		}
+		return (false);
+	}
+
+	//checking if the movement will result in falling
+	private bool	IsFallable(Coords pos1, Coords pos2)
+	{
+		if (!WillCollide((		//pos after move
+				new Coords(pos1.x, pos1.y - 2, pos1.z).ListCoordsInVolume(
+				new Coords(pos2.x, pos1.y - 1, pos2.z)))))
 		{
 			return (true);
 		}
@@ -458,6 +440,8 @@ public class Player : MonoBehaviour
 			else
 				return (true);
 		}
+		else if (isGrounded && isCrouching && !isFlying  && IsFallable(pos1, pos2))
+			return (true);
 		return (false);
 	}
 
@@ -485,6 +469,8 @@ public class Player : MonoBehaviour
 			else
 				return (true);
 		}
+		else if (isGrounded && isCrouching && !isFlying && IsFallable(pos1, pos2))
+			return (true);
 		return (false);
 	}
 

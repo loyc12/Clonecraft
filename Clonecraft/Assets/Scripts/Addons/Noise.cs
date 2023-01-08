@@ -5,8 +5,7 @@ using UnityEngine;
 /*	IDEAS
 
 implement spagetti noise (true when close to threshold value) for caves, veins and rivers
-
-implement biome (humidity/temperature/elevation/weirdness) noise
+implement biome noise (humidity/temperature/elevation/weirdness)
 
 */
 
