@@ -14,12 +14,12 @@ public class Player : MonoBehaviour
 	private bool		isSprinting;
 	private bool		isCrouching;
 	private bool		isGrounded;
-	private bool		isJumping;	//jumpRequest
+	private bool		isJumping;				//jumpRequest
 	private bool		isFlying;
 	private bool		isGhosting;
 	private bool		hasMoved;
 
-	private bool		getNextBlock;
+	private bool		getNextBlock;		//replace/combine with isCroutching(?)
 	private bool		autoPlaceBlock;
 
 	private Transform	playerCam;				//cam
@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
 	private float		mouseVertical;
 	public float		xRotation;
 
-	private float		mouseScroll;			//Scroll
+	private float		mouseScroll;			//scroll
 
 	private Vector3		velocity;
 	private float		verticalSpeed;			//vertical Momentum
@@ -65,7 +65,7 @@ public class Player : MonoBehaviour
 
 		Cursor.lockState = CursorLockMode.Locked;
 
-		UpdateSelectedBlockID(0);			//hardcoded: move me to hotbar
+		UpdateSelectedBlockID(0);			//hardcoded: move me to hotbar (why no worky???)
 	}
 
 	private void	FixedUpdate()
@@ -130,7 +130,7 @@ public class Player : MonoBehaviour
 			BlockAction();
 	}
 
-	private void	FindTargetedBlocks()	//doesn't entirely prevent placing a block that clips
+	private void	FindTargetedBlocks()
 	{
 		Vector3	lastPos = new Vector3();
 		Vector3	currentPos = new Vector3();
@@ -165,7 +165,7 @@ public class Player : MonoBehaviour
 
 				if (getNextBlock)
 				{
-					while (step <= PlayerData.reach && (nPos.SamePosAs(cPos)))
+					while (step <= PlayerData.reach && (nPos.IsEqual(cPos)))
 					{
 						step += PlayerData.reachIncrement;
 						nextPos = playerCam.position + (playerCam.forward * step);
@@ -433,7 +433,7 @@ public class Player : MonoBehaviour
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos1.x, pos2.y, pos2.z)))))
 		{
-			if (IsSteppable(pos1, pos2))
+			if (isGrounded && IsSteppable(pos1, pos2))
 			{
 				transform.Translate(new Vector3(0f, 1f, 0f), Space.World);
 			}
@@ -462,7 +462,7 @@ public class Player : MonoBehaviour
 				new Coords(pos1.x, pos1.y, pos1.z).ListCoordsInVolume(
 				new Coords(pos2.x, pos2.y, pos1.z)))))
 		{
-			if (IsSteppable(pos1, pos2))
+			if (isGrounded && IsSteppable(pos1, pos2))
 			{
 				transform.Translate(new Vector3(0f, 1f, 0f), Space.World);
 			}

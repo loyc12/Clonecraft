@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//handles the terrain gen (interface between world/chunk and noise)
 public class	Terrain
 {
 	World			world;

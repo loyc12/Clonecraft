@@ -9,6 +9,7 @@ implement biome noise (humidity/temperature/elevation/weirdness)
 
 */
 
+//handles all the noise related stuff (2D, 3D and specialized)
 public static class	Noise
 {
 	public static readonly int	offsetFactor = 256;
@@ -19,17 +20,7 @@ public static class	Noise
 
 		return Mathf.PerlinNoise(a + c, b + c);
 	}
-/*
-	private static	float Get2DSimplexNoise(World world, float a, float b)
-	{
-		return (0.5f + (float)world.SimplexNoise.Evaluate(a, b));
-	}
 
-	private static	float Get3DSimplexNoise(World world, float a, float b, float c)
-	{
-		return (0.5f + (float)world.SimplexNoise.Evaluate(a, b, c));
-	}
-*/
 	// ===== 2D noise =====
 
 	//generalized noise

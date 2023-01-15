@@ -50,49 +50,54 @@ public class Coords
 		z = Mathf.FloorToInt(vPos.z);
 	}
 
-	public Coords	GetNeighbor(int faceIndex)
-	{
-		Coords pos = new Coords(this.x, this.y, this.z);
+	//Distance Methods
 
-		if (faceIndex == 0)
-			pos.y += 1;			//top
-		else if (faceIndex == 1)
-			pos.y -= 1;			//bottom
-		else if (faceIndex == 2)
-			pos.z -= 1;			//front
-		else if (faceIndex == 3)
-			pos.z += 1;			//back
-		else if (faceIndex == 4)
-			pos.x -= 1;			//left
-		else if (faceIndex == 5)
-			pos.x += 1;			//right
-		else
-		{
-			Debug.Log("Error in Coords.GetNeighbor() : invalid face index given");
-			return (null);
-		}
-		return (pos);
+	public float	VerticalDistance(Coords other)
+	{
+		int	y = Mathf.Abs(this.y - other.y);
+
+		return (y);
+	}
+
+	public float	SquarelDistance(Coords other)
+	{
+		int	x = Mathf.Abs(this.x - other.x);
+		int	z = Mathf.Abs(this.z - other.z);
+
+		return (Mathf.Max(x, z));
 	}
 
 	public float	CubeDistance(Coords other)
 	{
+		int	y = Mathf.Abs(this.y - other.y);
+		int	x = Mathf.Abs(this.x - other.x);
+		int	z = Mathf.Abs(this.z - other.z);
+
+		return (Mathf.Max(y, Mathf.Max(x, z)));
+	}
+
+	public float	CircleDistance(Coords other)
+	{
 		int	x = this.x - other.x;
-		int	y = this.y - other.y;
 		int	z = this.z - other.z;
 
-		return (Mathf.Max(Mathf.Abs(x), Mathf.Max(Mathf.Abs(y), Mathf.Abs(z))));
+		int	dsquare = (x * x) + (z * z);
+
+		return (Mathf.Sqrt(dsquare));
 	}
 
 	public float	SphereDistance(Coords other)
 	{
-		int	x = this.x - other.x;
 		int	y = this.y - other.y;
+		int	x = this.x - other.x;
 		int	z = this.z - other.z;
 
-		int	dsquare = (x * x) + (y * y) + (z * z);
+		int	dsquare = (y * y) + (x * x) + (z * z);
 
 		return (Mathf.Sqrt(dsquare));
 	}
+
+	//Math Methods
 
 	public Coords	AddPos(Coords other)
 	{
@@ -130,39 +135,7 @@ public class Coords
 		return (new Coords(x, y, z));
 	}
 
-	public bool	SamePosAs(Coords other)
-	{
-		//if (this == null && pos == null )
-			//return (true);
-
-		if (this == null  || other == null )
-			return (false);
-
-		else if (this.x == other.x && this.y == other.y && this.z == other.z)
-			return (true);
-
-		return (false);
-	}
-
-	public Coords	WorldToChunkPos()
-	{
-		return (this.DivPos(WorldData.ChunkSize));
-	}
-
-	public Coords	ChunkToWorldPos()
-	{
-		return (this.MulPos(WorldData.ChunkSize));
-	}
-
-	public Coords	WorldToBlockPos()
-	{
-		return (this.SubPos(this.WorldToChunkPos().MulPos(WorldData.ChunkSize)));
-	}
-
-	public Coords	BlockToWorldPos(Coords chunkPos)		//USE ME!!!
-	{
-		return (this.AddPos(chunkPos.ChunkToWorldPos()));
-	}
+	//Boolean Methods
 
 	public bool 	IsBlockInWorld()	//for worldPos
 	{
@@ -228,6 +201,46 @@ public class Coords
 		return (false);
 	}
 
+	public bool		IsEqual(Coords other)
+	{
+		//if (this == null && pos == null )
+			//return (true);
+
+		if (this == null  || other == null )
+			return (false);
+
+		else if (this.x == other.x && this.y == other.y && this.z == other.z)
+			return (true);
+
+		return (false);
+	}
+
+	//Optention Methods
+
+	public Coords	GetNeighbor(int faceIndex)
+	{
+		Coords pos = new Coords(this.x, this.y, this.z);
+
+		if (faceIndex == 0)
+			pos.y += 1;			//top
+		else if (faceIndex == 1)
+			pos.y -= 1;			//bottom
+		else if (faceIndex == 2)
+			pos.z -= 1;			//front
+		else if (faceIndex == 3)
+			pos.z += 1;			//back
+		else if (faceIndex == 4)
+			pos.x -= 1;			//left
+		else if (faceIndex == 5)
+			pos.x += 1;			//right
+		else
+		{
+			Debug.Log("Error in Coords.GetNeighbor() : invalid face index given");
+			return (null);
+		}
+		return (pos);
+	}
+
 	public Coords[]	ListCoordsInVolume(Coords that)
 	{
 		int	minX;
@@ -262,6 +275,28 @@ public class Coords
 					array[i++] = new Coords(x, y, z);
 
 		return (array);
+	}
+
+	//Convertion Methods
+
+	public Coords	WorldToChunkPos()
+	{
+		return (this.DivPos(WorldData.ChunkSize));
+	}
+
+	public Coords	ChunkToWorldPos()
+	{
+		return (this.MulPos(WorldData.ChunkSize));
+	}
+
+	public Coords	WorldToBlockPos()
+	{
+		return (this.SubPos(this.WorldToChunkPos().MulPos(WorldData.ChunkSize)));
+	}
+
+	public Coords	BlockToWorldPos(Coords chunkPos)
+	{
+		return (this.AddPos(chunkPos.ChunkToWorldPos()));
 	}
 
 	public Vector3	ToVector3()

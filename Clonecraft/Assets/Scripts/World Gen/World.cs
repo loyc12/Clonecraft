@@ -15,7 +15,6 @@ public class	World : MonoBehaviour
 
 	public int				seed;
 	public Coords			randomOffset;
-	public NoiseTest.OpenSimplexNoise	SimplexNoise;				//testing
 
 	public BiomeAttributes	biome;
 	public Terrain			defaultTerrain;
@@ -55,7 +54,7 @@ public class	World : MonoBehaviour
 	{
 		playerChunk = FindChunkPos(player.position);
 
-		if (!playerChunk.SamePosAs(playerLastChunk))
+		if (!playerChunk.IsEqual(playerLastChunk))
 			ApplyRenderDistance();
 
 		if (0 < queuedChunks.Count && !isLoadingChunks)
@@ -67,8 +66,6 @@ public class	World : MonoBehaviour
 
 	private void	InitializeRandomness()
 	{
-		SimplexNoise = new NoiseTest.OpenSimplexNoise((long)seed);
-
 		Random.InitState(seed);
 		randomOffset = new Coords(
 			Random.Range(-WorldData.RandomRange, WorldData.RandomRange),

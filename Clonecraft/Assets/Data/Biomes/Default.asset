@@ -16,7 +16,7 @@ MonoBehaviour:
   baseElevation: 80
   maxElevation: 140
   terrainScale: 24
-  mountainScale: 16
+  mountainScale: 12
   recursivityAmount: 5
   recursivityFactor: 2
   heightExponent: 2
