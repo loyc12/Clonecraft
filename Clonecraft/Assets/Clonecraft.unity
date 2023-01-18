@@ -2209,10 +2209,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6ba2587c4d1c540a6f3716183ba15b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chunkLoadLimit: 2048
   UseSimpleGen: 0
   Use3DGen: 1
-  ProcessSoil: 0
-  UseCaveGen: 0
+  ProcessSoil: 1
+  UseCaveGen: 1
   SpawnAtCenter: 1
   PreGenSpawn: 0
   seed: 120956

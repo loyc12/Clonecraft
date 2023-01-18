@@ -99,15 +99,25 @@ public static class	Noise
 	{
 		float	noise;
 		float	factor = Mathf.Abs(pos.y - vein.height) / vein.spread;
-		float	strenght = 1 - Mathf.Pow(factor, 3);	//^2 or ^3?
+		float	strenght = 1 - Mathf.Pow(factor, 2);	//^2 or ^3?
 
 		if (world.UseSimpleGen)
 			noise = Get3DNoise(pos, offset, vein.horizontalScale, vein.verticalScale);
 		else
-			noise = Get3DRecursiveNoise(pos, offset, vein.horizontalScale, vein.verticalScale, 1.618f, vein.n);
+			noise = Get3DRecursiveNoise(pos, offset, vein.horizontalScale, vein.verticalScale, vein.noiseFactor, vein.n);
 
-		if (0 < strenght && vein.threshold < noise * strenght)
-			return (true);
+		float	value = noise * strenght;
+
+
+		if (0 < value)
+		{
+			if ((!vein.invertThreshold && vein.bottomThreshold < value && value < vein.topThreshold)
+			||
+			(vein.invertThreshold && (value < vein.bottomThreshold || vein.topThreshold < value)))
+			{
+				return (true);
+			}
+		}
 		return (false);
 	}
 

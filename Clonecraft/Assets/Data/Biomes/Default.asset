@@ -20,30 +20,39 @@ MonoBehaviour:
   recursivityAmount: 4
   recursivityFactor: 2
   veins:
-  - nodeName: Big Caves
-    isUsed: 1
+  - isUsed: 1
+    nodeName: Big Caves
     blockID: 0
-    height: 32
+    height: 40
     spread: 72
-    horizontalScale: 7
+    invertThreshold: 0
+    topThreshold: 10
+    bottomThreshold: 0.55
+    horizontalScale: 6
     verticalScale: 3
-    threshold: 0.53
-    n: 3
-  - nodeName: Medium Caves
-    isUsed: 1
+    noiseFactor: 1.618
+    n: 5
+  - isUsed: 0
+    nodeName: Medium Caves
     blockID: 0
-    height: 48
+    height: 80
     spread: 48
+    invertThreshold: 0
+    topThreshold: 0.56
+    bottomThreshold: 0.48
     horizontalScale: 3
     verticalScale: 3
-    threshold: 0.54
+    noiseFactor: 1.618
     n: 2
-  - nodeName: Small Caves
-    isUsed: 0
+  - isUsed: 0
+    nodeName: Small Caves
     blockID: 0
     height: 192
     spread: 96
+    invertThreshold: 0
+    topThreshold: 0.6
+    bottomThreshold: 0.4
     horizontalScale: 2
     verticalScale: 2
-    threshold: 0.55
-    n: 1
+    noiseFactor: 1.618
+    n: 2
