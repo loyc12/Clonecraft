@@ -218,6 +218,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2043486384, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!1 &289482568
@@ -675,6 +679,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 124744267, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!224 &523718276 stripped
@@ -809,6 +817,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -554952457, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!1 &660444102
@@ -1139,17 +1151,17 @@ MonoBehaviour:
     icon: {fileID: 417292807}
   - itemID: 2
     icon: {fileID: 727708001}
-  - itemID: 7
-    icon: {fileID: 1755427248}
   - itemID: 8
+    icon: {fileID: 1755427248}
+  - itemID: 9
     icon: {fileID: 1633329356}
-  - itemID: 6
+  - itemID: 7
     icon: {fileID: 1861077346}
-  - itemID: 3
+  - itemID: 6
     icon: {fileID: 996767738}
   - itemID: 4
     icon: {fileID: 1500089321}
-  - itemID: 13
+  - itemID: 14
     icon: {fileID: 1780798472}
 --- !u!224 &1035560140 stripped
 RectTransform:
@@ -1251,6 +1263,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1564581114, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!1 &1148219976
@@ -1529,6 +1545,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 328798173, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!1001 &1258272243
@@ -1626,6 +1646,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1933810155, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!1001 &1264367451
@@ -1731,6 +1755,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 2066894755, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
       propertyPath: m_Color.b
       value: 1
@@ -2265,41 +2293,19 @@ MonoBehaviour:
     isSolid: 1
     isOpaque: 1
     isMonofaced: 0
-    icon: {fileID: -1124939460, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 52
-    bottomFaceTexture: 48
-    frontFaceTexture: 50
-    backFaceTexture: 50
-    leftFaceTexture: 50
-    rightFaceTexture: 50
+    icon: {fileID: 2066894755, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 65
+    bottomFaceTexture: 63
+    frontFaceTexture: 64
+    backFaceTexture: 64
+    leftFaceTexture: 64
+    rightFaceTexture: 64
   - blockName: Dirt
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
-    icon: {fileID: -1097816306, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 48
-    bottomFaceTexture: 0
-    frontFaceTexture: 0
-    backFaceTexture: 0
-    leftFaceTexture: 0
-    rightFaceTexture: 0
-  - blockName: Stone
-    isSolid: 1
-    isOpaque: 1
-    isMonofaced: 1
-    icon: {fileID: 204226635, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 2
-    bottomFaceTexture: 0
-    frontFaceTexture: 0
-    backFaceTexture: 0
-    leftFaceTexture: 0
-    rightFaceTexture: 0
-  - blockName: Rock
-    isSolid: 1
-    isOpaque: 1
-    isMonofaced: 1
-    icon: {fileID: -1454851673, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 1
+    icon: {fileID: 1564581114, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 63
     bottomFaceTexture: 0
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -2309,8 +2315,41 @@ MonoBehaviour:
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
-    icon: {fileID: -1894019910, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    icon: {fileID: -1100128946, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     topFaceTexture: 0
+    bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+  - blockName: Granite
+    isSolid: 1
+    isOpaque: 0
+    isMonofaced: 1
+    icon: {fileID: 124744267, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 1
+    bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+  - blockName: Rock
+    isSolid: 1
+    isOpaque: 1
+    isMonofaced: 1
+    icon: {fileID: -625939657, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 2
+    bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+  - blockName: Stone
+    isSolid: 1
+    isOpaque: 1
+    isMonofaced: 1
+    icon: {fileID: -554952457, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 3
     bottomFaceTexture: 0
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -2320,8 +2359,8 @@ MonoBehaviour:
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
-    icon: {fileID: 1474900454, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 3
+    icon: {fileID: 1387460799, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 4
     bottomFaceTexture: 0
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -2331,8 +2370,8 @@ MonoBehaviour:
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
-    icon: {fileID: 599237792, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 32
+    icon: {fileID: 1933810155, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 66
     bottomFaceTexture: 0
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -2342,8 +2381,8 @@ MonoBehaviour:
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
-    icon: {fileID: -2059945841, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 33
+    icon: {fileID: -2043486384, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 67
     bottomFaceTexture: 0
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -2353,8 +2392,8 @@ MonoBehaviour:
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
-    icon: {fileID: -615509873, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 68
+    icon: {fileID: -1713956233, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 86
     bottomFaceTexture: 0
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -2364,8 +2403,8 @@ MonoBehaviour:
     isSolid: 0
     isOpaque: 0
     isMonofaced: 1
-    icon: {fileID: 617256484, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 21
+    icon: {fileID: -1913820960, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 173
     bottomFaceTexture: 0
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -2375,8 +2414,8 @@ MonoBehaviour:
     isSolid: 0
     isOpaque: 0
     isMonofaced: 1
-    icon: {fileID: 2015292719, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 22
+    icon: {fileID: 337317551, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 174
     bottomFaceTexture: 0
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -2386,8 +2425,8 @@ MonoBehaviour:
     isSolid: 0
     isOpaque: 0
     isMonofaced: 1
-    icon: {fileID: 1950748470, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 23
+    icon: {fileID: 1789187168, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 175
     bottomFaceTexture: 0
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -2397,8 +2436,8 @@ MonoBehaviour:
     isSolid: 1
     isOpaque: 0
     isMonofaced: 1
-    icon: {fileID: 1769526948, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
-    topFaceTexture: 116
+    icon: {fileID: 328798173, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 236
     bottomFaceTexture: 0
     frontFaceTexture: 0
     backFaceTexture: 0
@@ -2515,6 +2554,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1387460799, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!224 &1998658047 stripped

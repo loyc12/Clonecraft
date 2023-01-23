@@ -320,9 +320,9 @@ public class Player : MonoBehaviour
 		velocity *= Time.fixedDeltaTime;
 
 		if (!isGhosting)	//TODO : divide speed a few time before terminating checks instead???
-		{
 			velocity = CheckCollisions(velocity);
-		}
+		else
+			isGrounded = false;
 	}
 
 	private void	UpdatePosition()
