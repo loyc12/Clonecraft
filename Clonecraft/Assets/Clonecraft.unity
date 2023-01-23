@@ -218,10 +218,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -2043486384, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!1 &289482568
@@ -679,10 +675,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 124744267, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!224 &523718276 stripped
@@ -817,10 +809,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -554952457, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!1 &660444102
@@ -1155,11 +1143,11 @@ MonoBehaviour:
     icon: {fileID: 1755427248}
   - itemID: 9
     icon: {fileID: 1633329356}
-  - itemID: 7
+  - itemID: 15
     icon: {fileID: 1861077346}
-  - itemID: 6
+  - itemID: 16
     icon: {fileID: 996767738}
-  - itemID: 4
+  - itemID: 17
     icon: {fileID: 1500089321}
   - itemID: 14
     icon: {fileID: 1780798472}
@@ -1263,10 +1251,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 1564581114, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!1 &1148219976
@@ -1545,10 +1529,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 328798173, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!1001 &1258272243
@@ -1646,10 +1626,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 1933810155, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!1001 &1264367451
@@ -1755,10 +1731,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 2066894755, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
       propertyPath: m_Color.b
       value: 1
@@ -2325,7 +2297,7 @@ MonoBehaviour:
     rightFaceTexture: 0
   - blockName: Granite
     isSolid: 1
-    isOpaque: 0
+    isOpaque: 1
     isMonofaced: 1
     icon: {fileID: 124744267, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     topFaceTexture: 1
@@ -2444,6 +2416,39 @@ MonoBehaviour:
     backFaceTexture: 0
     leftFaceTexture: 0
     rightFaceTexture: 0
+  - blockName: OakLog
+    isSolid: 1
+    isOpaque: 1
+    isMonofaced: 0
+    icon: {fileID: -1754686230, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 212
+    bottomFaceTexture: 212
+    frontFaceTexture: 210
+    backFaceTexture: 210
+    leftFaceTexture: 210
+    rightFaceTexture: 210
+  - blockName: OakLeaves
+    isSolid: 1
+    isOpaque: 0
+    isMonofaced: 1
+    icon: {fileID: 932603153, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 214
+    bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
+  - blockName: OakPlanks
+    isSolid: 1
+    isOpaque: 1
+    isMonofaced: 1
+    icon: {fileID: -819832129, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
+    topFaceTexture: 213
+    bottomFaceTexture: 0
+    frontFaceTexture: 0
+    backFaceTexture: 0
+    leftFaceTexture: 0
+    rightFaceTexture: 0
   debugScreen: {fileID: 1209610935}
 --- !u!4 &1873156707
 Transform:
@@ -2555,10 +2560,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7739999616911130954, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 1387460799, guid: 92c32fba8c08c5240a336e9f9d98f19a, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec09d4be888396e449d50dec5e32e8ef, type: 3}
 --- !u!224 &1998658047 stripped

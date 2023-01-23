@@ -25,7 +25,7 @@ public static class	WorldData
 
 	public static int				MagmaLevel 					//in blocks
 	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.06f);}}
-	public static int				SlateLevel 					//in blocks
+	public static int				GraniteLevel 					//in blocks
 	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.16f);}}
 	public static int				RockLevel 					//in blocks
 	{ get { return Mathf.FloorToInt(WorldBlockHeight * 0.32f);}}

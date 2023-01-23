@@ -103,8 +103,8 @@ public class	Terrain
 		/* === BASIC TERRAIN PASS === */
 		if (blockID == BlockID.STONE)
 		{
-			if (y < WorldData.SlateLevel)
-				blockID = BlockID.SLATE;
+			if (y < WorldData.GraniteLevel)
+				blockID = BlockID.GRANITE;
 			else if (y < WorldData.RockLevel)
 				blockID = BlockID.ROCK;
 			else if (y > WorldData.SnowLevel)
@@ -199,8 +199,8 @@ public class	Terrain
 		/* === BASIC TERRAIN PASS === */
 		if (blockID == BlockID.STONE)
 		{
-			if (y < WorldData.SlateLevel)
-				blockID = BlockID.SLATE;
+			if (y < WorldData.GraniteLevel)
+				blockID = BlockID.GRANITE;
 			else if (y < WorldData.RockLevel)
 				blockID = BlockID.ROCK;
 			else if (y > WorldData.SnowLevel)
@@ -270,8 +270,8 @@ public class	Terrain
 		/* === BASIC TERRAIN PASS === */
 		if (blockID == BlockID.STONE)
 		{
-			if (y < WorldData.SlateLevel)
-				blockID = BlockID.SLATE;
+			if (y < WorldData.GraniteLevel)
+				blockID = BlockID.GRANITE;
 			else if (y < WorldData.RockLevel)
 				blockID = BlockID.ROCK;
 			else if (y > WorldData.SnowLevel)

@@ -18,7 +18,10 @@ public enum BlockID : byte
 	WATER	= 11,
 	LAVA	= 12,
 	ACID	= 13,
-	GLASS	= 14
+	GLASS	= 14,
+	OAKLOG	= 15,
+	OAKLEAVES = 16,
+	OAKPLANKS = 17
 }
 
 [System.Serializable]
@@ -30,7 +33,7 @@ public class	BlockType
 	public bool				isOpaque;				//!isTransparent
 	public bool				isMonofaced;
 
-	public static BlockID	maxID = (BlockID)13;		// Max Index --- DE-HARDCODE ME
+	public static BlockID	maxID = (BlockID)17;		// Max Index --- DE-HARDCODE ME
 
 	[Header("Textures")]
 	public Sprite	icon;
