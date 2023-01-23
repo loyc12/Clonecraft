@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 /*	IDEAS
 
-	normalize movement speed (cap)
+	test both directions are safe TOGETHER before allowing to go in croutch mode
 
 */
 
@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
 	private bool		isGhosting;
 	private bool		hasMoved;
 
-	private bool		getNextBlock;		//replace/combine with isCroutching(?)
+	private bool		getNextBlock;			//replace/combine with isCroutching(?)
 	private bool		autoPlaceBlock;
 
 	private Transform	playerCam;				//cam
@@ -280,10 +280,12 @@ public class Player : MonoBehaviour
 
 	private void	CalculateVelocity()
 	{
-		//horizontal movements controls
+		//horizontal movements manager
 		velocity = (transform.forward * vertical) + (transform.right * horizontal);
+		if (vertical != 0f && horizontal != 0f)
+			velocity /= 1.4142f;//Mathf.Sqrt(Mathf.Pow(horizontal, 2) + Mathf.Pow(horizontal, 2));	//always sqrt(2)
 
-		//horizontal speed controls
+		//horizontal speed manager
 		velocity *= PlayerData.walkSpeed;
 		if (isCrouching)
 			velocity *= PlayerData.crouchSpeedFactor;
@@ -296,7 +298,7 @@ public class Player : MonoBehaviour
 		if (verticalSpeed > PlayerData.maxFallSpeed)
 			verticalSpeed += PlayerData.gravityForce * Time.fixedDeltaTime;
 
-		//vertical speed controls
+		//vertical speed manager
 		if (isFlying)
 		{
 			velocity *= PlayerData.flySpeedFactor;

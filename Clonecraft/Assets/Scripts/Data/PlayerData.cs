@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public static class PlayerData
 {
 	public static readonly float	walkSpeed = 12f;
-	public static readonly float	crouchSpeedFactor = 0.42f;
-	public static readonly float	sprintSpeedFactor = 1.618f;
+	public static readonly float	crouchSpeedFactor = 0.3333f;
+	public static readonly float	sprintSpeedFactor = 1.3333f;
 
 	public static readonly float	flySpeedFactor = 2f;
-	public static readonly float	flySprintFactor = 2f;
-	public static readonly float	flyAscentFactor = 32f;
+	public static readonly float	flySprintFactor = 3f;
+	public static readonly float	flyAscentFactor = 12f;
 
 	public static readonly float	jumpForce = 18f;
 	public static readonly float	crouchJumpFactor = 1.20f;
