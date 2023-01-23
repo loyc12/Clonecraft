@@ -1911,32 +1911,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Stoney_Dirt
-      rect:
-        serializedVersion: 2
-        x: 36
-        y: 72
-        width: 12
-        height: 12
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 205db06cdc0ea3f4798a17f0d189929f
-      internalID: -2059299887
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Mossy_Stone
       rect:
         serializedVersion: 2
-        x: 48
-        y: 72
+        x: 60
+        y: 48
         width: 12
         height: 12
       alignment: 0
@@ -2209,7 +2188,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 36
-        y: 60
+        y: 48
         width: 12
         height: 12
       alignment: 0
@@ -2230,7 +2209,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 48
-        y: 60
+        y: 48
         width: 12
         height: 12
       alignment: 0
@@ -2502,8 +2481,8 @@ TextureImporter:
       name: Clay
       rect:
         serializedVersion: 2
-        x: 36
-        y: 48
+        x: 60
+        y: 36
         width: 12
         height: 12
       alignment: 0
@@ -2523,8 +2502,8 @@ TextureImporter:
       name: Terracotta
       rect:
         serializedVersion: 2
-        x: 48
-        y: 48
+        x: 60
+        y: 24
         width: 12
         height: 12
       alignment: 0
