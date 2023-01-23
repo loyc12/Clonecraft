@@ -6,6 +6,7 @@ public class	World : MonoBehaviour
 {
 
 	public bool				Flatland;
+	public int				chunkLoadLimit;			//chunk generation attempt before force yield (WIP, broken)
 	public bool				UseSimpleGen;
 	public bool				Use3DGen;
 	public bool				ProcessSoil;
@@ -169,6 +170,8 @@ public class	World : MonoBehaviour
 			{
 				Chunk	targetChunk = FindChunk(queuedChunks[i]);
 
+				//if (chunkLoadLimit < i)
+					//yield return (null);
 				if (targetChunk.isGenerated)
 				{
 					LoadOrUnload(targetChunk);
