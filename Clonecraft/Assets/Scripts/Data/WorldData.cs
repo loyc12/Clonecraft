@@ -19,7 +19,7 @@ public static class	WorldData
 	{ get { return WorldChunkHeight * ChunkSize; }}
 
 	public static readonly int		ChunkSize = 16;				//in blocks
-	public static readonly int		TextureAtlasSize = 16;		//in textures
+	public static readonly int		TextureAtlasSize = 21;		//in textures			//make block atlas a POT to fix missing pixels?
 	public static float				NormalizedTextureSize		//over 1
 	{ get {return 1f / (float)TextureAtlasSize;}}
 
