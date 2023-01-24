@@ -10,26 +10,28 @@ using UnityEngine;
 
 public class	Chunk
 {
-	public Coords		chunkPos;
+	public Coords			chunkPos;
 
-	GameObject			chunkObject;
-	MeshRenderer		meshRenderer;
-	MeshFilter			meshFilter;
+	GameObject				chunkObject;
+	MeshRenderer			meshRenderer;
+	MeshFilter				meshFilter;
 
-	List<Vector3> 		vertices = new List<Vector3>();
-	List<int> 			triangles = new List<int>();
-	List<int> 			transparentTriangles = new List<int>();
-	Material[]			atlasMap = new Material[2];
-	List<Vector2>		uvs = new List<Vector2>();
+	List<Vector3> 			vertices = new List<Vector3>();
+	List<int> 				triangles = new List<int>();
+	List<int> 				transparentTriangles = new List<int>();
+	Material[]				atlasMap = new Material[2];
+	List<Vector2>			uvs = new List<Vector2>();
 
-	public BlockID[,,]	blockMap = new BlockID[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
+	public BlockID[,,]		blockMap = new BlockID[WorldData.ChunkSize, WorldData.ChunkSize, WorldData.ChunkSize];	//map of the IDs of every block in the current chunk
 
-	World				world;
+	public Queue<BlockMod>	chunkBlockQueue = new Queue<BlockMod>();	//with worldPos
 
-	private bool		_isLoaded = false;
-	public bool			isGenerated = false;
-	public bool			isPopulated = false;
-	public bool			isEmpty = true;
+	World					world;
+
+	private bool			_isLoaded = false;
+	public bool				isGenerated = false;
+	public bool				isPopulated = false;
+	public bool				isEmpty = true;
 
 	//chunk fabricator
 	public	Chunk (Coords _chunkPos, World _world, bool forceLoad)
@@ -136,14 +138,14 @@ public class	Chunk
 		return (world.FindBlockID(worldPos));
 	}
 
-	public void	SetBlockID(Coords worldPos, BlockID value)	//EditVoxel
+	public void	SetBlockID(Coords worldPos, BlockID blockID)	//EditVoxel
 	{
 		Coords blockPos = worldPos.WorldToBlockPos();
 
-		if (!blockPos.IsBlockInChunk() || BlockType.maxID < value)
+		if (!blockPos.IsBlockInChunk() || BlockType.maxID < blockID)
 			return;
 
-		blockMap[blockPos.x, blockPos.y, blockPos.z] = value;
+		blockMap[blockPos.x, blockPos.y, blockPos.z] = blockID;
 
 		BuildChunkMesh();
 
@@ -162,9 +164,17 @@ public class	Chunk
 		}
 	}
 
-	//(re)loads the chunk's mesh
-	void	BuildChunkMesh()	//UpdateChunk
+	//(re)loads the chunk's mesh, adding blocks from the blockqueue as well
+	public void	BuildChunkMesh()	//UpdateChunk
 	{
+
+		while (chunkBlockQueue.Count > 0)
+		{
+			BlockMod mod = chunkBlockQueue.Dequeue();
+			Coords blockPos = mod.worldPos.WorldToBlockPos();
+			blockMap[blockPos.x, blockPos.y, blockPos.z] = mod.blockID;
+		}
+
 		ClearChunkMesh();
 
 		for (int y = 0; y < WorldData.ChunkSize; y++)

@@ -2237,14 +2237,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6ba2587c4d1c540a6f3716183ba15b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Flatland: 0
+  Flatland: 1
   UseSimpleGen: 0
   Use3DGen: 0
   ProcessSoil: 1
   UseCaveGen: 0
   UseTreeGen: 1
-  SpawnAtCenter: 0
-  PreGenSpawn: 0
+  SpawnAtCenter: 1
+  PreGenSpawn: 1
   seed: 120956
   biome: {fileID: 11400000, guid: 48a3fd37212083b428cb417841dd3b49, type: 2}
   player: {fileID: 2078865657}
@@ -2252,6 +2252,7 @@ MonoBehaviour:
   transparentAtlas: {fileID: 2100000, guid: 07f20ebe59f3f7e4d941a025064cf2ef, type: 2}
   blocktypes:
   - blockName: Air
+    blockGroup: 0
     isSolid: 0
     isOpaque: 0
     isMonofaced: 0
@@ -2263,6 +2264,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Grass
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 0
@@ -2274,6 +2276,7 @@ MonoBehaviour:
     leftFaceTexture: 64
     rightFaceTexture: 64
   - blockName: Dirt
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
@@ -2285,6 +2288,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Slate
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
@@ -2296,6 +2300,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Granite
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
@@ -2307,6 +2312,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Rock
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
@@ -2318,6 +2324,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Stone
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
@@ -2329,6 +2336,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Marble
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
@@ -2340,6 +2348,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Sand
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
@@ -2351,6 +2360,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Gravel
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
@@ -2362,6 +2372,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Snow
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1
@@ -2373,6 +2384,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Water
+    blockGroup: 0
     isSolid: 0
     isOpaque: 0
     isMonofaced: 1
@@ -2384,6 +2396,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Lava
+    blockGroup: 0
     isSolid: 0
     isOpaque: 0
     isMonofaced: 1
@@ -2395,6 +2408,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Acid
+    blockGroup: 0
     isSolid: 0
     isOpaque: 0
     isMonofaced: 1
@@ -2406,6 +2420,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: Glass
+    blockGroup: 0
     isSolid: 1
     isOpaque: 0
     isMonofaced: 1
@@ -2417,6 +2432,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: OakLog
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 0
@@ -2428,6 +2444,7 @@ MonoBehaviour:
     leftFaceTexture: 210
     rightFaceTexture: 210
   - blockName: OakLeaves
+    blockGroup: 0
     isSolid: 1
     isOpaque: 0
     isMonofaced: 1
@@ -2439,6 +2456,7 @@ MonoBehaviour:
     leftFaceTexture: 0
     rightFaceTexture: 0
   - blockName: OakPlanks
+    blockGroup: 0
     isSolid: 1
     isOpaque: 1
     isMonofaced: 1

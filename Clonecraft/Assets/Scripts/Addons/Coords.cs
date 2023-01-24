@@ -299,6 +299,11 @@ public class Coords
 		return (this.AddPos(chunkPos.ChunkToWorldPos()));
 	}
 
+	public Coords	Copy()
+	{
+		return (new Coords(this));
+	}
+
 	public Vector3	ToVector3()
 	{
 		return (new Vector3(this.x, this.y, this.z));

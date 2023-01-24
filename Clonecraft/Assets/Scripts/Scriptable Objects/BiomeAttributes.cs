@@ -27,7 +27,7 @@ public class BiomeAttributes : ScriptableObject
 
 	public int		minTreeSpread;	//odd = straigt grid, even = diagonal grid
 	public int		maxTreeHeight;
-	public int		minTreeHiehgt;
+	public int		minTreeHeight;
 
 	public Vein[]	veins;			//all ores and caves
 }

@@ -24,16 +24,27 @@ public enum BlockID : byte
 	OAKPLANKS = 17
 }
 
+public enum BlockGroup : byte
+{
+	NONE	= 0,
+	STONE	= 1,
+	WOOD	= 2,
+	SOIL	= 3,
+	LIQUID	= 4,
+	PLANT	= 5
+}
+
 [System.Serializable]
 public class	BlockType
 {
 	public string 			blockName;
+	public BlockGroup 		blockGroup;
 
 	public bool				isSolid;
 	public bool				isOpaque;				//!isTransparent
 	public bool				isMonofaced;
 
-	public static BlockID	maxID = (BlockID)17;		// Max Index --- DE-HARDCODE ME
+	public static BlockID	maxID = (BlockID)17;		// Max Index --- DE-HARDCODE ME		//change location cause rededant to have for every block?
 
 	[Header("Textures")]
 	public Sprite	icon;

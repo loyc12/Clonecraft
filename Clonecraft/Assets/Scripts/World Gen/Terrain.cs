@@ -124,7 +124,7 @@ public class	Terrain
 		}
 
 		/* === TREE PASS === */
-		if (world.UseTreeGen && blockID == BlockID.AIR)
+		if (world.UseTreeGen && blockID == BlockID.GRASS)
 			blockID = SpawnTrees(worldPos, blockID);
 
 		return (blockID);
@@ -228,7 +228,7 @@ public class	Terrain
 		}
 
 		/* === TREE PASS === */
-		if (world.UseTreeGen && y == height + 1)
+		if (world.UseTreeGen && y == height)
 			blockID = SpawnTrees(worldPos, blockID);
 
 		return (blockID);
@@ -305,7 +305,7 @@ public class	Terrain
 		}
 
 		/* === TREE PASS === */
-		if (world.UseTreeGen && y == height + 1)
+		if (world.UseTreeGen && y == height)
 			blockID = SpawnTrees(worldPos, blockID);
 
 		return (blockID);
@@ -329,20 +329,30 @@ public class	Terrain
 
 	private BlockID	SpawnTrees(Coords worldPos, BlockID blockID)
 	{
-		if (worldPos.y > WorldData.SeaLevel + WorldData.BeachHeight)
+		if (worldPos.y >= WorldData.SeaLevel + WorldData.BeachHeight)
 		{
-			//BROKEN WITH 3d GEN (too heavy?)
-			if (!world.Use3DGen)// || world.FindBlockID(worldPos.GetNeighbor((int)FaceDir.BOTTOM)) == BlockID.GRASS)
+			if (Noise.Get2DRecursiveNoise(world, worldPos.ToVector2(), world.randomOffset, biome.forestSpreadScale, 2f, 1) > biome.forestThreshold)
 			{
-				Vector2	XZ = new Vector2(worldPos.x, worldPos.z);
-
-				if (Noise.Get2DNoise(world, XZ, world.randomOffset, biome.forestSpreadScale) > biome.forestThreshold)
+				blockID = BlockID.DIRT;	//DEBUG (SHOW FORESTED ZONES)
+				//TODO : find a better way to avoid fused trees
+				if ((worldPos.x + worldPos.z) % biome.minTreeSpread == 0 && (worldPos.x - worldPos.z) % biome.minTreeSpread == 0)
 				{
-					//blockID = BlockID.OAKLEAVES;	//FOR DEBUGGING (SHOW FORESTED ZONES)
-					//TODO : find a better way to avoid fused trees
-					if ((worldPos.x + worldPos.z) % biome.minTreeSpread == 0 && (worldPos.x - worldPos.z) % biome.minTreeSpread == 0)
-						if (Noise.Get2DNoise(world, XZ, world.randomOffset, biome.treeSpreadScale) > biome.treeThreshold)
+					//if (!world.Use3DGen)
+					//{
+						if (Noise.Get2DNoise(world, worldPos.ToVector2(), world.randomOffset, biome.treeSpreadScale) > biome.treeThreshold)
+						{
 							blockID = BlockID.OAKLOG;
+							Structure.CreateOakTree(worldPos, world);
+							//world.AddBlockToQueue(worldPos.GetNeighbor((int)FaceDir.TOP), BlockID.OAKLEAVES);		//DEBUG (TEST BLOCKQUEUE)
+						}
+					/*}
+					else
+						if (Noise.Get3DNoise(world, worldPos.ToVector3(), world.randomOffset, biome.treeSpreadScale, biome.treeSpreadScale) > biome.treeThreshold)
+						{
+							blockID = BlockID.OAKLOG;
+							Structure.CreateOakTree(worldPos, world);
+						}*/
+
 				}
 			}
 		}
