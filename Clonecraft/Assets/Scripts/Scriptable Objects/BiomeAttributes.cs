@@ -15,6 +15,20 @@ public class BiomeAttributes : ScriptableObject
 	public float	recursivityFactor;	//how much smaller should each successive recursive call be from the previous one
 	public float	heightExponent;		//how common are lowlands (for 2D terrain)
 
+	[Header("Tree Gen")]
+
+	[Range(0f, 1f)]
+	public float	forestThreshold;
+	public float	forestSpreadScale;
+
+	[Range(0f, 1f)]
+	public float	treeThreshold;
+	public float	treeSpreadScale;
+
+	public int		minTreeSpread;	//odd = straigt grid, even = diagonal grid
+	public int		maxTreeHeight;
+	public int		minTreeHiehgt;
+
 	public Vein[]	veins;			//all ores and caves
 }
 
@@ -27,7 +41,9 @@ public class	Vein				//for ore and cave gen
 	public int			height;
 	public int			spread;
 	public bool			invertThreshold;
+	[Range(0f, 1f)]
 	public float		topThreshold;
+	[Range(0f, 1f)]
 	public float		bottomThreshold;
 	public float		horizontalScale;
 	public float		verticalScale;

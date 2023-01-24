@@ -2,6 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum FaceDir : byte
+{
+	TOP		= 0,
+	BOTTOM	= 1,
+	FRONT	= 2,
+	BACK	= 3,
+	LEFT 	= 4,
+	RIGHT	= 5
+}
+
 public static class	VoxelData
 {
 	public static readonly Vector3[]	voxelVerts = new Vector3[8]

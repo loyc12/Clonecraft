@@ -2238,11 +2238,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Flatland: 0
-  chunkLoadLimit: 2048
   UseSimpleGen: 0
-  Use3DGen: 1
+  Use3DGen: 0
   ProcessSoil: 1
-  UseCaveGen: 1
+  UseCaveGen: 0
+  UseTreeGen: 1
   SpawnAtCenter: 0
   PreGenSpawn: 0
   seed: 120956

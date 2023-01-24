@@ -5,12 +5,13 @@ using UnityEngine;
 public class	World : MonoBehaviour
 {
 
+	//public int				chunkLoadLimit;			//chunk generation attempt before force yield (WIP, broken)
 	public bool				Flatland;
-	public int				chunkLoadLimit;			//chunk generation attempt before force yield (WIP, broken)
 	public bool				UseSimpleGen;
 	public bool				Use3DGen;
 	public bool				ProcessSoil;
 	public bool				UseCaveGen;
+	public bool				UseTreeGen;
 	public bool				SpawnAtCenter;
 	public bool				PreGenSpawn;
 
@@ -150,7 +151,9 @@ public class	World : MonoBehaviour
 		else
 			spawnPoint = new Coords(8, WorldData.WorldBlockHeight, 8);
 
-		if (!Use3DGen)
+		if (Flatland)
+			spawnPoint.y = (1 + WorldData.WorldBlockHeight / 2);
+		else if (!Use3DGen)
 			spawnPoint.y = (1 + defaultTerrain.GetTerrainHeight(spawnPoint));
 
 		player.position = new Vector3(spawnPoint.x + 0.5f, spawnPoint.y + 0.1f, spawnPoint.z + 0.5f);
@@ -249,7 +252,6 @@ public class	World : MonoBehaviour
 	//returns the block ID of the specified location
 	public BlockID	FindBlockID(Coords worldPos)				//CheckForVoxel
 	{
-
 		//if block is outside world, return air
 		if (!worldPos.IsBlockInWorld())
 			return (BlockID.AIR);

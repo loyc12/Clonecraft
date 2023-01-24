@@ -20,6 +20,13 @@ MonoBehaviour:
   recursivityAmount: 5
   recursivityFactor: 2
   heightExponent: 2
+  forestThreshold: 0.6
+  forestSpreadScale: 3
+  treeThreshold: 0.6
+  treeSpreadScale: 0.1
+  minTreeSpread: 4
+  maxTreeHeight: 24
+  minTreeHiehgt: 12
   veins:
   - isUsed: 1
     nodeName: Big Caves

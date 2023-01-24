@@ -93,7 +93,8 @@ public class	Terrain
 				blockID = BlockID.WATER;
 
 		/* === ORE PASS === */
-		blockID = SpawnVein(worldPos, blockID);
+		if (world.UseCaveGen && blockID != BlockID.AIR)
+			blockID = SpawnVeins(worldPos, blockID);
 
 		/* === LAVA PASS === */
 		if (blockID == BlockID.AIR)
@@ -121,6 +122,11 @@ public class	Terrain
 			else if (world.ProcessSoil)
 				blockID = GetSoilBlockID(worldPos);
 		}
+
+		/* === TREE PASS === */
+		if (world.UseTreeGen && blockID == BlockID.AIR)
+			blockID = SpawnTrees(worldPos, blockID);
+
 		return (blockID);
 	}
 
@@ -189,7 +195,8 @@ public class	Terrain
 				blockID = BlockID.WATER;
 
 		/* === ORE PASS === */
-		blockID = SpawnVein(worldPos, blockID);
+		if (world.UseCaveGen && y <= height)
+			blockID = SpawnVeins(worldPos, blockID);
 
 		/* === LAVA PASS === */
 		if (blockID == BlockID.AIR)
@@ -219,6 +226,11 @@ public class	Terrain
 			else if (y == height)
 				blockID = BlockID.GRASS;
 		}
+
+		/* === TREE PASS === */
+		if (world.UseTreeGen && y == height + 1)
+			blockID = SpawnTrees(worldPos, blockID);
+
 		return (blockID);
 	}
 
@@ -260,7 +272,8 @@ public class	Terrain
 			blockID = BlockID.DIRT;
 
 		/* === ORE PASS === */
-		blockID = SpawnVein(worldPos, blockID);
+		if (world.UseCaveGen && y <= height)
+			blockID = SpawnVeins(worldPos, blockID);
 
 		/* === LAVA PASS === */
 		if (blockID == BlockID.AIR)
@@ -290,20 +303,47 @@ public class	Terrain
 			else if (y == height)
 				blockID = BlockID.GRASS;
 		}
+
+		/* === TREE PASS === */
+		if (world.UseTreeGen && y == height + 1)
+			blockID = SpawnTrees(worldPos, blockID);
+
 		return (blockID);
 	}
 
-	private BlockID	SpawnVein(Coords worldPos, BlockID blockID)
+	private BlockID	SpawnVeins(Coords worldPos, BlockID blockID)
 	{
 		float	y = worldPos.y;
 
-		if (world.UseCaveGen && world.blocktypes[(int)blockID].isOpaque)
+		if (world.blocktypes[(int)blockID].isOpaque)
 		{
 			foreach (Vein vein in biome.veins)
 			{
 				if (vein.isUsed && y >= vein.height - vein.spread && y <= vein.height + vein.spread)
 					if (blockID != BlockID.AIR && Noise.Get3DVeinNoise(world, worldPos.ToVector3(), world.randomOffset, vein))
 						blockID = vein.blockID;
+			}
+		}
+		return (blockID);
+	}
+
+	private BlockID	SpawnTrees(Coords worldPos, BlockID blockID)
+	{
+		if (worldPos.y > WorldData.SeaLevel + WorldData.BeachHeight)
+		{
+			//BROKEN WITH 3d GEN (too heavy?)
+			if (!world.Use3DGen)// || world.FindBlockID(worldPos.GetNeighbor((int)FaceDir.BOTTOM)) == BlockID.GRASS)
+			{
+				Vector2	XZ = new Vector2(worldPos.x, worldPos.z);
+
+				if (Noise.Get2DNoise(world, XZ, world.randomOffset, biome.forestSpreadScale) > biome.forestThreshold)
+				{
+					//blockID = BlockID.OAKLEAVES;	//FOR DEBUGGING (SHOW FORESTED ZONES)
+					//TODO : find a better way to avoid fused trees
+					if ((worldPos.x + worldPos.z) % biome.minTreeSpread == 0 && (worldPos.x - worldPos.z) % biome.minTreeSpread == 0)
+						if (Noise.Get2DNoise(world, XZ, world.randomOffset, biome.treeSpreadScale) > biome.treeThreshold)
+							blockID = BlockID.OAKLOG;
+				}
 			}
 		}
 		return (blockID);
