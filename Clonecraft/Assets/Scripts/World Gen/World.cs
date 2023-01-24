@@ -99,10 +99,10 @@ public class	World : MonoBehaviour
 				}
 			}
 		}
-		ProcessWorldBlockQueue();
+		ProcessWorldBlockQueue(true);
 	}
 
-	void	ProcessWorldBlockQueue()
+	void	ProcessWorldBlockQueue(bool forceLoad)
 	{
 		while (worldBlockQueue.Count > 0)
 		{
@@ -115,21 +115,32 @@ public class	World : MonoBehaviour
 
 			if (chunkMap[x, y, z] == null)
 			{
-				chunkMap[x, y, z] = new Chunk(chunkPos, this, true);
-				chunkMap[x, y, z].Load();
-				loadedChunks.Add(chunkPos);
+				if (forceLoad)
+				{
+					chunkMap[x, y, z] = new Chunk(chunkPos, this, true);
+					chunkMap[x, y, z].Load();
+					loadedChunks.Add(chunkPos);
+				}
+				else
+					chunkMap[x, y, z] = new Chunk(chunkPos, this, false);
+					queuedChunks.Add(chunkPos);
 			}
 
 			chunkMap[x, y, z].chunkBlockQueue.Enqueue(mod);
 
-			if (!chunksToUpdate.Contains(chunkMap[x, y, z]))
-				chunksToUpdate.Add(chunkMap[x, y, z]);
-
-			while(chunksToUpdate.Count > 0)
+			//if (chunkMap[x, y, z].isLoaded || forceLoad)		//laggy af
+			if (forceLoad)
 			{
-				chunksToUpdate[0].BuildChunkMesh();
-				chunksToUpdate.RemoveAt(0);
+				if (!chunksToUpdate.Contains(chunkMap[x, y, z]))
+					chunksToUpdate.Add(chunkMap[x, y, z]);
+
+				while(chunksToUpdate.Count > 0)
+				{
+					chunksToUpdate[0].BuildChunkMesh();
+					chunksToUpdate.RemoveAt(0);
+				}
 			}
+
 		}
 	}
 
@@ -143,6 +154,9 @@ public class	World : MonoBehaviour
 			if (chunkPos.IsChunkInWorld() && !IsChunkInRenderDistance(chunkPos))
 				FindChunk(chunkPos).Unload();
 		}
+
+		ProcessWorldBlockQueue(false);							//TRYING TO FIT THIS IN LOGICALLY
+
 		for (int y = playerChunk.y + WorldData.RenderDistance; y >= playerChunk.y - WorldData.RenderDistance ; y--)
 		{
 			for (int x = playerChunk.x - WorldData.RenderDistance; x <= playerChunk.x + WorldData.RenderDistance; x++)

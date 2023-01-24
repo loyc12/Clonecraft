@@ -343,7 +343,6 @@ public class	Terrain
 						{
 							blockID = BlockID.OAKLOG;
 							Structure.CreateOakTree(worldPos, world);
-							//world.AddBlockToQueue(worldPos.GetNeighbor((int)FaceDir.TOP), BlockID.OAKLEAVES);		//DEBUG (TEST BLOCKQUEUE)
 						}
 					/*}
 					else
