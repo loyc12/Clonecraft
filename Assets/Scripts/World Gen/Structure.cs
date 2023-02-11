@@ -20,8 +20,8 @@ public static class Structure		//Prefab instead?
 		}
 
 		worldPos.y -= 1;
-		int	r = 4;
-		for (int y = -r; y <= r; y++)				//ugly ass trees
+		int	r = 6;									//hardcoded
+		for (int y = -r; y <= r; y++)				//ugly ass lolipop trees
 		{
 			for (int x = -r; x <= r; x++)
 			{
@@ -30,7 +30,7 @@ public static class Structure		//Prefab instead?
 					Coords	leafPos = worldPos.AddPos(new Coords(x, y, z));
 					float	d = leafPos.SphereDistance(worldPos);
 
-					if (d <= r)
+					if (d < r)
 						world.AddBlockToQueue(leafPos, BlockID.OAKLEAVES, false);
 				}
 			}
