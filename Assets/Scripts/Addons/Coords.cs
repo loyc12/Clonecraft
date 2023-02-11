@@ -50,6 +50,20 @@ public class Coords
 		z = Mathf.FloorToInt(vPos.z);
 	}
 
+	//Random Methods
+
+	//Returns a random float value between 0 and 1 (height dependent)
+	public float	GetRandomValue(World world)
+	{
+		float	scale = WorldData.minScale;
+		return (Noise.Get3DNoise(world, this.ToVector3(), world.randomOffset, scale, scale));
+	}
+	//Returns a random float value between 0 and 1 (height independent)
+	public float	GetRandomHeight(World world)
+	{
+		return (Noise.Get2DNoise(world, this.ToVector2(), world.randomOffset, WorldData.minScale));
+	}
+
 	//Distance Methods
 
 	public float	VerticalDistance(Coords other)
@@ -66,7 +80,6 @@ public class Coords
 
 		return (Mathf.Max(x, z));
 	}
-
 	public float	CubeDistance(Coords other)
 	{
 		int	y = Mathf.Abs(this.y - other.y);
@@ -85,7 +98,6 @@ public class Coords
 
 		return (Mathf.Sqrt(dsquare));
 	}
-
 	public float	SphereDistance(Coords other)
 	{
 		int	y = this.y - other.y;

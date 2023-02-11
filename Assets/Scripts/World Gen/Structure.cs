@@ -27,15 +27,56 @@ public static class Structure		//Prefab instead?
 			{
 				for (int z = -r; z <= r; z++)
 				{
-					Coords leafPos = worldPos.AddPos(new Coords(x, y, z));
+					Coords	leafPos = worldPos.AddPos(new Coords(x, y, z));
+					float	d = leafPos.SphereDistance(worldPos);
 
-					//if (!(y < 0 && x == 0 && z == 0))
-					world.AddBlockToQueue(leafPos, BlockID.OAKLEAVES, false);
+					if (d <= r)
+						world.AddBlockToQueue(leafPos, BlockID.OAKLEAVES, false);
 				}
 			}
 		}
+	}
 
-		//add the leaves around this new worldPos (tip of tree)
+	public static void CreateStoneCone(Coords worldPos, World world, int bottomRadius, int topRadius)
+	{
+		BiomeAttributes	biome = world.biome;
+
+		float	height = Noise.Get2DNoise(world, worldPos.ToVector2(), world.randomOffset, WorldData.minScale);
+		height *= (float)(biome.maxTreeHeight - biome.minTreeHeight);									//change me to cone stuff
+		height += (float)biome.minTreeHeight;
+
+		int		radius = Mathf.Max(bottomRadius, topRadius);
+
+		for (int dy = 0; dy <= (int)height; dy++)
+		{
+			Coords centerPos = new Coords(0, dy, 0);
+			float	heightRadius = (bottomRadius * (1 - (dy / height))) + (topRadius * (dy / height));
+
+			for (int dx = -radius; dx <= radius; dx++)
+			{
+				for (int dz = -radius; dz <= radius; dz++)
+				{
+					Coords	deltaPos = new Coords(dx, dy, dz);
+					float	distance = centerPos.CircleDistance(deltaPos);
+
+					if (distance <= heightRadius)
+						world.AddBlockToQueue(worldPos.AddPos(deltaPos).Copy(), BlockID.STONE, false);
+				}
+			}
+		}
+	}
+
+	public static void CreateStonePillar(Coords worldPos, World world, int bottomRadius, int centerRadius, int topRadius)
+	{
+		BiomeAttributes	biome = world.biome;
+
+		float	height = Noise.Get2DNoise(world, worldPos.ToVector2(), world.randomOffset, WorldData.minScale);
+		height *= (float)(biome.maxTreeHeight - biome.minTreeHeight);									//change me to cone stuff
+		height += (float)biome.minTreeHeight;
+
+		Structure.CreateStoneCone(worldPos, world, bottomRadius, centerRadius);
+		worldPos.y += (int)height;
+		Structure.CreateStoneCone(worldPos, world, centerRadius, topRadius);
 	}
 
 }

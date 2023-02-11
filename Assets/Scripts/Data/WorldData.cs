@@ -36,6 +36,7 @@ public static class	WorldData
 
 	public static float				noiseScale
 	{ get {return 16f / (float)ChunkSize;}}
+	public static float				minScale = 0.01f;			//scale for random noise
 
 	public static readonly int		BeachHeight = 3;			//in blocks
 }
