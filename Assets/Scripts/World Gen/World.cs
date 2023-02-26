@@ -135,7 +135,7 @@ public class	World : MonoBehaviour
 
 			chunkMap[x, y, z].chunkBlockQueue.Enqueue(mod);
 
-			//if (chunkMap[x, y, z].isLoaded || forceLoad)		//laggy af
+			//if (chunkMap[x, y, z].isLoaded || forceLoad)		//laggy af			//FIXME
 			if (forceLoad)
 			{
 				if (!chunksToUpdate.Contains(chunkMap[x, y, z]))
@@ -298,9 +298,13 @@ public class	World : MonoBehaviour
 				queuedChunks.Add(chunkPos);
 			}
 
-			count++;
+			chunkMap[x, y, z].chunkBlockQueue.Enqueue(mod);
 
-			if (chunkLoadLimit < count)
+			if (!chunksToUpdate.Contains(chunkMap[x, y, z]))
+				chunksToUpdate.Add(chunkMap[x, y, z]);
+
+			count++;
+			if (chunkLoadLimit <= count)
 			{
 				count = 0;
 				yield return (null);

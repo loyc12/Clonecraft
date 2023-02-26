@@ -186,7 +186,7 @@ public class Player : MonoBehaviour
 					else
 						placeBlock.gameObject.SetActive(false);
 				}
-				if (lPos.IsBlockInWorld() && !(lPos.IsInVolume(hitBoxCorner1, hitBoxCorner2)))
+				if (lPos.IsBlockInWorld() && (isGhosting || !(lPos.IsInVolume(hitBoxCorner1, hitBoxCorner2))))
 				{
 					placeBlock.position = new Vector3(
 						Mathf.FloorToInt(lastPos.x),
