@@ -30,7 +30,7 @@ public static class Structure		//Prefab instead?
 					Coords	leafPos = worldPos.AddPos(new Coords(x, y, z));
 					float	d = leafPos.SphereDistance(worldPos);
 
-					if (d < r)
+					if (d < r + 0.5f)
 						world.AddBlockToQueue(leafPos, BlockID.OAKLEAVES, false);
 				}
 			}

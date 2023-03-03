@@ -5,7 +5,8 @@ using UnityEngine;
 public class	World : MonoBehaviour
 {
 
-	public int				chunkLoadLimit;			//chunk generation attempt# before force yield (WIP, broken)
+	public int				chunkUpdateLimit;		//chunk update attempt# before force yield
+	public int				chunkLoadLimit;			//chunk generation attempt# before force yield
 	public bool				Flatland;
 	public bool				UseSimpleGen;
 	public bool				Use3DGen;
@@ -60,16 +61,20 @@ public class	World : MonoBehaviour
 	{
 		playerChunk = FindChunkPos(player.position);
 
+
+		//selects which chunks to load
 		if (!playerChunk.IsEqual(playerLastChunk))
 			ApplyRenderDistance();
 
+		//load/reload chunks
+		if (!isModifyingChunks && 0 < queuedChunks.Count)
+			StartCoroutine(LoadChunk());
+
+		//aplies chunks modifications
 		if (!isModifyingChunks && 0 < worldBlockQueue.Count)
 			StartCoroutine(ModifyChunks());
 
-		if (!isModifyingChunks && 0 < queuedChunks.Count)
-			StartCoroutine(LoadChunk());						//BUGGED
-			//CreateChunk();
-
+		//reload modified chunks
 		if (0 < chunksToUpdate.Count)
 			UpdateChunks();
 
@@ -106,7 +111,7 @@ public class	World : MonoBehaviour
 				}
 			}
 		}
-		ProcessWorldBlockQueue(true);
+		ProcessWorldBlockQueue(false);
 	}
 
 	void	ProcessWorldBlockQueue(bool forceLoad)
@@ -135,12 +140,10 @@ public class	World : MonoBehaviour
 
 			chunkMap[x, y, z].chunkBlockQueue.Enqueue(mod);
 
-			//if (chunkMap[x, y, z].isLoaded || forceLoad)		//laggy af			//FIXME
+			if (!chunksToUpdate.Contains(chunkMap[x, y, z]))
+				chunksToUpdate.Add(chunkMap[x, y, z]);
 			if (forceLoad)
 			{
-				if (!chunksToUpdate.Contains(chunkMap[x, y, z]))
-					chunksToUpdate.Add(chunkMap[x, y, z]);
-
 				while(chunksToUpdate.Count > 0)
 				{
 					chunksToUpdate[0].BuildChunkMesh();
@@ -161,8 +164,6 @@ public class	World : MonoBehaviour
 			if (chunkPos.IsChunkInWorld() && !IsChunkInRenderDistance(chunkPos))
 				FindChunk(chunkPos).Unload();
 		}
-
-		ProcessWorldBlockQueue(false);							//REMOVE ME : TRYING TO FIT THIS IN LOGICALLY
 
 		for (int y = playerChunk.y + WorldData.RenderDistance; y >= playerChunk.y - WorldData.RenderDistance ; y--)
 		{
@@ -216,25 +217,11 @@ public class	World : MonoBehaviour
 		playerChunk = FindChunkPos(player.position);
 	}
 
-	void	CreateChunk()
-	{
-		Coords  chunkPos = queuedChunks[0];
-
-		loadedChunks.Add(chunkPos);
-		queuedChunks.RemoveAt(0);
-
-		int	y = chunkPos.y;
-		int	x = chunkPos.x;
-		int	z = chunkPos.z;
-
-		chunkMap[x, y, z].Generate();
-		LoadOrUnload(chunkMap[x, y, z]);
-	}
-
 	IEnumerator LoadChunk()	//CreateChunk
 	{
 		isModifyingChunks = true;
 
+		int	count = 0;
 		for (int r = 1; r < WorldData.RenderLimit; r++)
 		{
 			int	i = 0;
@@ -261,7 +248,12 @@ public class	World : MonoBehaviour
 						LoadOrUnload(targetChunk);
 
 						r = 1;					//superfluous?
-						yield return (null);
+						count++;
+						if (chunkLoadLimit != 0 && chunkLoadLimit <= count)
+						{
+							count = 0;
+							yield return (null);
+						}
 					}
 					else
 						i++;
@@ -279,10 +271,9 @@ public class	World : MonoBehaviour
 
 	IEnumerator ModifyChunks()	//ApplyModifications
 	{
-		int	count = 0;
-
 		isModifyingChunks = true;
 
+		int	count = 0;
 		while(worldBlockQueue.Count > 0)
 		{
 			BlockMod	mod = worldBlockQueue.Dequeue();
@@ -304,7 +295,7 @@ public class	World : MonoBehaviour
 				chunksToUpdate.Add(chunkMap[x, y, z]);
 
 			count++;
-			if (chunkLoadLimit <= count)
+			if (chunkUpdateLimit != 0 && chunkUpdateLimit <= count)
 			{
 				count = 0;
 				yield return (null);
@@ -330,6 +321,7 @@ public class	World : MonoBehaviour
 			else
 				i++;
 		}
+		ProcessWorldBlockQueue(false);
 	}
 
 	void	LoadOrUnload(Chunk targetChunk)

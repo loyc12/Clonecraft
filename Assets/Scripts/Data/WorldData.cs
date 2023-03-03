@@ -6,9 +6,9 @@ public static class	WorldData
 {
 	public static readonly int		RandomRange = 2048;			//in blocks
 
-	public static readonly int		RenderDistance = 6;			//in chunks
-	public static readonly int		RenderLimit = 6;			//in chunks
-	public static readonly int		GenerationDistance = 4;		//in chunks
+	public static readonly int		GenerationDistance = 6;		//in chunks
+	public static readonly int		RenderDistance = 8;			//in chunks
+	public static readonly int		RenderLimit = 10;			//in chunks
 
 	public static readonly int		WorldChunkSize = 256;		//in chunks
 	public static int				WorldBlockSize				//in blocks
