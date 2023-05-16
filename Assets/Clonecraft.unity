@@ -2243,11 +2243,11 @@ MonoBehaviour:
   UseSimpleGen: 0
   Use3DGen: 1
   ProcessSoil: 1
-  UseCaveGen: 0
+  UseCaveGen: 1
   UseTreeGen: 1
-  SpawnAtCenter: 0
+  SpawnAtCenter: 1
   PreGenSpawn: 1
-  seed: 120956
+  seed: 123456
   biome: {fileID: 11400000, guid: 48a3fd37212083b428cb417841dd3b49, type: 2}
   player: {fileID: 2078865657}
   blockAtlas: {fileID: 2100000, guid: f3080fbdc5b2f0a489a03834293df144, type: 2}

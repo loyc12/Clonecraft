@@ -343,9 +343,9 @@ public class	Terrain
 						if (Noise.Get2DNoise(world, worldPos.ToVector2(), world.randomOffset, biome.treeSpreadScale) > biome.treeThreshold)
 						{
 							blockID = BlockID.OAKLOG;
-							//Structure.CreateOakTree(worldPos, world);
-							if (worldPos.x % 16 == 0 && worldPos.z % 16 == 0)		//FOR DEBUG
-								Structure.CreateStoneCone(worldPos, world);
+							Structure.CreateOakTree(worldPos, world);
+							//if (worldPos.x % 16 == 0 && worldPos.z % 16 == 0)		//FOR DEBUG
+								//Structure.CreateStoneCone(worldPos, world);
 						}
 					/*}
 					else if (Noise.Get3DNoise(world, worldPos.ToVector3(), world.randomOffset, biome.treeSpreadScale, biome.treeSpreadScale) > biome.treeThreshold)

@@ -101,7 +101,7 @@ public static class Structure		//Prefab instead?
 					float		distance = centerPos.CircleDistance(deltaPos);
 
 					if (distance <= (float)radius)
-						world.AddBlockToQueue(worldPos.Copy(), BlockID.STONE);
+						world.AddBlockToQueue(worldPos.Copy(), BlockID.STONE, false);
 				}
 			}
 			worldPos.y += 1;
