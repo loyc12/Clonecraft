@@ -333,7 +333,8 @@ public class	Terrain
 		{
 			if (Noise.Get2DRecursiveNoise(world, worldPos.ToVector2(), world.randomOffset, biome.forestSpreadScale, 2f, 1) > biome.forestThreshold)
 			{
-				blockID = BlockID.DIRT;	//DEBUG (SHOW FORESTED ZONES)
+				blockID = BlockID.DIRT;					//DEBUG (SHOW FORESTED ZONES)
+
 				//TODO : find a better way to avoid fused trees
 				if ((worldPos.x + worldPos.z) % biome.minTreeSpread == 0 && (worldPos.x - worldPos.z) % biome.minTreeSpread == 0)
 				{
@@ -347,13 +348,11 @@ public class	Terrain
 								Structure.CreateStoneCone(worldPos, world);
 						}
 					/*}
-					else
-						if (Noise.Get3DNoise(world, worldPos.ToVector3(), world.randomOffset, biome.treeSpreadScale, biome.treeSpreadScale) > biome.treeThreshold)
-						{
-							blockID = BlockID.OAKLOG;
-							Structure.CreateOakTree(worldPos, world);
-						}*/
-
+					else if (Noise.Get3DNoise(world, worldPos.ToVector3(), world.randomOffset, biome.treeSpreadScale, biome.treeSpreadScale) > biome.treeThreshold)
+					{
+						blockID = BlockID.OAKLOG;
+						Structure.CreateOakTree(worldPos, world);
+					}*/
 				}
 			}
 		}

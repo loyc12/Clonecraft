@@ -6,6 +6,7 @@ public class BlockMod		//VoxelMod
 {
 	public Coords	worldPos;
 	public BlockID	blockID;
+	public bool		forcePlace;
 
 	public	BlockMod()
 	{
@@ -17,9 +18,10 @@ public class BlockMod		//VoxelMod
 		worldPos = _worldPos;
 		blockID = BlockID.AIR;
 	}
-	public	BlockMod(Coords _worldPos, BlockID _blockID)
+	public	BlockMod(Coords _worldPos, BlockID _blockID, bool _forcePlace)
 	{
 		worldPos = _worldPos;
 		blockID = _blockID;
+		forcePlace = _forcePlace;
 	}
 }

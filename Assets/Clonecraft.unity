@@ -2237,13 +2237,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6ba2587c4d1c540a6f3716183ba15b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Flatland: 1
+  chunkUpdateLimit: 512
+  chunkLoadLimit: 3
+  Flatland: 0
   UseSimpleGen: 0
-  Use3DGen: 0
+  Use3DGen: 1
   ProcessSoil: 1
   UseCaveGen: 0
   UseTreeGen: 1
-  SpawnAtCenter: 1
+  SpawnAtCenter: 0
   PreGenSpawn: 1
   seed: 120956
   biome: {fileID: 11400000, guid: 48a3fd37212083b428cb417841dd3b49, type: 2}

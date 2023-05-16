@@ -5,7 +5,8 @@ using UnityEngine;
 public class	World : MonoBehaviour
 {
 
-	//public int			chunkLoadLimit;			//chunk generation attempt# before force yield (WIP, broken)
+	public int				chunkUpdateLimit;		//chunk update attempt# before force yield
+	public int				chunkLoadLimit;			//chunk generation attempt# before force yield
 	public bool				Flatland;
 	public bool				UseSimpleGen;
 	public bool				Use3DGen;
@@ -36,7 +37,7 @@ public class	World : MonoBehaviour
 	List<Coords>			loadedChunks = new List<Coords>();			//activeChunks
 	List<Coords>			queuedChunks = new List<Coords>();			//chunksToCreate
 	List<Chunk>				chunksToUpdate = new List<Chunk>();			//TODO fixe these names smh
-	private bool			isLoadingChunks;							//isCreatingChunks
+	private bool			isModifyingChunks = false;					//applyingModifications
 
 	Queue<BlockMod>			worldBlockQueue = new Queue<BlockMod>();	//modifications (for generating structures)
 	//private bool			isWorldBlockQueueUsed = false;				USEME
@@ -60,11 +61,22 @@ public class	World : MonoBehaviour
 	{
 		playerChunk = FindChunkPos(player.position);
 
+
+		//selects which chunks to load
 		if (!playerChunk.IsEqual(playerLastChunk))
 			ApplyRenderDistance();
 
-		if (0 < queuedChunks.Count && !isLoadingChunks)
-			StartCoroutine("LoadChunks");
+		//load/reload chunks
+		if (!isModifyingChunks && 0 < queuedChunks.Count)
+			StartCoroutine(LoadChunk());
+
+		//aplies chunks modifications
+		if (!isModifyingChunks && 0 < worldBlockQueue.Count)
+			StartCoroutine(ModifyChunks());
+
+		//reload modified chunks
+		if (0 < chunksToUpdate.Count)
+			UpdateChunks();
 
 		if (Input.GetButtonDown("F3"))
 			debugScreen.SetActive(!debugScreen.activeSelf);
@@ -99,7 +111,7 @@ public class	World : MonoBehaviour
 				}
 			}
 		}
-		ProcessWorldBlockQueue(true);
+		ProcessWorldBlockQueue(false);
 	}
 
 	void	ProcessWorldBlockQueue(bool forceLoad)
@@ -128,12 +140,10 @@ public class	World : MonoBehaviour
 
 			chunkMap[x, y, z].chunkBlockQueue.Enqueue(mod);
 
-			//if (chunkMap[x, y, z].isLoaded || forceLoad)		//laggy af
+			if (!chunksToUpdate.Contains(chunkMap[x, y, z]))
+				chunksToUpdate.Add(chunkMap[x, y, z]);
 			if (forceLoad)
 			{
-				if (!chunksToUpdate.Contains(chunkMap[x, y, z]))
-					chunksToUpdate.Add(chunkMap[x, y, z]);
-
 				while(chunksToUpdate.Count > 0)
 				{
 					chunksToUpdate[0].BuildChunkMesh();
@@ -154,8 +164,6 @@ public class	World : MonoBehaviour
 			if (chunkPos.IsChunkInWorld() && !IsChunkInRenderDistance(chunkPos))
 				FindChunk(chunkPos).Unload();
 		}
-
-		ProcessWorldBlockQueue(false);							//TRYING TO FIT THIS IN LOGICALLY
 
 		for (int y = playerChunk.y + WorldData.RenderDistance; y >= playerChunk.y - WorldData.RenderDistance ; y--)
 		{
@@ -209,13 +217,15 @@ public class	World : MonoBehaviour
 		playerChunk = FindChunkPos(player.position);
 	}
 
-	IEnumerator LoadChunks()	//CreateChunk
+	IEnumerator LoadChunk()	//CreateChunk
 	{
-		isLoadingChunks = true;
+		isModifyingChunks = true;
 
+		int	count = 0;
 		for (int r = 1; r < WorldData.RenderLimit; r++)
 		{
 			int	i = 0;
+
 			while (0 < queuedChunks.Count && i < queuedChunks.Count)
 			{
 				Chunk	targetChunk = FindChunk(queuedChunks[i]);
@@ -233,20 +243,85 @@ public class	World : MonoBehaviour
 						queuedChunks.RemoveAt(i);
 					else if (!IsChunkTooFar(targetChunk.chunkPos, r))
 					{
-						queuedChunks.RemoveAt(i);
 						targetChunk.Generate();
+						queuedChunks.RemoveAt(i);
 						LoadOrUnload(targetChunk);
 
 						r = 1;					//superfluous?
-						yield return (null);
+						count++;
+						if (chunkLoadLimit != 0 && chunkLoadLimit <= count)
+						{
+							count = 0;
+							yield return (null);
+						}
 					}
 					else
 						i++;
 				}
 			}
 		}
+		isModifyingChunks = false;
+	}
 
-		isLoadingChunks = false;
+	public void		AddBlockToQueue(Coords worldPos, BlockID blockID, bool forcePlace)
+	{
+		if (worldPos.IsBlockInWorld())
+			worldBlockQueue.Enqueue(new BlockMod(worldPos, blockID, forcePlace));
+	}
+
+	IEnumerator ModifyChunks()	//ApplyModifications
+	{
+		isModifyingChunks = true;
+
+		int	count = 0;
+		while(worldBlockQueue.Count > 0)
+		{
+			BlockMod	mod = worldBlockQueue.Dequeue();
+
+			Coords	chunkPos = mod.worldPos.WorldToChunkPos();
+			int		x = chunkPos.x;
+			int		y = chunkPos.y;
+			int		z = chunkPos.z;
+
+			if (chunkMap[x, y, z] == null)
+			{
+				chunkMap[x, y, z] = new Chunk(chunkPos, this, false);
+				queuedChunks.Add(chunkPos);
+			}
+
+			chunkMap[x, y, z].chunkBlockQueue.Enqueue(mod);
+
+			if (!chunksToUpdate.Contains(chunkMap[x, y, z]))
+				chunksToUpdate.Add(chunkMap[x, y, z]);
+
+			count++;
+			if (chunkUpdateLimit != 0 && chunkUpdateLimit <= count)
+			{
+				count = 0;
+				yield return (null);
+			}
+		}
+
+		isModifyingChunks = false;
+	}
+
+	void	UpdateChunks()
+	{
+		bool	hasUpdated = false;
+		int		i = 0;
+
+		while (!hasUpdated && i < chunksToUpdate.Count)	//	- 1?
+		{
+			if (chunksToUpdate[i].isPopulated)
+			{
+				chunksToUpdate[i].BuildChunkMesh();
+				chunksToUpdate.RemoveAt(i);
+				hasUpdated = true;
+			}
+			else
+				i++;
+		}
+		ProcessWorldBlockQueue(false);
 	}
 
 	void	LoadOrUnload(Chunk targetChunk)
@@ -321,16 +396,6 @@ public class	World : MonoBehaviour
 		return (defaultTerrain.GetBlockID(worldPos));
 	}
 
-	public void		AddBlockToQueue(Coords worldPos, BlockID blockID)
-	{
-		if (worldPos.IsBlockInWorld())
-			worldBlockQueue.Enqueue(new BlockMod(worldPos, blockID));
-	}
-
-	//public void		AddChunkToQueue(Coords worldPos, BlockID blockID)		//TODO
-	//{
-	//}
-
 	public Chunk	FindChunk(Coords chunkPos)
 	{
 		if (chunkPos.IsChunkInWorld())
@@ -347,5 +412,12 @@ public class	World : MonoBehaviour
 	public bool IsBlockOpaque(Coords worldPos)
 	{
 		return (blocktypes[(int)FindBlockID(worldPos)].isOpaque);
+	}
+
+	public bool IsBlockPresent(Coords worldPos)
+	{
+		if (FindBlockID(worldPos) == BlockID.AIR)
+			return (false);
+		return (true);
 	}
 }

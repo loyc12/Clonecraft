@@ -29,6 +29,7 @@ public class	Chunk
 	World					world;
 
 	private bool			_isLoaded = false;
+	//public bool				isUpdated = false;
 	public bool				isGenerated = false;
 	public bool				isPopulated = false;
 	public bool				isEmpty = true;
@@ -96,7 +97,7 @@ public class	Chunk
 	}
 
 	//returns true of the given voxel is solid
-	bool	CheckBlockSolidity (Coords blockPos)		//CheckVoxel
+	bool	CheckBlockSolidity(Coords blockPos)	//CheckVoxel
 	{
 		if (!blockPos.IsBlockInChunk())
 			return (world.blocktypes [(int)FindBlockID(blockPos)].isSolid);
@@ -113,6 +114,20 @@ public class	Chunk
 
 		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
 		return (world.IsBlockOpaque(worldPos));
+	}
+
+	//returns true of the given voxel is opaque
+	bool	CheckBlockPresence(Coords blockPos)	//CheckVoxel
+	{
+		if (blockPos.IsBlockInChunk())
+		{
+			if (FindBlockID(blockPos) == BlockID.AIR)
+				return (false);
+			return (true);
+		}
+
+		Coords	worldPos = blockPos.AddPos(chunkWorldPos);
+		return (world.IsBlockPresent(worldPos));
 	}
 
 	//compares the BlockID of two given blockPos
@@ -167,12 +182,13 @@ public class	Chunk
 	//(re)loads the chunk's mesh, adding blocks from the blockqueue as well
 	public void	BuildChunkMesh()	//UpdateChunk
 	{
-
 		while (chunkBlockQueue.Count > 0)
 		{
 			BlockMod mod = chunkBlockQueue.Dequeue();
 			Coords blockPos = mod.worldPos.WorldToBlockPos();
-			blockMap[blockPos.x, blockPos.y, blockPos.z] = mod.blockID;
+			if (blockPos.IsBlockInChunk())
+				if (mod.forcePlace || !CheckBlockPresence(blockPos))
+					blockMap[blockPos.x, blockPos.y, blockPos.z] = mod.blockID;
 		}
 
 		ClearChunkMesh();
